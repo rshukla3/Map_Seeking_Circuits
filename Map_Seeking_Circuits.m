@@ -14,7 +14,7 @@ Read_Memory_Img = imread('Memory_Img.jpg');
 % performing the MSC layer functions on it.
 
 [RM1, RM2] = size(Read_Memory_Img);
-Memory_Img = imresize(Read_Memory_Img, [RM1/2 RM2/2]);
+Memory_Img = imresize(Read_Memory_Img, [150 150]);
 [M1, M2] = size(Memory_Img);
 
 % Rotate the memory image by 45 degrees in CW direction.
