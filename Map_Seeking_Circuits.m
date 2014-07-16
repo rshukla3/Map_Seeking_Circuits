@@ -2,6 +2,27 @@ clear all;
 close all;
 clc;
 
+%% Setting up the parameters.
+
+% 1. Set the parameters for image translation.
+
+% By how much the image should be translated on x-axis.
+xTranslateQuantity = 80;
+
+% By how much the image should be translated on y-axis.
+yTranslateQuantity = 100;
+
+% Number of times this translation that has to be applied.
+translationCount = 15;
+
+% 2. Set the parameters for image rotation.
+
+% This term defines the number of times input image should be rotated
+rotationCount = 15;
+
+% The precision by which image should be rotated.
+rotationQuantity = 45;
+
 %% Read the image that is to be stored in memory.
 
 Read_Memory_Img = imread('Memory_Img_small_Rectangle.jpg');
@@ -35,32 +56,12 @@ clear Read_Test_Img;
 
 [M1, M2] = size(Memory_Img);
 
-%xTranslate_sum = zeros(M1, M2);
+xyTanslated_Img = layer_1(Test_Img, translationCount, xTranslateQuantity, yTranslateQuantity);
 
-xTranslate_sum = Test_Img;
-
-translate = 10;
-for i = 1:15
-    xT = (i*80)+translate;
-    
-    xTranslate_sum = xTranslate_sum + translate_img(Test_Img, -xT, 0);
-    
-    xTranslate_sum = xTranslate_sum + translate_img(Test_Img, xT, 0);
-end
+rotated_img = layer_2(Memory_Img, rotationCount, rotationQuantity);
 
 figure(1);
-imshow(xTranslate_sum);
-
-yTranslate_sum = xTranslate_sum;
-
-superposition_Img_xTranslate = xTranslate_sum;
-for i = 1:10
-    yT = (i*100)+translate;
-    
-    yTranslate_sum = yTranslate_sum + translate_img(superposition_Img_xTranslate, 0, -yT);
-    
-    yTranslate_sum = yTranslate_sum + translate_img(superposition_Img_xTranslate, 0, yT);
-end
+imshow(xyTanslated_Img);
 
 figure(2);
-imshow(yTranslate_sum);
+imshow(rotated_img);
