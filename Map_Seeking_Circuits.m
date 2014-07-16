@@ -7,10 +7,10 @@ clc;
 % 1. Set the parameters for image translation.
 
 % By how much the image should be translated on x-axis.
-xTranslateQuantity = 80;
+xTranslateQuantity = 90;
 
 % By how much the image should be translated on y-axis.
-yTranslateQuantity = 100;
+yTranslateQuantity = 110;
 
 % Number of times this translation that has to be applied.
 translationCount = 15;
@@ -21,7 +21,7 @@ translationCount = 15;
 rotationCount = 15;
 
 % The precision by which image should be rotated.
-rotationQuantity = 45;
+rotationQuantity = 1.5;
 
 %% Read the image that is to be stored in memory.
 
@@ -58,7 +58,7 @@ clear Read_Test_Img;
 
 xyTanslated_Img = layer_1(Test_Img, translationCount, xTranslateQuantity, yTranslateQuantity);
 
-rotated_img = layer_2(Memory_Img, rotationCount, rotationQuantity);
+rotated_img = layer_2(xyTanslated_Img, rotationCount, rotationQuantity);
 
 figure(1);
 imshow(xyTanslated_Img);
