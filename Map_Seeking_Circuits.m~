@@ -50,16 +50,9 @@ clear Test_Img_gray;
 
 %% Initialize the value of g to all ones for the two layers.
 
-% IMPORTANT: g values for layer_1 (or the translation layer), is divided
-% into two parts. First part, i.e., from 1 to translationCount, conatins
-% the value of g for translation in positive x direction and positive y
-% direction. Second part, i.e., from translationCount to 2*translationCount, conatins
-% the value of g for translation in negative x direction and negative y
-% direction.
+g_layer1(1:translationCount) = ones(1,2*translationCount);
 
-g_layer1(1:2*translationCount) = single(ones(1,2*translationCount));
-
-g_layer2(1:rotationCount) = single(ones(1,rotationCount));
+g_layer2(1:rotationCount) = ones(1,rotationCount);
 
 %% First perform x-translation
 
