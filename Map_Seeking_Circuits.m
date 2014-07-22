@@ -33,11 +33,20 @@ Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
 
 %% Convert he two images to grayscale.
 
-Memory_Img = rgb2gray(Read_Memory_Img);
-Test_Img = rgb2gray(Read_Test_Img);
+Memory_Img_gray = rgb2gray(Read_Memory_Img);
+Test_Img_gray = rgb2gray(Read_Test_Img);
+
+Level_Memory_Img = graythresh(Memory_Img_gray);
+Level_Test_Img = graythresh(Test_Img_gray);
+
+Memory_Img = im2bw(Memory_Img_gray, Level_Memory_Img);
+Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
 
 clear Read_Memory_Img;
 clear Read_Test_Img;
+
+clear Memory_Img_gray;
+clear Test_Img_gray;
 
 %% Perform translation on the test image.
 

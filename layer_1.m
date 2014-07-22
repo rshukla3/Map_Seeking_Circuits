@@ -23,6 +23,6 @@ for i = 1:translationCount
     yTranslate_sum = yTranslate_sum + translate_img(superposition_Img_xTranslate, 0, yT);
 end
 
-xyTranslated_Img = yTranslate_sum; 
+xyTranslated_Img = logical(yTranslate_sum); 
 end
 

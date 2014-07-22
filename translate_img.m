@@ -12,7 +12,7 @@ tform_translate = maketform('affine',xform);
 
 [M1 M2] = size(input_img);
 
-translatedImg = imtransform(input_img, tform_translate, 'XData', [1 (size(input_img,2)+ xform(3,1))], 'YData', [1 (size(input_img,1)+ xform(3,2))]);
+translatedImg = logical(imtransform(input_img, tform_translate, 'XData', [1 (size(input_img,2)+ xform(3,1))], 'YData', [1 (size(input_img,1)+ xform(3,2))]));
 
 [JM1 JM2] = size(translatedImg);
 
@@ -23,7 +23,7 @@ new_img_1 = zeros(M1, M2);
 % Since zeros function defines the matrix for double datatype, we will
 % change the datatype of this matrix to uint8 as we will be mostly dealing
 % with grayscale images.
-new_img = uint8(new_img_1);
+new_img = logical(new_img_1);
 
 if(JM1 < M1)
     if(JM2 < M2)        

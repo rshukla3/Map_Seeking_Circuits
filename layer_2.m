@@ -10,6 +10,6 @@ for i = 1:rotationCount
     rotatedImg_sum = rotatedImg_sum + imrotate(input_img, rotationAngle, 'nearest', 'crop');
 end
 
-rotated_img = rotatedImg_sum;
+rotated_img = logical(rotatedImg_sum);
 end
 
