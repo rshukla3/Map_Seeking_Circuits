@@ -77,13 +77,13 @@ b2 = layer_2(b3, yTranslationCount, yTranslateQuantity, g_layer2, 'backward');
 %% Perform transformation on the image.
 
 % Translate the image along x-axis.
-f1 = layer_1(Test_Img, xTranslationCount, xTranslateQuantity, g_layer1, 'forward');
+[f1, Tf0] = layer_1(Test_Img, xTranslationCount, xTranslateQuantity, g_layer1, 'forward');
 
 % Translate the superimposed image along y-axis.
-f2 = layer_2(f1, yTranslationCount, yTranslateQuantity, g_layer2, 'forward');
+[f2, Tf1] = layer_2(f1, yTranslationCount, yTranslateQuantity, g_layer2, 'forward');
 
 % Rotate the x-translated and y-translated image.
-f3 = layer_3(f2, rotationCount, rotationQuantity, g_layer3, 'forward');
+[f3, Tf2] = layer_3(f2, rotationCount, rotationQuantity, g_layer3, 'forward');
 
 figure(1);
 imshow(f1);
