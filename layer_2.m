@@ -1,17 +1,29 @@
-function [ rotated_img ] = layer_2( input_img, rotationCount, rotationQuantity, g )
-% layer_2: This is the second layer of the map seeking circuits. This layer
-% performs the rotation on input image. Total number of times the rotation
-% that is performed on input image is defined by rotationCount and the
-% precision of this rotation is defined by rotationQuantity.
+function [ yTranslated_Img ] = layer_2( Test_Img,  translationCount, yTranslateQuantity, g, path)
+% layer_2: This is the first layer of map seeking circuits where image 
+% translation is performed on x and y axes.
 
-rotatedImg_sum = input_img;
-for i = 1:rotationCount
-    rotationAngle = (i)*rotationQuantity;
-    if(g(i) ~= 0)
-        rotatedImg_sum = rotatedImg_sum + g(i)*imrotate(input_img, rotationAngle, 'nearest', 'crop');
+yTranslate_sum = Test_Img;
+
+for i = 1:translationCount
+    yT = (i*yTranslateQuantity);
+    
+    if((g(i) ~=0)&&(strcmpi(path, 'forward')))
+        yTranslate_sum = yTranslate_sum + translate_img(Test_Img, 0, yT);
+    end
+    
+    if((g(2*i) ~=0)&&(strcmpi(path, 'forward')))
+        yTranslate_sum = yTranslate_sum + translate_img(Test_Img, 0, -yT);
+    end
+    
+    if((g(i) ~=0)&&(strcmpi(path, 'backward')))
+        yTranslate_sum = yTranslate_sum + translate_img(Test_Img, 0, -yT);
+    end
+    
+    if((g(2*i) ~=0)&&(strcmpi(path, 'backward')))
+        yTranslate_sum = yTranslate_sum + translate_img(Test_Img, 0, yT);
     end
 end
 
-rotated_img = logical(rotatedImg_sum);
+yTranslated_Img = logical(yTranslate_sum); 
 end
 

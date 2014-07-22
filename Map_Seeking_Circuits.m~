@@ -12,16 +12,19 @@ xTranslateQuantity = 90;
 % By how much the image should be translated on y-axis.
 yTranslateQuantity = 110;
 
-% Number of times this translation that has to be applied.
-translationCount = 15;
+% Number of times this x-translation that has to be applied.
+xTranslationCount = 2;
+
+% Number of times this x-translation that has to be applied.
+yTranslationCount = 2;
 
 % 2. Set the parameters for image rotation.
 
 % This term defines the number of times input image should be rotated
-rotationCount = 15;
+rotationCount = 1;
 
 % The precision by which image should be rotated.
-rotationQuantity = 1.5;
+rotationQuantity = 45;
 
 %% Read the image that is to be stored in memory.
 
@@ -40,7 +43,9 @@ Level_Memory_Img = graythresh(Memory_Img_gray);
 Level_Test_Img = graythresh(Test_Img_gray);
 
 Memory_Img = im2bw(Memory_Img_gray, Level_Memory_Img);
-Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
+%Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
+
+Test_Img = imrotate(Memory_Img, 45, 'nearest', 'crop');
 
 clear Read_Memory_Img;
 clear Read_Test_Img;
@@ -48,19 +53,24 @@ clear Read_Test_Img;
 clear Memory_Img_gray;
 clear Test_Img_gray;
 
-%% Initialize the value of g to all ones for the two layers.
+%% Initialize the value of g to all ones for the three layers.
 
-g_layer1(1:translationCount) = ones(1,2*translationCount);
+g_layer1(1:2*xTranslationCount) = single(ones(1,2*xTranslationCount));
 
-g_layer2(1:rotationCount) = ones(1,rotationCount);
+g_layer2(1:2*yTranslationCount) = single(ones(1,2*yTranslationCount));
 
-%% First perform x-translation
+g_layer3(1:2*rotationCount) = single(ones(1,2*rotationCount));
 
-[M1, M2] = size(Memory_Img);
+%% Perform affine transformation on the image.
 
-xyTanslated_Img = layer_1(Test_Img, translationCount, xTranslateQuantity, yTranslateQuantity, g_layer1);
+% Translate the image along x-axis.
+xTanslated_Img = layer_1(Test_Img, xTranslationCount, xTranslateQuantity, g_layer1);
 
-rotated_img = layer_2(xyTanslated_Img, rotationCount, rotationQuantity, g_layer2);
+% Traslate the superimposed image along y-axis.
+xyTanslated_Img = layer_2(xTanslated_Img, yTranslationCount, yTranslateQuantity, g_layer2);
+
+% Rotate the x-
+rotated_img = layer_3(xyTanslated_Img, rotationCount, rotationQuantity, g_layer3);
 
 figure(1);
 imshow(xyTanslated_Img);
