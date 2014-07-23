@@ -28,7 +28,16 @@ rotationQuantity = 45;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 1;
+iterationCount = 5;
+
+% 4. Set the value of constants k, for multiplication with g.
+
+k_xTranslation = 0.5;
+k_yTranslation = 0.5;
+k_rotation = 0.5;
+
+% 5. Select the value of gThresh or threshold value of g.
+gThresh = 0.2;
 
 %% Read the image that is to be stored in memory.
 
@@ -108,7 +117,18 @@ for i = 1:iterationCount
     
     %Calculate the value of q_layer3.
     q_layer3(1:2*rotationCount+1) = dotproduct(Tf2, b4);
+    
+%% Select the value of g_layers based on the q values that have been computed
 
+    g_layer1 = g_layer1 - k_xTranslation*( 1-( q_layer1./max(q_layer1) ) );
+    
+    g_layer2 = g_layer2 - k_yTranslation*( 1-( q_layer2./max(q_layer2) ) );
+
+    g_layer3 = g_layer3 - k_rotation*( 1-( q_layer3./max(q_layer3) ) );
+    
+    g_layer1 = g_threshold(g_layer1, gThresh);
+    g_layer2 = g_threshold(g_layer2, gThresh);
+    g_layer3 = g_threshold(g_layer3, gThresh);
 end
 
 figure(1);
