@@ -30,7 +30,7 @@ for i = 1:translationCount
             xTranslate_sum = xTranslate_sum + (g(i)*translate_img(Test_Img, -xT, 0));
         end
         
-        if((g(i+translationCount+1) ~=0)&&(strcmpi(path, 'backward')))
+        if((g(i+translationCount) ~=0)&&(strcmpi(path, 'backward')))
             xTranslate_sum = xTranslate_sum + (g(i+translationCount+1)*translate_img(Test_Img, xT, 0));
         end
 end
