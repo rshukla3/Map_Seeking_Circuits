@@ -7,28 +7,28 @@ clc;
 % 1. Set the parameters for image translation.
 
 % By how much the image should be translated on x-axis.
-xTranslateQuantity = 90;
+xTranslateQuantity = 20;
 
 % By how much the image should be translated on y-axis.
-yTranslateQuantity = 110;
+yTranslateQuantity = 20;
 
 % Number of times this x-translation that has to be applied.
-xTranslationCount = 2;
+xTranslationCount = 35;
 
 % Number of times this x-translation that has to be applied.
-yTranslationCount = 2;
+yTranslationCount = 35;
 
 % 2. Set the parameters for image rotation.
 
 % This term defines the number of times input image should be rotated
-rotationCount = 1;
+rotationCount = 6;
 
 % The precision by which image should be rotated.
-rotationQuantity = 45;
+rotationQuantity = 15;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 5;
+iterationCount = 10;
 
 % 4. Set the value of constants k, for multiplication with g.
 
@@ -37,7 +37,7 @@ k_yTranslation = 0.5;
 k_rotation = 0.5;
 
 % 5. Select the value of gThresh or threshold value of g.
-gThresh = 0.2;
+gThresh = 0.5;
 
 %% Read the image that is to be stored in memory.
 
@@ -56,9 +56,11 @@ Level_Memory_Img = graythresh(Memory_Img_gray);
 Level_Test_Img = graythresh(Test_Img_gray);
 
 Memory_Img = im2bw(Memory_Img_gray, Level_Memory_Img);
-%Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
+Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
 
-Test_Img = imrotate(Memory_Img, 45, 'nearest', 'crop');
+%Test_Img_Rotated = imrotate(Memory_Img, 45, 'nearest', 'crop');
+
+%Test_Img = translate_img(Test_Img_Rotated, -300, -300);
 
 clear Read_Memory_Img;
 clear Read_Test_Img;
@@ -89,6 +91,9 @@ for i = 1:iterationCount
 
     % Perform inverse translation on the superimposed image along y-axis.
     b2 = layer_2(b3, yTranslationCount, yTranslateQuantity, g_layer2, 'backward');
+    
+    % Perform inverse translation on the superimposed image along y-axis.
+    b1 = layer_1(b2, xTranslationCount, xTranslateQuantity, g_layer1, 'backward');
     
 %% Set the value of q to all zeros for the three layers.
 
@@ -148,3 +153,9 @@ imshow(b3);
 
 figure(6);
 imshow(b4);
+
+figure(7);
+imshow(Test_Img);
+
+figure(8);
+imshow(b1);
