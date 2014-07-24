@@ -21,23 +21,23 @@ yTranslationCount = 35;
 % 2. Set the parameters for image rotation.
 
 % This term defines the number of times input image should be rotated
-rotationCount = 6;
+rotationCount = 30;
 
 % The precision by which image should be rotated.
-rotationQuantity = 15;
+rotationQuantity = 3;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 10;
+iterationCount = 12;
 
 % 4. Set the value of constants k, for multiplication with g.
 
 k_xTranslation = 0.5;
 k_yTranslation = 0.5;
-k_rotation = 0.5;
+k_rotation = 0.3;
 
 % 5. Select the value of gThresh or threshold value of g.
-gThresh = 0.5;
+gThresh = 0.3;
 
 %% Read the image that is to be stored in memory.
 
