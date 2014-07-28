@@ -35,9 +35,18 @@ iterationCount = 12;
 k_xTranslation = 0.5;
 k_yTranslation = 0.5;
 k_rotation = 0.3;
+k_scaling = 0.3;
 
 % 5. Select the value of gThresh or threshold value of g.
 gThresh = 0.3;
+
+% 6. Parameters for scaling the image.
+
+% Number of times scaling is applied on the image.
+scaleCount = 1;
+
+% Factor by which each time an image is scaled.
+scaleFactor = 0.4;
 
 %% Read the image that is to be stored in memory.
 
@@ -76,15 +85,21 @@ g_layer2(1:2*yTranslationCount+1) = single(ones(1,2*yTranslationCount+1));
 
 g_layer3(1:2*rotationCount+1) = single(ones(1,2*rotationCount+1));
 
+g_layer4(1:2*scaleCount+1) = single(ones(1,2*scaleCount+1));
+
+
 %% %% The number of iterations for MSC to run.
 for i = 1:iterationCount
     
 %% Set the value of backward path 
 
     % First initialize the value of backward path in the last layer.
-    b4 = Memory_Img;
+    b5 = Memory_Img;
 
     % Assign rest of the values for the backward path.
+    
+     % Perform inverse scaling on the backward layer.
+    b4 = layer_4(b5, scaleCount, scaleFactor, g_layer4, 'backward');
 
     % Perform inverse rotation on the backward layer.
     b3 = layer_3(b4, rotationCount, rotationQuantity, g_layer3, 'backward');
@@ -102,6 +117,8 @@ for i = 1:iterationCount
     q_layer2(1:2*yTranslationCount+1) = single(zeros(1,2*yTranslationCount+1));
 
     q_layer3(1:2*rotationCount+1) = single(zeros(1,2*rotationCount+1));
+    
+    q_layer4(1:2*scaleCount+1) = single(zeros(1,2*scaleCount+1));
 
 %% Perform transformation on the image.
 
@@ -123,6 +140,12 @@ for i = 1:iterationCount
     %Calculate the value of q_layer3.
     q_layer3(1:2*rotationCount+1) = dotproduct(Tf2, b4);
     
+     % Scale the rotated image.
+    [f4, Tf3] = layer_4(f3, scaleCount, scaleFactor, g_layer4, 'forward');
+    
+    %Calculate the value of q_layer3.
+    q_layer4(1:2*scaleCount+1) = dotproduct(Tf3, b5);
+    
 %% Select the value of g_layers based on the q values that have been computed
 
     g_layer1 = g_layer1 - k_xTranslation*( 1-( q_layer1./max(q_layer1) ) );
@@ -131,9 +154,12 @@ for i = 1:iterationCount
 
     g_layer3 = g_layer3 - k_rotation*( 1-( q_layer3./max(q_layer3) ) );
     
+    g_layer4 = g_layer4 - k_scaling*( 1-( q_layer4./max(q_layer4) ) );
+    
     g_layer1 = g_threshold(g_layer1, gThresh);
     g_layer2 = g_threshold(g_layer2, gThresh);
     g_layer3 = g_threshold(g_layer3, gThresh);
+    g_layer4 = g_threshold(g_layer4, gThresh);
 end
 
 figure(1);
