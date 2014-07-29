@@ -34,7 +34,7 @@ else
         new_img = new_img_padded(rm/2-m/2+1:rm/2+m/2, 1:n);
     else
         new_img_padded(1:rm, 1:rn) = padarray(resized_img(1:rm,1:rn), [0 0]);        
-        new_img = new_img_padded(rm/2-m/2+1:rm/2+m/2, rn/2-n/2+1:rn/2+n/2);
+        new_img = new_img_padded( fix(rm/2) - fix(m/2)+1:fix(rm/2) + fix(m/2), fix(rn/2) - fix(n/2)+1:fix(rn/2) + fix(n/2) );
     end
 end
 
