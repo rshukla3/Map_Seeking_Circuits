@@ -7,28 +7,28 @@ clc;
 % 1. Set the parameters for image translation.
 
 % By how much the image should be translated on x-axis.
-xTranslateQuantity = 20;
+xTranslateQuantity = 90;
 
 % By how much the image should be translated on y-axis.
-yTranslateQuantity = 20;
+yTranslateQuantity = 90;
 
 % Number of times this x-translation that has to be applied.
-xTranslationCount = 35;
+xTranslationCount = 4;
 
 % Number of times this x-translation that has to be applied.
-yTranslationCount = 35;
+yTranslationCount = 4;
 
 % 2. Set the parameters for image rotation.
 
 % This term defines the number of times input image should be rotated
-rotationCount = 30;
+rotationCount = 2;
 
 % The precision by which image should be rotated.
-rotationQuantity = 3;
+rotationQuantity = 45;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 12;
+iterationCount = 20;
 
 % 4. Set the value of constants k, for multiplication with g.
 
@@ -46,7 +46,7 @@ gThresh = 0.3;
 scaleCount = 1;
 
 % Factor by which each time an image is scaled.
-scaleFactor = 0.4;
+scaleFactor = 0.1;
 
 %% Read the image that is to be stored in memory.
 
@@ -99,7 +99,7 @@ for i = 1:iterationCount
     % Assign rest of the values for the backward path.
     
      % Perform inverse scaling on the backward layer.
-    b4 = layer_4(b5, scaleCount, scaleFactor, g_layer4, 'backward');
+    [b4, Tf_tmp, q_layer4_scaling] = layer_4(b5, scaleCount, scaleFactor, g_layer4, 'backward');
 
     % Perform inverse rotation on the backward layer.
     b3 = layer_3(b4, rotationCount, rotationQuantity, g_layer3, 'backward');
@@ -119,6 +119,7 @@ for i = 1:iterationCount
     q_layer3(1:2*rotationCount+1) = single(zeros(1,2*rotationCount+1));
     
     q_layer4(1:2*scaleCount+1) = single(zeros(1,2*scaleCount+1));
+    
 
 %% Perform transformation on the image.
 
@@ -146,6 +147,7 @@ for i = 1:iterationCount
     %Calculate the value of q_layer3.
     q_layer4(1:2*scaleCount+1) = dotproduct(Tf3, b5);
     
+    q_layer4(1:2*scaleCount+1) = q_layer4(1:2*scaleCount+1).*q_layer4_scaling(1:2*scaleCount+1);
 %% Select the value of g_layers based on the q values that have been computed
 
     g_layer1 = g_layer1 - k_xTranslation*( 1-( q_layer1./max(q_layer1) ) );
@@ -172,7 +174,7 @@ figure(3);
 imshow(f3);
 
 figure(4);
-imshow(b2);
+imshow(f4);
 
 figure(5);
 imshow(b3);

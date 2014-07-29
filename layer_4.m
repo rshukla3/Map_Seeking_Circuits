@@ -1,11 +1,15 @@
-function [ scaled_img, scaled_img_vector] = layer_4( input_img, scaleCount, scaleFactor, g, path )
+function [ scaled_img, scaled_img_vector, q_scaling] = layer_4( input_img, scaleCount, scaleFactor, g, path )
 %This module performs scaling (or resize) operation on the input image for
 %MSC. 
 
 [m,n] = size(input_img);
 
 scaled_img_vector = logical(zeros(m, n, 2*scaleCount+1));
+q_scaling = single(zeros(1,2*scaleCount+1));
+
 scaling_sum = g(scaleCount+1)*input_img;
+scaled_img_vector(1:m, 1:n, scaleCount+1) = scaling_sum;
+q_scaling(scaleCount+1) = 1;
 
 for i= 1:scaleCount
     scale = (i*scaleFactor);
@@ -23,11 +27,13 @@ for i= 1:scaleCount
     if((g(i) ~=0)&&(strcmpi(path, 'backward')))
         scaled_img_vector(1:m,1:n,i) = g(i)*scaleImg(input_img, (1+scale), (1+scale));
         scaling_sum = scaling_sum + scaled_img_vector(1:m,1:n,i);
+        q_scaling(i) = 1+0*scale;
     end
     
     if((g(i+scaleCount+1) ~=0)&&(strcmpi(path, 'backward')))
         scaled_img_vector(1:m,1:n,i+scaleCount+1) = g(i+scaleCount+1)*scaleImg(input_img, (1-scale), (1-scale));
         scaling_sum = scaling_sum + scaled_img_vector(1:m,1:n,i+scaleCount+1);
+        q_scaling(i+scaleCount+1) = 1-9*scale;
     end
     
 end
