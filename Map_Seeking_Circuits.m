@@ -36,7 +36,7 @@ k_xTranslation = 0.5;
 k_yTranslation = 0.5;
 k_rotation = 0.3;
 k_scaling = 0.3;
-k_mem = 0.7;
+k_mem = 0.3;
 
 % 5. Select the value of gThresh or threshold value of g.
 gThresh = 0.3;
@@ -73,7 +73,7 @@ Level_Memory_Img_1 = graythresh(Memory_Img_gray_1);
 Level_Test_Img = graythresh(Test_Img_gray);
 
 Memory_Img = im2bw(Memory_Img_gray, Level_Memory_Img);
-Memory_Img_1 = im2bw(Memory_Img_gray, Level_Memory_Img_1);
+Memory_Img_1 = im2bw(Memory_Img_gray_1, Level_Memory_Img_1);
 Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
 
 %Test_Img_Rotated = imrotate(Memory_Img, 45, 'nearest', 'crop');
