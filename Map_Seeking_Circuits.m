@@ -28,7 +28,7 @@ rotationQuantity = 45;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 20;
+iterationCount = 5;
 
 % 4. Set the value of constants k, for multiplication with g.
 
@@ -44,7 +44,7 @@ gThresh = 0.3;
 % 6. Parameters for scaling the image.
 
 % Number of times scaling is applied on the image.
-scaleCount = 1;
+scaleCount = 30;
 
 % Factor by which each time an image is scaled.
 scaleFactor = 0.1;
@@ -56,11 +56,14 @@ memory_units = 2;
 %% Read the image that is to be stored in memory.
 
 Read_Memory_Img = imread('Memory_Img_small_Rectangle.jpg');
-Read_Memory_Img_1 = imread('Memory_Img_small_Circle.jpg');
+Read_Memory_Img_1 = imread('Memory_Img_small_Circle_1.jpg');
 
 %% Read the test image that is to be recognized against the image stored in memory.
 
-Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
+%Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
+Read_Test_Img = imread('Memory_Img_small_Circle_1.jpg');
+
+%Read_Test_Img = translate_img(Read_Test_Img, -90, 90);
 
 %% Convert he two images to grayscale.
 
@@ -163,7 +166,7 @@ for i = 1:iterationCount
     q_layer4(1:2*scaleCount+1) = q_layer4(1:2*scaleCount+1).*q_layer4_scaling(1:2*scaleCount+1);
     
     %Calculate the q values for memory layer.
-    q_layer_mem = [dot(single(Memory_Img(:)), single(f4(:))) dot(single(Memory_Img_1(:)), single(f4(:)))];
+    q_layer_mem = [dot(single(Memory_Img(:)), single(f4(:))) dot(single(Memory_Img_1(:)), single(f4(:)))*(0.2108)];
     
 %% Select the value of g_layers based on the q values that have been computed
 
