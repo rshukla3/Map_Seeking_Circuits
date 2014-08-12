@@ -27,13 +27,13 @@ for i= 1:scaleCount
     if((g(i) ~=0)&&(strcmpi(path, 'backward')))
         scaled_img_vector(1:m,1:n,i) = g(i)*scaleImg(input_img, (1+scale), (1+scale));
         scaling_sum = scaling_sum + scaled_img_vector(1:m,1:n,i);
-        q_scaling(i) = 1+4*scale;
+        q_scaling(i) = 1+1*scale;
     end
     
     if((g(i+scaleCount+1) ~=0)&&(strcmpi(path, 'backward'))&&(1-scale>0))
         scaled_img_vector(1:m,1:n,i+scaleCount+1) = g(i+scaleCount+1)*scaleImg(input_img, (1-scale), (1-scale));
         scaling_sum = scaling_sum + scaled_img_vector(1:m,1:n,i+scaleCount+1);
-        q_scaling(i+scaleCount+1) = 1-4*scale;
+        q_scaling(i+scaleCount+1) = 1-1*scale;
     end
     
 end
