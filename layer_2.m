@@ -3,7 +3,7 @@ function [ yTranslated_Img, Transformation_Vector ] = layer_2( Test_Img,  transl
 % translation is performed on x and y axes.
 
 [m,n] = size(Test_Img);
-Transformation_Vector = logical(zeros(m,n,2*translationCount+1));
+Transformation_Vector = single(zeros(m,n,2*translationCount+1));
 
 yTranslate_sum = g(translationCount+1)*Test_Img;
 Transformation_Vector(1:m,1:n,translationCount+1) = yTranslate_sum;
@@ -30,6 +30,6 @@ for i = 1:translationCount
     end
 end
 
-yTranslated_Img = logical(yTranslate_sum); 
+yTranslated_Img = single(yTranslate_sum); 
 end
 

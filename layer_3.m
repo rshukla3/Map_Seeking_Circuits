@@ -5,7 +5,7 @@ function [ rotated_img, Transformation_Vector ] = layer_3( input_img, rotationCo
 % precision of this rotation is defined by rotationQuantity.
 
 [m,n] = size(input_img);
-Transformation_Vector = logical(zeros(m,n,2*rotationCount+1));
+Transformation_Vector = single(zeros(m,n,2*rotationCount+1));
 
 rotatedImg_sum = g(rotationCount+1)*input_img;
 Transformation_Vector(1:m,1:n,rotationCount+1) = rotatedImg_sum;
@@ -31,6 +31,6 @@ for i = 1:rotationCount
     end
 end
 
-rotated_img = logical(rotatedImg_sum);
+rotated_img = single(rotatedImg_sum);
 end
 

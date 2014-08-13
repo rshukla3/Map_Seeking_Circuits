@@ -4,7 +4,7 @@ function [ scaled_img, scaled_img_vector, q_scaling] = layer_4( input_img, scale
 
 [m,n] = size(input_img);
 
-scaled_img_vector = logical(zeros(m, n, 2*scaleCount+1));
+scaled_img_vector = single(zeros(m, n, 2*scaleCount+1));
 q_scaling = single(zeros(1,2*scaleCount+1));
 
 scaling_sum = g(scaleCount+1)*input_img;
@@ -38,7 +38,7 @@ for i= 1:scaleCount
     
 end
 
-scaled_img = logical(scaling_sum);
+scaled_img = single(scaling_sum);
     
 end
 

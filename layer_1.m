@@ -1,10 +1,12 @@
-function [ xTranslated_Img, Transformation_Vector ] = layer_1( Test_Img,  translationCount, xTranslateQuantity, g, path)
+function [ xTranslated_Img, Transformation_Vector ] = layer_1( Test_Img_Input,  translationCount, xTranslateQuantity, g, path)
 % layer_1: This is the first layer of map seeking circuits where image 
 % translation is performed on x and y axes.
 
+Test_Img = single(Test_Img_Input);
+
 [m,n] = size(Test_Img);
 
-Transformation_Vector = logical(zeros(m,n,2*translationCount+1));
+Transformation_Vector = single(zeros(m,n,2*translationCount+1));
 
 % Value of f0 is 0. So the vector T(f0) should be a zero vector.
 %Transformation_Vector_Zero = Transformation_Vector;
@@ -35,6 +37,6 @@ for i = 1:translationCount
         end
 end
 
-xTranslated_Img = logical(xTranslate_sum); 
+xTranslated_Img = single(xTranslate_sum); 
 end
 

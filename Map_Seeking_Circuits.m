@@ -28,7 +28,7 @@ rotationQuantity = 15;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 100;
+iterationCount = 25;
 
 % 4. Set the value of constants k, for multiplication with g.
 
@@ -53,6 +53,12 @@ scaleFactor = 0.2;
 
 memory_units = 1;
 
+% If the images are being normalized to single floating point datatype,
+% then to display the images, the value of variables should be multiplied
+% with 255.
+
+ImageShowNormalize = 255;
+
 %% Read the image that is to be stored in memory
 
 Read_Memory_Img = imread('Memory_Img_small_Rectangle_1.jpg');
@@ -60,7 +66,7 @@ Read_Memory_Img = imread('Memory_Img_small_Rectangle_1.jpg');
 
 %% Read the test image that is to be recognized against the image stored in memory.
 
-%Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
+Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
 %Read_Test_Img = imread('Test_Img_Circle.jpg');
 %Read_Test_Img = Read_Memory_Img; 
 %Read_Test_Img = translate_img(Read_Test_Img, -90, 90);
@@ -69,19 +75,19 @@ Read_Memory_Img = imread('Memory_Img_small_Rectangle_1.jpg');
 
 Memory_Img_gray = rgb2gray(Read_Memory_Img);
 %Memory_Img_gray_1 = rgb2gray(Read_Memory_Img_1);
-%Test_Img_gray = rgb2gray(Read_Test_Img);
+Test_Img_gray = rgb2gray(Read_Test_Img);
 
 Level_Memory_Img = graythresh(Memory_Img_gray);
 %Level_Memory_Img_1 = graythresh(Memory_Img_gray_1);
-%Level_Test_Img = graythresh(Test_Img_gray);
+Level_Test_Img = graythresh(Test_Img_gray);
 
 Memory_Img = im2bw(Memory_Img_gray, Level_Memory_Img);
 %Memory_Img_1 = im2bw(Memory_Img_gray_1, Level_Memory_Img_1);
-%Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
+Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
 
-Test_Img_Rotated = imrotate(Memory_Img, 45, 'nearest', 'crop');
+%Test_Img_Rotated = imrotate(Memory_Img, 45, 'nearest', 'crop');
 
-Test_Img = translate_img(Test_Img_Rotated, -300, -300);
+%Test_Img = translate_img(Test_Img_Rotated, -300, -300);
 
 clear Read_Memory_Img;
 clear Read_Memory_Img_1;
@@ -188,31 +194,31 @@ for i = 1:iterationCount
 end
 
 figure(1);
-imshow(f1);
+imshow(f1.*ImageShowNormalize);
 
 figure(2);
-imshow(f2);
+imshow(f2.*ImageShowNormalize);
 
 figure(3);
-imshow(f3);
+imshow(f3.*ImageShowNormalize);
 
 figure(4);
-imshow(f4);
+imshow(f4.*ImageShowNormalize);
 
 figure(5);
-imshow(b5);
+imshow(b5.*ImageShowNormalize);
 
 figure(6);
-imshow(b4);
+imshow(b4.*ImageShowNormalize);
 
 figure(7);
-imshow(b3);
+imshow(b3.*ImageShowNormalize);
 
 figure(8);
-imshow(b2);
+imshow(b2.*ImageShowNormalize);
 
 figure(9);
 imshow(Test_Img);
 
 figure(10);
-imshow(b1);
+imshow(b1.*ImageShowNormalize);

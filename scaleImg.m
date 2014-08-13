@@ -16,7 +16,7 @@ resized_img = imresize(input_img, 'Scale', [xScale yScale]);
 
 [rm, rn] = size(resized_img);
 
-new_img = logical(zeros(m,n));
+new_img = single(zeros(m,n));
 
 if(rm < m)
     padXAxis = (m-rm)/2;
