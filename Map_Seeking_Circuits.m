@@ -24,11 +24,11 @@ yTranslationCount = 35;
 rotationCount = 6;
 
 % The precision by which image should be rotated.
-rotationQuantity = 15;
+rotationQuantity = 25;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
-iterationCount = 25;
+iterationCount = 30;
 
 % 4. Set the value of constants k, for multiplication with g.
 
@@ -36,7 +36,7 @@ k_xTranslation = 0.5;
 k_yTranslation = 0.5;
 k_rotation = 0.3;
 k_scaling = 0.3;
-k_mem = 0.7;
+k_mem = 0.3;
 
 % 5. Select the value of gThresh or threshold value of g.
 gThresh = 0.3;
@@ -51,7 +51,7 @@ scaleFactor = 0.2;
 
 % 7. Number of elements that are present in the memory unit.
 
-memory_units = 1;
+memory_units = 2;
 
 % If the images are being normalized to single floating point datatype,
 % then to display the images, the value of variables should be multiplied
@@ -62,32 +62,32 @@ ImageShowNormalize = 255;
 %% Read the image that is to be stored in memory
 
 Read_Memory_Img = imread('Memory_Img_small_Rectangle_1.jpg');
-%Read_Memory_Img_1 = imread('Memory_Img_small_Circle.jpg');
+Read_Memory_Img_1 = imread('Memory_Img_small_Circle.jpg');
 
 %% Read the test image that is to be recognized against the image stored in memory.
 
-Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
-%Read_Test_Img = imread('Test_Img_Circle.jpg');
+%Read_Test_Img = imread('Test_Img_Rotated_Rectangle.jpg');
+Read_Test_Img = imread('Test_Img_Circle.jpg');
 %Read_Test_Img = Read_Memory_Img; 
 %Read_Test_Img = translate_img(Read_Test_Img, -90, 90);
 
 %% Convert he two images to grayscale.
 
 Memory_Img_gray = rgb2gray(Read_Memory_Img);
-%Memory_Img_gray_1 = rgb2gray(Read_Memory_Img_1);
+Memory_Img_gray_1 = rgb2gray(Read_Memory_Img_1);
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
 Level_Memory_Img = graythresh(Memory_Img_gray);
-%Level_Memory_Img_1 = graythresh(Memory_Img_gray_1);
+Level_Memory_Img_1 = graythresh(Memory_Img_gray_1);
 Level_Test_Img = graythresh(Test_Img_gray);
 
 Memory_Img = im2bw(Memory_Img_gray, Level_Memory_Img);
-%Memory_Img_1 = im2bw(Memory_Img_gray_1, Level_Memory_Img_1);
-Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
+Memory_Img_1 = im2bw(Memory_Img_gray_1, Level_Memory_Img_1);
+%Test_Img = im2bw(Test_Img_gray, Level_Test_Img);
 
-%Test_Img_Rotated = imrotate(Memory_Img, 45, 'nearest', 'crop');
+Test_Img_Rotated = imrotate(Memory_Img_1, 45, 'nearest', 'crop');
 
-%Test_Img = translate_img(Test_Img_Rotated, -300, -300);
+Test_Img = translate_img(Test_Img_Rotated, 40, -300);
 
 clear Read_Memory_Img;
 clear Read_Memory_Img_1;
@@ -116,7 +116,7 @@ for i = 1:iterationCount
 %% Set the value of backward path 
 
     % First initialize the value of backward path in the last layer.
-    b5 = g_mem(1)*Memory_Img; % + g_mem(2)*Memory_Img_1;
+    b5 = g_mem(1)*Memory_Img + g_mem(2)*Memory_Img_1;
 
     % Assign rest of the values for the backward path.
     
@@ -172,8 +172,8 @@ for i = 1:iterationCount
     q_layer4(1:2*scaleCount+1) = q_layer4(1:2*scaleCount+1).*q_layer4_scaling(1:2*scaleCount+1);
     
     %Calculate the q values for memory layer.
-    % q_layer_mem = [dot(single(Memory_Img(:)), single(f4(:))) dot(single(Memory_Img_1(:)), single(f4(:)))*(1.0)];
-    q_layer_mem = dot(single(Memory_Img(:)), single(f4(:)));
+    q_layer_mem = [dot(single(Memory_Img(:)), single(f4(:))).*0.96 dot(single(Memory_Img_1(:)), single(f4(:)))];
+    %q_layer_mem = dot(single(Memory_Img(:)), single(f4(:)));
 %% Select the value of g_layers based on the q values that have been computed
 
     g_layer1 = g_layer1 - k_xTranslation*( 1-( q_layer1./max(q_layer1) ) );
