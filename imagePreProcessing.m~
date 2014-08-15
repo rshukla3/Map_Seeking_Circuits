@@ -2,9 +2,7 @@ function [ Memory_Img, Test_Img ] = imagePreProcessing( )
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 
-Read_Memory_Img = imread('Green-Bell-Pepper-1.jpg');
-
-Read_Memory_Img(:, 366:512,:) = 255;
+Read_Memory_Img = imread('Green-Bell-Pepper-Memory.jpg');
 
 Read_Test_Img = imread('Peppers.tiff');
 
@@ -24,7 +22,7 @@ Test_Img_Canny = edge(Test_Img_BW, 'canny');
 
 D = bwdist(Test_Img_Canny);
 
-Test_Img = Test_Img_Canny & (D<1);
+Memory_Img = Test_Img_Canny & (D<0);
 
 figure(1);
 imshow(Memory_Img);
