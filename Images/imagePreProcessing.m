@@ -14,7 +14,7 @@ Memory_Img_gray = Read_Memory_Img;
 %Test_Img_gray = rgb2gray(Read_Test_Img);
 %Test_Img_gray = Read_Test_Img;
 
-h = fspecial('gaussian', size(Memory_Img_gray), 1.0);
+h = fspecial('gaussian', size(Memory_Img_gray), 1.2);
 Memory_Img_gray = imfilter(Memory_Img_gray, h);
 
 %h = fspecial('gaussian', size(Memory_Img_gray), 1.5);
@@ -28,9 +28,10 @@ Level_Memory_Img = graythresh(Memory_Img_gray);
 Memory_Img_BW = im2bw(Memory_Img_gray, Level_Memory_Img);
 %Test_Img_BW = im2bw(Test_Img_gray, Level_Test_Img);
 
-Memory_Img = edge(Memory_Img_BW, 'canny');
+[Memory_Img_Canny, Thresh] = edge(Memory_Img_BW, 'canny');
 %Test_Img_Canny = edge(Test_Img_BW, 'canny');
 
+Memory_Img = edge(Memory_Img_BW, 'canny', Thresh);
 %D = bwdist(Test_Img_Canny);
 
 %h = fspecial('gaussian', size(Test_Img_Canny), 0.1);
@@ -46,6 +47,9 @@ Memory_Img = edge(Memory_Img_BW, 'canny');
 %Memory_Img(311:410,:)=0;
 figure(1);
 imshow(Memory_Img);
+
+
+
 
 %figure(2);
 %imshow(Test_Img);
