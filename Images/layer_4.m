@@ -3,7 +3,7 @@ function [ scaled_img, scaled_img_vector, q_scaling] = layer_4( input_img, scale
 %MSC. 
 
 [m,n] = size(input_img);
-
+input_img = single(input_img);
 scaled_img_vector = single(zeros(m, n, 2*scaleCount+1));
 q_scaling = single(zeros(1,2*scaleCount+1));
 

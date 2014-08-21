@@ -24,7 +24,7 @@ yTranslationCount = 35;
 rotationCount = 1;
 
 % The precision by which image should be rotated.
-rotationQuantity = 25;
+rotationQuantity = 30;
 
 % 3. Number of iterations for which Map_Seeking Circuit architecture will
 % run.
@@ -73,7 +73,7 @@ g_layer2(1:2*yTranslationCount+1) = single(ones(1,2*yTranslationCount+1));
 
 g_layer3(1:2*rotationCount+1) = single(ones(1,2*rotationCount+1));
 
-g_layer4(1:2*scaleCount+1) = single(ones(1,2*scaleCount+1));
+% g_layer4(1:2*scaleCount+1) = single(ones(1,2*scaleCount+1));
 
 g_mem(1:memory_units) = single(ones(1,memory_units));
 
@@ -109,7 +109,6 @@ for i = 1:iterationCount
     q_layer3(1:2*rotationCount+1) = single(zeros(1,2*rotationCount+1));
     
     % q_layer4(1:2*scaleCount+1) = single(zeros(1,2*scaleCount+1));
-    
 
 %% Perform transformation on the image.
 

@@ -19,9 +19,9 @@ resized_img = imresize(input_img, 'Scale', [xScale yScale]);
 new_img = single(zeros(m,n));
 
 if(rm < m)
-    padXAxis = (m-rm)/2;
+    padXAxis = fix((m-rm)/2);
     if(rn < n)
-        padYAxis = (n-rn)/2;
+        padYAxis = fix((n-rn)/2);
         new_img(1:m, 1:n) = padarray(resized_img, [padXAxis padYAxis]);
     else
         new_img_padded(1:m, 1:rn) = padarray(resized_img(:,1:rn), [padXAxis 0]);

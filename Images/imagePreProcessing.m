@@ -38,10 +38,14 @@ Memory_Img_Fill = imfill(Memory_Img_dilate, 'holes');
 seD = strel('diamond',1);
 Memory_Img_Final = imerode(Memory_Img_Fill,seD);
 Memory_Img_Erode = imerode(Memory_Img_Final,seD);
-
+%Memory_Img_Erode = imclearborder(Memory_Img_Erode, 6);
 BWoutline = edge(Memory_Img_Erode);
-Memory_Img = zeros(256, 256);
-Memory_Img(BWoutline) = 255;
+Memory_Img = logical(zeros(256, 256));
+Memory_Img(BWoutline) = 1;
+
+%h = fspecial('gaussian', size(Memory_Img), 0.08);
+%Memory_Img = imfilter(Memory_Img, h);
+
 %D = bwdist(Test_Img_Canny);
 
 %h = fspecial('gaussian', size(Test_Img_Canny), 0.1);
@@ -65,8 +69,8 @@ Test_Img_Final = imerode(Test_Img_Fill,seD);
 Test_Img_Erode = imerode(Test_Img_Final,seD);
 
 BWoutline = edge(Test_Img_Erode);
-Test_Img = zeros(256, 256);
-Test_Img(BWoutline) = 255;
+Test_Img = logical(zeros(256, 256));
+Test_Img(BWoutline) = 1;
 
 %[m,n] = size(Test_Img);
 %fprintf('The size of test image is %d-by-%d\n', m, n);
@@ -76,7 +80,7 @@ Test_Img(BWoutline) = 255;
 %Test_Img = bwareaopen(Test_Img_Holes, 0);
 %s_Img(311:410,:)=0;
 figure(1);
-imshow(Memory_Img);
+imshow(Memory_Img_Erode);
 
 figure(2);
 imshow(Test_Img);

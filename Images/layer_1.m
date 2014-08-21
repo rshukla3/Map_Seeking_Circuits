@@ -4,6 +4,9 @@ function [ xTranslated_Img, Transformation_Vector ] = layer_1( Test_Img_Input,  
 
 Test_Img = single(Test_Img_Input);
 
+% fprintf('Test image after single conversion\n');
+% display(Test_Img);
+
 [m,n] = size(Test_Img);
 
 Transformation_Vector = single(zeros(m,n,2*translationCount+1));
