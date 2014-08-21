@@ -21,7 +21,7 @@ yTranslationCount = 35;
 % 2. Set the parameters for image rotation.
 
 % This term defines the number of times input image should be rotated
-rotationCount = 6;
+rotationCount = 1;
 
 % The precision by which image should be rotated.
 rotationQuantity = 25;
