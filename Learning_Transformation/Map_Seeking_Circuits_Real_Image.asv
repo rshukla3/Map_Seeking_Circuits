@@ -128,13 +128,12 @@ figure(3);
 imshow(b(:,:,1));
 
 if(Transformation >= 1)
-    figure(4);
-    imshow(b(:,:,2));
+figure(4);
+imshow(b(:,:,2));
 
-    figure(5);
-    imshow(f(:,:,1));
+figure(5);
+imshow(f(:,:,1));
 
-    figure(6);
-    imshow(f(:,:,2));
+figure(6);
+imshow(f(:,:,2));
 
-end

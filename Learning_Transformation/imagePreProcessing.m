@@ -2,7 +2,7 @@ function [ Test_Img ] = imagePreProcessing( )
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 
-Read_Test_Img = imread('square_3.jpg');
+Read_Test_Img = imread('square_2.jpg');
 
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
