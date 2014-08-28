@@ -50,6 +50,10 @@ xTranslationCount = 35;
 % is being done.
 Transformation = 0;
 
+% 8. Select the value of gThresh or threshold value of g.
+gThresh = 0.3;
+
+
 % If the images are being normalized to single floating point datatype,
 % then to display the images, the value of variables should be multiplied
 % with 255.
@@ -107,17 +111,37 @@ for i = 1:iterationCount
             layerCount = 2;
             b(:,:,2) = b(:,:,1);
             q_xTranslation(1:2*xTranslationCount+1) = single(zeros(1,2*xTranslationCount+1));
+            
+            % Translate the image along x-axis.
+            [f(:,:,2), Tf0] = layer_1(Test_Img, xTranslationCount, xTranslateQuantity, g_layer1, 'forward');    
+            %Calculate the value of q_layer1.
+            q_xTranslation(1:2*xTranslationCount+1) = dotproduct(Tf0, b(:,:,2));        
+        
+            % Perform inverse translation on the superimposed image along y-axis.
+            b(:,:,1) = layer_1(b(:,:,2), xTranslationCount, xTranslateQuantity, g_layer1, 'backward');
+            f(:,:,1) = Test_Img;
+            q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
         else
             if(Transformation >= 1)
                 g_layer1 = g_layer1 - k_xTranslation*( 1-( q_xTranslation./max(q_xTranslation) ) );
+                g_layer1 = g_threshold(g_layer1, gThresh);
             end    
     
             g_mem = g_mem - k_mem*( 1-( q_Top_Layer./max(q_Top_Layer) ) );
+            g_mem = g_threshold(g_mem, gThresh);
         end
-    end   
-    
-        
-    
+    end    
      
 end
 
+figure(3);
+imshow(b(:,:,1));
+
+figure(4);
+imshow(b(:,:,2));
+
+figure(5);
+imshow(f(:,:,1));
+
+figure(6);
+imshow(f(:,:,2));
