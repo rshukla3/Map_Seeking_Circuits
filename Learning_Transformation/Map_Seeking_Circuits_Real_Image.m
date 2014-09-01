@@ -28,6 +28,7 @@ layerCount = 1;
 k_mem = 0.3;
 k_xTranslation = 0.5;
 k_yTranslation = 0.5;
+k_rotation = 0.3;
 
 % 5. Read the matching values of q already stored in the file.
 
@@ -38,7 +39,9 @@ else
     q_mem = [];
 end
 
-% 6. Set the parameters for image translation.
+% 6. Set the parameters for affine transformations.
+
+% I: Image translation
 
 % By how much the image should be translated on x-axis.
 xTranslateQuantity = 5;
@@ -51,6 +54,14 @@ xTranslationCount = 60;
 
 % Number of times this y-translation that has to be applied.
 yTranslationCount = 60;
+
+% II. Image rotation.
+
+% This term defines the number of times input image should be rotated
+rotationCount = 6;
+
+% The precision by which image should be rotated.
+rotationQuantity = 25;
 
 % 7. Check whether there are any transformations going on in the circuit.
 % Initially the value  of transformation is zero, that is no transformation
@@ -88,6 +99,7 @@ g_mem(1:memory_units) = single(ones(memory_units,1));
 
 g_layer1(1:2*xTranslationCount+1) = single(ones(1,2*xTranslationCount+1));
 g_layer2(1:2*yTranslationCount+1) = single(ones(1,2*yTranslationCount+1));
+g_layer3(1:2*rotationCount+1) = single(ones(1,2*rotationCount+1));
 
 %% The number of iterations for MSC to run.
 for i = 1:iterationCount
@@ -95,13 +107,18 @@ for i = 1:iterationCount
 % Set the value of backward path 
     b(:,:,layerCount) = layer_memory(g_mem, Memory_Img, memory_units);
     
+    if(Transformation >= 3)
+        % Perform inverse rotation on the backward layer.
+        b(:,:,3) = layer_3(b(:,:,4), rotationCount, rotationQuantity, g_layer3, 'backward');
+    end
+    
     if(Transformation >= 2)
         % Perform inverse translation on the superimposed image along y-axis.
         b(:,:,2) = layer_2(b(:,:,3), yTranslationCount, yTranslateQuantity, g_layer2, 'backward');
     end
     
     if(Transformation >= 1)        
-        % Perform inverse translation on the superimposed image along y-axis.
+        % Perform inverse translation on the superimposed image along x-axis.
         b(:,:,1) = layer_1(b(:,:,2), xTranslationCount, xTranslateQuantity, g_layer1, 'backward');
     end    
     
@@ -109,16 +126,24 @@ for i = 1:iterationCount
         q_xTranslation(1:2*xTranslationCount+1) = single(zeros(1,2*xTranslationCount+1));
         % Translate the image along x-axis.
         [f(:,:,2), Tf0] = layer_1(Test_Img, xTranslationCount, xTranslateQuantity, g_layer1, 'forward');    
-        %Calculate the value of q_layer1.
+        %Calculate the value of q_xTranslation.
         q_xTranslation(1:2*xTranslationCount+1) = dotproduct(Tf0, b(:,:,2));  
     end
     
     if(Transformation >= 2)
         q_yTranslation(1:2*yTranslationCount+1) = single(zeros(1,2*yTranslationCount+1));
-        % Translate the image along x-axis.
+        % Translate the image along y-axis.
         [f(:,:,3), Tf1] = layer_2(f(:,:,2), yTranslationCount, yTranslateQuantity, g_layer2, 'forward');    
-        %Calculate the value of q_layer1.
+        %Calculate the value of q_yTranslation.
         q_yTranslation(1:2*yTranslationCount+1) = dotproduct(Tf1, b(:,:,3));   
+    end
+    
+    if(Transformation >= 3)
+        q_rotation(1:2*rotationCount+1) = single(zeros(1,2*yTranslationCount+1));
+        % Rotate the image.
+        [f(:,:,4), Tf2] = layer_3(f(:,:,3), rotationCount, rotationQuantity, g_layer3, 'forward');
+        %Calculate the value of q_rotation.
+        q_rotation(1:2*rotationCount+1) = dotproduct(Tf2, b(:,:,4));   
     end
     
     f(:,:,1) = Test_Img;
@@ -143,6 +168,11 @@ for i = 1:iterationCount
                 g_layer2 = g_layer2 - k_yTranslation*( 1-( q_yTranslation./max(q_yTranslation) ) );
                 g_layer2 = g_threshold(g_layer2, gThresh);
             end 
+            
+            if(Transformation >= 3)
+                g_layer3 = g_layer3 - k_rotation*( 1-( q_rotation./max(q_rotation) ) );
+                g_layer3 = g_threshold(g_layer3, gThresh);
+            end
             
             g_mem = g_mem - k_mem*( 1-( q_Top_Layer./max(q_Top_Layer) ) );
             g_mem = g_threshold(g_mem, gThresh);
@@ -172,4 +202,12 @@ if(Transformation >= 2)
 
     figure(8);
     imshow(f(:,:,3));    
+end
+
+if(Transformation >= 3)
+    figure(9);
+    imshow(b(:,:,4));
+
+    figure(10);
+    imshow(f(:,:,4));    
 end
