@@ -44,16 +44,16 @@ end
 % I: Image translation
 
 % By how much the image should be translated on x-axis.
-xTranslateQuantity = 5;
+xTranslateQuantity = 20;
 
 % By how much the image should be translated on y-axis.
-yTranslateQuantity = 5;
+yTranslateQuantity = 20;
 
 % Number of times this x-translation that has to be applied.
-xTranslationCount = 60;
+xTranslationCount = 30;
 
 % Number of times this y-translation that has to be applied.
-yTranslationCount = 60;
+yTranslationCount = 30;
 
 % II. Image rotation.
 
