@@ -154,7 +154,8 @@ for i = 1:iterationCount
     f(:,:,1) = (Test_Img);
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
-    fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i);  
+    fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i);
+    if(Transformation)
     if(xTranslation_converged == 1 && yTranslation_converged == 1 && rotation_converged == 1 && memory_converged == 1)
         fprintf('MSC convergence complete\n');
         break;
