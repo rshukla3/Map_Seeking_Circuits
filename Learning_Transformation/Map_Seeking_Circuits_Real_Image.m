@@ -154,9 +154,18 @@ for i = 1:iterationCount
     f(:,:,1) = (Test_Img);
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
-    fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i);  
-    if(xTranslation_converged == 1 && yTranslation_converged == 1 && rotation_converged == 1 && memory_converged == 1)
-        fprintf('MSC convergence complete\n');
+    fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
+    
+% Condition to say if MSC has converged to a correct state then break out
+% from the loop.
+    if(Transformation == 1 && memory_converged == 1 && (xTranslation_converged == 1 || yTranslation_converged == 1 || rotation_converged == 1))
+        fprintf('MSC convergence complete in first layer\n');
+        break;
+    elseif(Transformation == 2 && memory_converged == 1 && ((xTranslation_converged == 1 && yTranslation_converged == 1) || (rotation_converged == 1 && yTranslation_converged == 1) || (xTranslation_converged == 1 && rotation_converged == 1) ))
+        fprintf('MSC convergence complete in second layer\n');
+        break;
+    elseif(Transformation == 3 && memory_converged == 1 && (xTranslation_converged == 1 && yTranslation_converged == 1 && rotation_converged == 1))
+        fprintf('MSC convergence complete in third layer\n');
         break;
     end
     
