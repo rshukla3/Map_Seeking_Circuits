@@ -34,7 +34,7 @@ k_rotation = 0.5;
 
 fname = 'q_mem.txt';
 if exist(fname, 'file') == 2
-    q_mem = dlmread(fname, '\n');
+    q_mem = dlmread(fname, '\t');
 else
     q_mem = [];
 end
@@ -88,14 +88,17 @@ ImageShowNormalize = 255;
 % Read the test image and the image that is to be stored in memory and
 % later do preprocessing on them.
 
-[Test_Img] = imagePreProcessing();
+[Test_Img] = imagePreProcessing('pepper_2.jpg');
 
 %% Initialize the value of g to all ones for the three layers.
 
 if(isempty(Memory_Img))
     Memory_Img(:, :, 1) = Test_Img;
-    memory_units = 1;
+    memory_units = 2;
     imwrite(Memory_Img(:, :, 1), 'Memory_Images.tif');
+    [Test_Img] = imagePreProcessing('sailboat_2.jpg');
+    Memory_Img(:, :, 2) = Test_Img;
+    imwrite(Memory_Img(:, :, 2), 'Memory_Images.tif');
 end
 
 g_mem(1:memory_units) = single(ones(memory_units,1));
@@ -171,9 +174,13 @@ for i = 1:iterationCount
     
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
+        q_Top_Layer = dotproduct(Memory_Img(:, :, 1), Memory_Img(:, :, 1));
         q_mem(1) = q_Top_Layer;
-        q_units = 1;
-        dlmwrite('q_mem.txt', q_Top_Layer, '\n');
+        q_units = 2;
+        
+        q_Top_Layer = dotproduct(Memory_Img(:, :, 2), Memory_Img(:, :, 2));
+        q_mem(2) = q_Top_Layer;
+        dlmwrite('q_mem.txt', q_mem, '\t');
     else
         if(q_Top_Layer<0.4*q_mem(1))
             Transformation = Transformation+1;
