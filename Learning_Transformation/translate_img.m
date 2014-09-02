@@ -28,18 +28,18 @@ new_img = single(new_img_1);
 if(JM1 < M1)
     if(JM2 < M2)        
         new_img(1:JM1, 1:JM2) = translatedImg;
-        fprintf('Condition 1\n');
+        %fprintf('Condition 1\n');
     else
         new_img(1:JM1, 1:M2) = translatedImg(1:JM1, 1:M2);
-        fprintf('Condition 2\n');
+        %fprintf('Condition 2\n');
     end
 else
     if(JM2 < M2)
         new_img(1:M1, 1:JM2) = translatedImg(1:M1, 1:JM2);
-        fprintf('Condition 3\n');
+        %fprintf('Condition 3\n');
     else
         new_img(1:M1, 1:M2) = translatedImg(1:M1, 1:M2);
-        fprintf('Condition 4\n');
+        %fprintf('Condition 4\n');
     end
 end
 

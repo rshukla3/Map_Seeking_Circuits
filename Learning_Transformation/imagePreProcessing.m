@@ -2,7 +2,7 @@ function [ Test_Img ] = imagePreProcessing( )
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 
-Read_Test_Img = imread('pepper_4.jpg');
+Read_Test_Img = imread('pepper_2.jpg');
 
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
@@ -21,6 +21,8 @@ BWoutline = edge(Test_Img_Erode);
 Test_Img = logical(zeros(Im, In));
 Test_Img(BWoutline) = 1;
 
+Test_Img = single(imrotate(Test_Img, 45, 'nearest', 'crop'));
+%Test_Img = Test_Img.*255;
 
 figure(2);
 imshow(Test_Img);

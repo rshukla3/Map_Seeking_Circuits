@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 20;
+iterationCount = 25;
 
 % 2. Read the already stored images from tif image file.
 fname = 'Memory_Images.tif';
@@ -13,7 +13,7 @@ if exist(fname, 'file') == 2
     info = imfinfo(fname);
     memory_units = numel(info);
     for k = 1:memory_units
-        Memory_Img(:,:,k) = imread(fname, k, 'Info', info);
+        Memory_Img(:,:,k) = single(logical(imread(fname, k, 'Info', info)));
     end
 else
     Memory_Img = [];
@@ -28,7 +28,7 @@ layerCount = 1;
 k_mem = 0.3;
 k_xTranslation = 0.5;
 k_yTranslation = 0.5;
-k_rotation = 0.3;
+k_rotation = 0.5;
 
 % 5. Read the matching values of q already stored in the file.
 
@@ -61,7 +61,7 @@ yTranslationCount = 60;
 rotationCount = 6;
 
 % The precision by which image should be rotated.
-rotationQuantity = 25;
+rotationQuantity = 15;
 
 % 7. Check whether there are any transformations going on in the circuit.
 % Initially the value  of transformation is zero, that is no transformation
@@ -139,14 +139,14 @@ for i = 1:iterationCount
     end
     
     if(Transformation >= 3)
-        q_rotation(1:2*rotationCount+1) = single(zeros(1,2*yTranslationCount+1));
+        q_rotation(1:2*rotationCount+1) = single(zeros(1,2*rotationCount+1));
         % Rotate the image.
         [f(:,:,4), Tf2] = layer_3(f(:,:,3), rotationCount, rotationQuantity, g_layer3, 'forward');
         %Calculate the value of q_rotation.
         q_rotation(1:2*rotationCount+1) = dotproduct(Tf2, b(:,:,4));   
     end
     
-    f(:,:,1) = Test_Img;
+    f(:,:,1) = (Test_Img);
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
@@ -178,18 +178,18 @@ for i = 1:iterationCount
             g_mem = g_threshold(g_mem, gThresh);
         end
     end    
-     
+    fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
 end
 
 figure(3);
 imshow(b(:,:,1));
 
-if(Transformation >= 1)
-    figure(4);
-    imshow(b(:,:,2));
+figure(4);
+imshow(f(:,:,1));
 
+if(Transformation >= 1)
     figure(5);
-    imshow(f(:,:,1));
+    imshow(b(:,:,2));    
 
     figure(6);
     imshow(f(:,:,2));

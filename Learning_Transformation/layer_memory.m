@@ -12,7 +12,7 @@ function [ b_memoryLayer ] = layer_memory( g_mem, Memory_Img, memory_units )
 superposition = single(zeros(m,n));
 
 for i=1:memory_units
-    superposition = superposition + g_mem(i)*single(Memory_Img(:,:,i));
+    superposition = superposition + g_mem(i)*(Memory_Img(:,:,i));
 end
 
 b_memoryLayer = superposition;
