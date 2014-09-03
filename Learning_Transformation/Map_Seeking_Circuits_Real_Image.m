@@ -98,7 +98,7 @@ if(isempty(Memory_Img))
     imwrite(Memory_Img(:, :, 1), 'Memory_Images.tif');
     [Test_Img] = imagePreProcessing('sailboat_2.jpg');
     Memory_Img(:, :, 2) = Test_Img;
-    imwrite(Memory_Img(:, :, 2), 'Memory_Images.tif');
+    imwrite(Memory_Img(:, :, 2), 'Memory_Images.tif', 'WriteMode', 'append');
 end
 
 g_mem(1:memory_units) = single(ones(memory_units,1));
@@ -156,6 +156,8 @@ for i = 1:iterationCount
     
     f(:,:,1) = (Test_Img);
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
+    
+    %q_layer_mem = dot(single(Memory_Img(:)), single(f3(:)));
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
     
