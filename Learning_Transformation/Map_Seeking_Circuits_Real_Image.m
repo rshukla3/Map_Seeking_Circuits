@@ -25,7 +25,7 @@ layerCount = 1;
 
 % 4. Set the value of constants k, for multiplication with g.
 
-k_mem = 0.3;
+k_mem = 0.7;
 k_xTranslation = 0.5;
 k_yTranslation = 0.5;
 k_rotation = 0.5;
@@ -157,6 +157,10 @@ for i = 1:iterationCount
     f(:,:,1) = (Test_Img);
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
+    q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
+    %Calculate the value of q_layer_mem.    
+    q_layer_mem(1:memory_units) = dotproduct(Memory_Img, f(:,:,layerCount));       
+    
     %q_layer_mem = dot(single(Memory_Img(:)), single(f3(:)));
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
@@ -185,9 +189,11 @@ for i = 1:iterationCount
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
         if(q_Top_Layer<0.4*q_mem(1))
-            Transformation = Transformation+1;
-            layerCount = layerCount+1;
-            b(:,:,layerCount) = b(:,:,layerCount-1);            
+            if(layerCount < 4)
+                Transformation = Transformation+1;            
+                layerCount = layerCount+1;
+                b(:,:,layerCount) = b(:,:,layerCount-1);            
+            end
         else
             if(Transformation >= 1)
                 g_layer1 = g_layer1 - k_xTranslation*( 1-( q_xTranslation./max(q_xTranslation) ) );
@@ -213,7 +219,7 @@ for i = 1:iterationCount
                 end
             end
             
-            g_mem = g_mem - k_mem*( 1-( q_Top_Layer./max(q_Top_Layer) ) );
+            g_mem = g_mem - k_mem*( 1-( q_layer_mem./max(q_layer_mem) ) );
             g_mem = g_threshold(g_mem, gThresh);
             
             if(nnz(g_mem)==1)

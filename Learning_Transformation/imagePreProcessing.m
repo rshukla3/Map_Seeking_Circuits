@@ -21,8 +21,8 @@ BWoutline = edge(Test_Img_Erode);
 Test_Img = logical(zeros(Im, In));
 Test_Img(BWoutline) = 1;
 Test_Img = single(Test_Img);
-Test_Img = single(imrotate(Test_Img, 45, 'nearest', 'crop'));
-Test_Img = translate_img(Test_Img, 120, -200);
+Test_Img = single(logical(imrotate(Test_Img, 45, 'nearest', 'crop')));
+%Test_Img = translate_img(Test_Img, 120, -200);
 %Test_Img = Test_Img.*255;
 
 figure(2);
