@@ -153,9 +153,7 @@ for i = 1:iterationCount
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
         if(q_Top_Layer<0.4*q_mem(1))
-            Transformation = Transformation+1;
-            layerCount = layerCount+1;
-            b(:,:,layerCount) = b(:,:,layerCount-1);            
+            %Learn the new transformation matrix.
         else
             if(Transformation >= 1)
                 g_layer1 = g_layer1 - k_xTranslation*( 1-( q_xTranslation./max(q_xTranslation) ) );
