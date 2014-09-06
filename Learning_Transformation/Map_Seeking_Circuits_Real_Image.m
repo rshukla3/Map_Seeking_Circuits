@@ -53,7 +53,7 @@ yTranslateQuantity = 20;
 xTranslationCount = 30;
 
 % Number of times this y-translation that has to be applied.
-yTranslationCount = 30;
+yTranslationCount = 3;
 
 % II. Image rotation.
 
