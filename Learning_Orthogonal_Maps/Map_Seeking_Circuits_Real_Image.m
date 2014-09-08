@@ -93,11 +93,11 @@ ImageShowNormalize = 255;
 %% Initialize the value of g to all ones for the three layers.
 
 if(isempty(Memory_Img))
-    Memory_Img(:, :, 1) = Test_Img;
+    Memory_Img(:, :, 1) = single(Test_Img);
     memory_units = 1;
     imwrite(Memory_Img(:, :, 1), 'Memory_Images.tif');    
 end
-
+%Memory_Img(:, :, 1) = single(Test_Img);
 g_mem(1:memory_units) = single(ones(memory_units,1));
 
 %% Initialize the value of g to all ones for the three layers.
@@ -108,70 +108,14 @@ g_layer3(1:2*rotationCount+1) = single(ones(1,2*rotationCount+1));
 
 %% The number of iterations for MSC to run.
 for i = 1:iterationCount
-    
-% Set the value of backward path 
-    b(:,:,layerCount) = layer_memory(g_mem, Memory_Img, memory_units);
-     
-    if(Transformation >= 1)        
-        % Perform inverse translation on the superimposed image along x-axis.
-        b(:,:,1) = layer_1(b(:,:,2), xTranslationCount, xTranslateQuantity, g_layer1, 'backward');
-    end    
-    
-    if(Transformation >= 1)
-        q_xTranslation(1:2*xTranslationCount+1) = single(zeros(1,2*xTranslationCount+1));
-        % Translate the image along x-axis.
-        [f(:,:,2), Tf0] = layer_1(Test_Img, xTranslationCount, xTranslateQuantity, g_layer1, 'forward');    
-        %Calculate the value of q_xTranslation.
-        q_xTranslation(1:2*xTranslationCount+1) = dotproduct(Tf0, b(:,:,2));  
-    end    
-    
-    f(:,:,1) = (Test_Img);
-    q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
-    
-    %q_layer_mem = dot(single(Memory_Img(:)), single(f3(:)));
-    
-    fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
-    
-% Condition to say if MSC has converged to a correct state then break out
-% from the loop.
-    if(Transformation == 1 && memory_converged == 1 && (xTranslation_converged == 1 || yTranslation_converged == 1 || rotation_converged == 1))
-        fprintf('MSC convergence complete in first layer\n');
-        break;
-    elseif(Transformation == 2 && memory_converged == 1 && ((xTranslation_converged == 1 && yTranslation_converged == 1) || (rotation_converged == 1 && yTranslation_converged == 1) || (xTranslation_converged == 1 && rotation_converged == 1) ))
-        fprintf('MSC convergence complete in second layer\n');
-        break;
-    elseif(Transformation == 3 && memory_converged == 1 && (xTranslation_converged == 1 && yTranslation_converged == 1 && rotation_converged == 1))
-        fprintf('MSC convergence complete in third layer\n');
-        break;
-    end
-    
-% Set the value of q to all zeros for the three layers.    
-    if(isempty(q_mem))
-        q_Top_Layer = dotproduct(Memory_Img(:, :, 1), Memory_Img(:, :, 1));
-        q_mem(1) = q_Top_Layer;
-        q_units = 1;
-        dlmwrite('q_mem.txt', q_mem, '\t');
-    else
-        if(q_Top_Layer<0.4*q_mem(1))
-            %Learn the new transformation matrix.
-        else
-            if(Transformation >= 1)
-                g_layer1 = g_layer1 - k_xTranslation*( 1-( q_xTranslation./max(q_xTranslation) ) );
-                g_layer1 = g_threshold(g_layer1, gThresh);
-                if(nnz(g_layer1)==1)
-                    xTranslation_converged = 1;
-                end
-            end 
-            
-            g_mem = g_mem - k_mem*( 1-( q_Top_Layer./max(q_Top_Layer) ) );
-            g_mem = g_threshold(g_mem, gThresh);
-            
-            if(nnz(g_mem)==1)
-                memory_converged = 1;
-            end
-        end
-    end    
-    
+       [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(Test_Img, Memory_Img(:,:,1)); 
+       b(:,:,1) = Transformation_Matrix(:,:,memory_unit)+Memory_Img(:,:,1);
+       
+       f(:,:,1) = Test_Img;
+       
+       if(learned_flag == 1)
+           break;
+       end
 end
 
 figure(3);

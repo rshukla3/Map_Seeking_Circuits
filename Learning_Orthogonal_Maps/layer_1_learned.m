@@ -1,45 +1,19 @@
-function [ xTranslated_Img, Transformation_Vector ] = layer_1_learned( Test_Img_Input,  translationCount, xTranslateQuantity, g, path)
+function [ Transformation_Matrix, memory_units, learned ] = layer_1_learned( Test_Img_Input,  Memory_Img)
 % layer_1: This is the first layer of map seeking circuits where image 
-% translation is performed on x and y axes.
-
-Test_Img = single(Test_Img_Input);
-
-% fprintf('Test image after single conversion\n');
-% display(Test_Img);
-
-[m,n] = size(Test_Img);
-
-Transformation_Vector = single(zeros(m,n,2*translationCount+1));
-
-% Value of f0 is 0. So the vector T(f0) should be a zero vector.
-%Transformation_Vector_Zero = Transformation_Vector;
-
-xTranslate_sum = g(translationCount+1)*Test_Img;
-Transformation_Vector(1:m,1:n,translationCount+1) = xTranslate_sum;
-
-for i = 1:translationCount
+% translations are being learned.
+    memory_units = 0;
+    learned = 1;
+    fname = 'Transformation_Matrix.mat';
+    if exist(fname, 'file') == 2
+        load('Transformation_Matrix.mat');
+        [m,n,memory_units] = size(Transformation_Matrix);
+    else
+        Transformation_Matrix = [];
+    end
+    memory_units = memory_units + 1;
     
-        xT = (i*xTranslateQuantity);
+    Transformation_Matrix(:,:,memory_units) = (Test_Img_Input)-(Memory_Img);   
     
-        if((g(i) ~=0)&&(strcmpi(path, 'forward')))            
-            Transformation_Vector(1:m,1:n,i) = (g(i)*translate_img(Test_Img, xT, 0));
-            xTranslate_sum = xTranslate_sum + Transformation_Vector(1:m,1:n,i);
-        end
-        
-        if((g(i+translationCount+1) ~=0)&&(strcmpi(path, 'forward')))
-             Transformation_Vector(1:m,1:n,(i+translationCount+1)) = (g(i+translationCount+1)*translate_img(Test_Img, -xT, 0));
-             xTranslate_sum = xTranslate_sum + Transformation_Vector(1:m,1:n,(i+translationCount+1));
-        end
-        
-        if((g(i) ~=0)&&(strcmpi(path, 'backward')))
-            xTranslate_sum = xTranslate_sum + (g(i)*translate_img(Test_Img, -xT, 0));
-        end
-        
-        if((g(i+translationCount+1) ~=0)&&(strcmpi(path, 'backward')))
-            xTranslate_sum = xTranslate_sum + (g(i+translationCount+1)*translate_img(Test_Img, xT, 0));
-        end
-end
-
-xTranslated_Img = single(xTranslate_sum); 
+    save('Transformation_Matrix.mat', 'Transformation_Matrix');
 end
 

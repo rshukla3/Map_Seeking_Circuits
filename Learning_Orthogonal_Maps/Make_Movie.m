@@ -1,8 +1,11 @@
-function [ Test_Img ] = imagePreProcessing(filename)
+clc;
+clear all;
+close all;
+
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 
-Read_Test_Img = imread(filename);
+Read_Test_Img = imread('pepper_5.jpg');
 
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
@@ -21,12 +24,21 @@ BWoutline = edge(Test_Img_Erode);
 Test_Img = logical(zeros(Im, In));
 Test_Img(BWoutline) = 1;
 Test_Img = single(Test_Img);
-%Test_Img = single(imrotate(Test_Img, 45, 'nearest', 'crop'));
-Test_Img = translate_img(Test_Img, 120, -200);
-%Test_Img = Test_Img.*255;
 
-figure(2);
-imshow(Test_Img);
-
+xTranslate = 0;
+yTranslate = 0;
+index = 1;
+while(yTranslate < 340)
+    xTranslate = 0;
+    while(xTranslate  < 380)
+        Test_Img_xTranslate = translate_img(Test_Img, xTranslate, 0);
+        Test_Img_yTranslate = translate_img(Test_Img_xTranslate, 0, yTranslate);
+        Movie_Img(:,:,index) = Test_Img_yTranslate;
+        xTranslate = xTranslate + 20;
+    end
+    yTranslate = yTranslate + 20;
 end
+
+save('Movie_Matrix.mat', 'Movie_Img');
+
 
