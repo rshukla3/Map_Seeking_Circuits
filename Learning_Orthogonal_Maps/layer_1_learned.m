@@ -12,7 +12,7 @@ function [ Transformation_Matrix, memory_units, learned ] = layer_1_learned( Tes
     end
     memory_units = memory_units + 1;
     
-    Transformation_Matrix(:,:,memory_units) = (Test_Img_Input)-(Memory_Img);   
+    Transformation_Matrix(:,:,memory_units) = single((Test_Img_Input)-(Memory_Img));   
     
     save('Transformation_Matrix.mat', 'Transformation_Matrix');
 end

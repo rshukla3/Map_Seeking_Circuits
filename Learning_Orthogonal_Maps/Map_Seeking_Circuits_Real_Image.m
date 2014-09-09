@@ -85,9 +85,17 @@ ImageShowNormalize = 255;
 
 %% Read the translated images for learning in MSC.
 
-fname = 'Movie_Matrix_Horizontal_Vertical.mat';
+fname = 'Movie_Matrix_Horizontal.mat';
 if exist(fname, 'file') == 2
-    load('Movie_Matrix_Horizontal_Vertical.mat', 'Movie_Img');    
+    load('Movie_Matrix_Horizontal.mat', 'Movie_Img_Horizontal');    
+else
+    fprintf('The selected .mat file does not exist\n');    
+    exit(0);
+end
+
+fname = 'Movie_Matrix_Vertical.mat';
+if exist(fname, 'file') == 2
+    load('Movie_Matrix_Vertical.mat', 'Movie_Img_Vertical');    
 else
     fprintf('The selected .mat file does not exist\n');    
     exit(0);
@@ -95,7 +103,8 @@ end
 
 % Get the number of movie images.
 
-[m,n,Movie_Image_Count] = size(Movie_Img);
+[m,n,Movie_Image_Count_Horizontal] = size(Movie_Img_Horizontal);
+[m,n,Movie_Image_Count_Vertical] = size(Movie_Img_Vertical);
 
 %% Read the test image and the image that is to be stored in memory.
 
@@ -111,7 +120,7 @@ if(isempty(Memory_Img))
     memory_units = 1;
     imwrite(Memory_Img(:, :, 1), 'Memory_Images.tif');    
 end
-%Memory_Img(:, :, 1) = single(Test_Img);
+Memory_Img(:, :, 1) = single(Test_Img);
 g_mem(1:memory_units) = single(ones(memory_units,1));
 
 %% Initialize the value of g to all ones for the three layers.
@@ -124,12 +133,20 @@ g_layer3(1:2*rotationCount+1) = single(ones(1,2*rotationCount+1));
 
 delete('Transformation_Matrix.mat');
 
-for i = 1:Movie_Image_Count
-       [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(Movie_Img(:,:,i), Memory_Img(:,:,1)); 
+for i = 1:Movie_Image_Count_Horizontal
+       [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(single(Movie_Img_Horizontal(:,:,i)), Memory_Img(:,:,1)); 
        b(:,:,1) = Transformation_Matrix(:,:,memory_unit)+Memory_Img(:,:,1);       
        f(:,:,1) = Test_Img;       
 end
-b(:,:,1) = Transformation_Matrix(:,:,1)+Memory_Img(:,:,1);
+
+for i = 1:Movie_Image_Count_Vertical
+       [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(single(Movie_Img_Vertical(:,:,i)), Memory_Img(:,:,1)); 
+       b(:,:,1) = Transformation_Matrix(:,:,memory_unit)+Memory_Img(:,:,1);       
+       f(:,:,1) = Test_Img;       
+end
+
+
+%b(:,:,1) = Transformation_Matrix(:,:,1)+Memory_Img(:,:,1);
 figure(3);
 imshow(b(:,:,1));
 

@@ -31,18 +31,21 @@ index = 1;
 diagonal_index = 1;
 while(xTranslate  <= 180)
     Test_Img_xTranslate = translate_img(Test_Img, xTranslate, 0);    
-    Movie_Img(:,:,index) = Test_Img_xTranslate;
+    Movie_Img_Horizontal(:,:,index) = Test_Img_xTranslate;
     index = index + 1;
     xTranslate = xTranslate + 20;
 end
 
+index = 1;
+
 while(yTranslate  <= 160)    
     Test_Img_yTranslate = translate_img(Test_Img, 0, yTranslate);
-    Movie_Img(:,:,index) = Test_Img_yTranslate;
+    Movie_Img_Vertical(:,:,index) = Test_Img_yTranslate;
     index = index + 1;
     yTranslate = yTranslate + 20;
 end
 
-save('Movie_Matrix_Horizontal_Vertical.mat', 'Movie_Img');
+save('Movie_Matrix_Horizontal.mat', 'Movie_Img_Horizontal');
+save('Movie_Matrix_Vertical.mat', 'Movie_Img_Vertical');
 
 %save('Diagonal_Movie_Matrix.mat', 'Diagonal_Movie_Img');
