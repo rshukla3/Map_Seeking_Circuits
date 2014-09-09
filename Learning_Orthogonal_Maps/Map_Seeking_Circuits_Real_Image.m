@@ -85,9 +85,9 @@ ImageShowNormalize = 255;
 
 %% Read the translated images for learning in MSC.
 
-fname = 'Movie_Matrix.mat';
+fname = 'Movie_Matrix_Horizontal_Vertical.mat';
 if exist(fname, 'file') == 2
-    load('Movie_Matrix.mat', 'Movie_Img');    
+    load('Movie_Matrix_Horizontal_Vertical.mat', 'Movie_Img');    
 else
     fprintf('The selected .mat file does not exist\n');    
     exit(0);
@@ -126,13 +126,10 @@ delete('Transformation_Matrix.mat');
 
 for i = 1:Movie_Image_Count
        [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(Movie_Img(:,:,i), Memory_Img(:,:,1)); 
-       b(:,:,1) = Transformation_Matrix(:,:,memory_unit)+Memory_Img(:,:,1);
-       
-       f(:,:,1) = Test_Img;
-       
-       
+       b(:,:,1) = Transformation_Matrix(:,:,memory_unit)+Memory_Img(:,:,1);       
+       f(:,:,1) = Test_Img;       
 end
-
+b(:,:,1) = Transformation_Matrix(:,:,1)+Memory_Img(:,:,1);
 figure(3);
 imshow(b(:,:,1));
 

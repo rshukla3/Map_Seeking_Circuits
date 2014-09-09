@@ -25,18 +25,18 @@ Test_Img = logical(zeros(Im, In));
 Test_Img(BWoutline) = 1;
 Test_Img = single(Test_Img);
 
-xTranslate = 0;
-yTranslate = 0;
+xTranslate = -180;
+yTranslate = -180;
 index = 1;
 diagonal_index = 1;
-while(xTranslate  <= 380)
+while(xTranslate  <= 180)
     Test_Img_xTranslate = translate_img(Test_Img, xTranslate, 0);    
     Movie_Img(:,:,index) = Test_Img_xTranslate;
     index = index + 1;
     xTranslate = xTranslate + 20;
 end
 
-while(yTranslate  <= 340)    
+while(yTranslate  <= 160)    
     Test_Img_yTranslate = translate_img(Test_Img, 0, yTranslate);
     Movie_Img(:,:,index) = Test_Img_yTranslate;
     index = index + 1;
