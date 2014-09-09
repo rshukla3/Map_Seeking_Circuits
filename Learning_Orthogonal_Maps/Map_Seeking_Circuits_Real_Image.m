@@ -83,6 +83,20 @@ memory_converged = 0;
 
 ImageShowNormalize = 255;
 
+%% Read the translated images for learning in MSC.
+
+fname = 'Movie_Matrix.mat';
+if exist(fname, 'file') == 2
+    load('Movie_Matrix.mat', 'Movie_Img');    
+else
+    fprintf('The selected .mat file does not exist\n');    
+    exit(0);
+end
+
+% Get the number of movie images.
+
+[m,n,Movie_Image_Count] = size(Movie_Img);
+
 %% Read the test image and the image that is to be stored in memory.
 
 % Read the test image and the image that is to be stored in memory and
@@ -106,16 +120,17 @@ g_layer1(1:2*xTranslationCount+1) = single(ones(1,2*xTranslationCount+1));
 g_layer2(1:2*yTranslationCount+1) = single(ones(1,2*yTranslationCount+1));
 g_layer3(1:2*rotationCount+1) = single(ones(1,2*rotationCount+1));
 
-%% The number of iterations for MSC to run.
-for i = 1:iterationCount
-       [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(Test_Img, Memory_Img(:,:,1)); 
+%% Number of images to be learned by MSC.
+
+delete('Transformation_Matrix.mat');
+
+for i = 1:Movie_Image_Count
+       [Transformation_Matrix, memory_unit, learned_flag] = layer_1_learned(Movie_Img(:,:,i), Memory_Img(:,:,1)); 
        b(:,:,1) = Transformation_Matrix(:,:,memory_unit)+Memory_Img(:,:,1);
        
        f(:,:,1) = Test_Img;
        
-       if(learned_flag == 1)
-           break;
-       end
+       
 end
 
 figure(3);

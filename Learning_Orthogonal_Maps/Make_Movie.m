@@ -5,7 +5,7 @@ close all;
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 
-Read_Test_Img = imread('pepper_5.jpg');
+Read_Test_Img = imread('pepper_2.jpg');
 
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
@@ -29,22 +29,20 @@ xTranslate = 0;
 yTranslate = 0;
 index = 1;
 diagonal_index = 1;
-while(yTranslate < 340)
-    xTranslate = 0;
-    while(xTranslate  < 380)
-        Test_Img_xTranslate = translate_img(Test_Img, xTranslate, 0);
-        Test_Img_yTranslate = translate_img(Test_Img_xTranslate, 0, yTranslate);
-        Movie_Img(:,:,index) = Test_Img_yTranslate;
-        index = index + 1;
-        if(xTranslate == yTranslate)
-            Diagonal_Movie_Img(:,:,diagonal_index) = Test_Img_yTranslate;
-            diagonal_index = diagonal_index + 1;
-        end
-        xTranslate = xTranslate + 20;
-    end
+while(xTranslate  <= 380)
+    Test_Img_xTranslate = translate_img(Test_Img, xTranslate, 0);    
+    Movie_Img(:,:,index) = Test_Img_xTranslate;
+    index = index + 1;
+    xTranslate = xTranslate + 20;
+end
+
+while(yTranslate  <= 340)    
+    Test_Img_yTranslate = translate_img(Test_Img, 0, yTranslate);
+    Movie_Img(:,:,index) = Test_Img_yTranslate;
+    index = index + 1;
     yTranslate = yTranslate + 20;
 end
 
-save('Movie_Matrix.mat', 'Movie_Img');
+save('Movie_Matrix_Horizontal_Vertical.mat', 'Movie_Img');
 
-save('Diagonal_Movie_Matrix.mat', 'Diagonal_Movie_Img');
+%save('Diagonal_Movie_Matrix.mat', 'Diagonal_Movie_Img');
