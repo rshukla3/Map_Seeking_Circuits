@@ -1,4 +1,4 @@
-function [ xTranslated_Img, Transformation_Vector ] = layer_1_newTransformation( Test_Img_Input,  translationCount, xTranslateQuantity, g, path)
+function [ xTranslated_Img, Transformation_Vector ] = layer_1_newTransformation( Test_Img_Input,  Movie_Img_Horizontal, Movie_Img_Vertical, g, path)
 % layer_1: This is the first layer of map seeking circuits where image 
 % translation is performed on x and y axes.
 
