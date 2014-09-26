@@ -21,7 +21,7 @@ end
 % later do preprocessing on them.
 
 [Test_Img] = imagePreProcessing('pepper_2.jpg');
-Test_Img = single(imrotate(Test_Img, 180, 'nearest', 'crop'));
+Test_Img = single(imrotate(Test_Img, 90, 'nearest', 'crop'));
 Test_Img = translate_img(Test_Img, 100, -100);
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
@@ -46,8 +46,8 @@ end
 [tm,tn] = size(Test_Img);
 
 index = 1;
-for i = tm:-1:1
-    for j = tm:-1:1
+for j = 1:1:tn
+    for i = 1:1:tm
         if(Test_Img(i,j) == 1)
             Coordinate_Test(index,1) = i;
             Coordinate_Test(index,2) = j;
