@@ -21,8 +21,8 @@ end
 % later do preprocessing on them.
 
 [Test_Img] = imagePreProcessing('pepper_2.jpg');
-Test_Img = single(imrotate(Test_Img, 90, 'nearest', 'crop'));
-Test_Img = translate_img(Test_Img, 100, -100);
+%Test_Img = single(imrotate(Test_Img, 180, 'nearest', 'crop'));
+Test_Img = translate_img(Test_Img, 180, 0);
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
@@ -46,8 +46,8 @@ end
 [tm,tn] = size(Test_Img);
 
 index = 1;
-for j = 1:1:tn
-    for i = 1:1:tm
+for i = 1:1:tm
+    for j = 1:1:tn
         if(Test_Img(i,j) == 1)
             Coordinate_Test(index,1) = i;
             Coordinate_Test(index,2) = j;
@@ -78,18 +78,17 @@ for i = 1:m
 end
 
 
-[Test_Img] = imagePreProcessing('sailboat_2.jpg');
+[Test_Img_2] = imagePreProcessing('sailboat_2.jpg');
 figure(3);
-imshow(Test_Img);
-[tm,tn] = size(Test_Img);
+imshow(Test_Img_2);
+[tm,tn] = size(Test_Img_2);
 
 index = 1;
-
 
 New_Img = zeros(tm,tn);
 for i = 1:tm
     for j = 1:tn
-        if(Test_Img(i,j) == 1)
+        if(Test_Img_2(i,j) == 1)
             P = [i j 1]*M;
             Coordinate_Test(index,1) = P(1);
             Coordinate_Test(index,2) = P(2);
@@ -99,6 +98,9 @@ for i = 1:tm
         end
     end
 end
+
+fprintf('The value of M is:\n');
+disp(M);
 
 figure(4);
 imshow(New_Img);
