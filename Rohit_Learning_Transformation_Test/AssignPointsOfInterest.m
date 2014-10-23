@@ -1,61 +1,69 @@
-%function [ output_img ] = AssignPointsOfInterest( input_img )
+function [ new_img ] = AssignPointsOfInterest( Memory_Img )
 %AssignPointsOfInterest This function assigns points of interest to input
 %image
 %   Mark areas of interest (or regions of intest in the input image). 
 
-%% Test I
-
-% As a test see whether we are able to identify new coordinates in the ROI
-% using in-built ROI functions.
-clc;
-clear all;
-close all;
+NumberOfArbitraryPoints = 70; % Let the user decide how many number of arbitrary 
+                              % points he/she wants.
 
 %% Assign x and y coordinates that belong to areas of interest.
 
-x(1) = 251;
-x(2) = 230;
-x(3) = 236;
-x(4) = 266;
-x(5) = 202;
-x(6) = 316;
-x(7) = 315;
-x(8) = 211;
-x(9) = 283;
-x(10) = 254;
-x(11) = 293;
-x(12) = 245;
-x(13) = 266;
-x(14) = 286;
+[m,n] = size(Memory_Img);
 
-y(1) = 189;
-y(2) = 342;
-y(3) = 200;
-y(4) = 201;
-y(5) = 252;
-y(6) = 240;
-y(7) = 267;
-y(8) = 317;
-y(9) = 337;
-y(10) = 343;
-y(11) = 306;
-y(12) = 210;
-y(13) = 214;
-y(14) = 234;
-[Test_Img] = imagePreProcessing('pepper_2.jpg');
-new_img = zeros(size(Test_Img));
-h_im = imshow(Test_Img);
+% Store the coordinates of all those points that have the binary value 1 in
+% the image.
+index = 1;
+for i = 1:m
+    for j = 1:n
+        if(Memory_Img(i,j) == 1)
+            % i tells the y-coordinate of the image and j tells the
+            % x-coordinate.
+            Coordinate(index,1) = i;
+            Coordinate(index,2) = j;
+            index = index + 1;
+        end
+    end
+end
+
+% Generate random integer numbers, to get x and y coordinates of image with
+% binary value 1, randomly.
+generatedRandomIndex = zeros(1,index-1);
+flag = 0;
+for i = 1:NumberOfArbitraryPoints
+    while(flag == 0)
+        randomIndex = randi([1 index-1], 1, 1);
+        % If the generated random number already exists then continue in
+        % while loop, else exit loop.
+        if(find(generatedRandomIndex == randomIndex))
+            flag = 0;
+        else
+            flag = 1;
+            generatedRandomIndex(i) = randomIndex;
+        end
+    end
+    flag = 0;
+    y(i) = Coordinate(randomIndex, 1);
+    x(i) = Coordinate(randomIndex, 2);
+end
+
+
+% Based on these generated random coordinates for the image, draw the image
+% with points of interest.
+% This is done using impoint and createMask function for ROI.
+new_img = zeros(size(Memory_Img));
+h_im = imshow(Memory_Img);
 e = impoint(gca, x(1), y(1));
 BW = createMask(e,h_im);
-pos = getPosition(e);
-new_img = new_img | (BW.*255);
-for i = 2:14
+new_img = new_img + (BW.*255);
+for i = 2:NumberOfArbitraryPoints
     setPosition(e, x(i), y(i));
     BW = createMask(e,h_im);
-    new_img = new_img | BW.*(255-i+1);
+    if(new_img(x(i), y(i)) == 0)
+        new_img = new_img + BW.*(255-i+1);
+    end
 end
 figure(3);
 imshow(new_img);
 
-%end
+end
 
