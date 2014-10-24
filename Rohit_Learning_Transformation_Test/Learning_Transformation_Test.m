@@ -32,7 +32,7 @@ Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
 [m,n,memory_count] = size(Memory_Img);
 
 Memory_Img_tmp = Memory_Img(:,:,1);
-%[Memory_Img_PointsOfInterest] = AssignPointsOfInterest(Memory_Img_tmp);
+
 
 index = 1;
 for i = 1:m
