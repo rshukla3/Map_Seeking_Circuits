@@ -82,6 +82,28 @@ memory_converged = 0;
 
 ImageShowNormalize = 255;
 
+% Save the identity matrix that is to be later used in computation of
+% scaling values.
+
+fname = 'scaling_transformation_forward.mat';
+scaling_transformation_forward = [1 0 0; 0 1 0; 0 0 1];
+if exist(fname, 'file') ~= 2
+    save('scaling_transformation_forward.mat', 'scaling_transformation_forward');    
+else
+    fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
+    exit(0);
+end
+
+fname = 'scaling_transformation_backward.mat';
+scaling_transformation_backward = [1 0 0; 0 1 0; 0 0 1];
+if exist(fname, 'file') ~= 2
+    save('scaling_transformation_backward.mat', 'scaling_transformation_backward');    
+else
+    fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
+    exit(0);
+end
+
+
 %% Read the test image and the image that is to be stored in memory.
 
 % Read the test image and the image that is to be stored in memory and
@@ -124,16 +146,19 @@ for i = 1:iterationCount
     % Perform inverse translation on the superimposed image along x-axis.
     b(:,:,layerCount-1) = layer_scaling(b(:,:,layerCount), scaleCount, g_scale, 'backward');
 
-    f(:,:,layerCount) = layer_scaling(f(:,:,layerCount-1), scaleCount, g_scale, 'forward');
+    [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), scaleCount, g_scale, 'forward');
     
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
     q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
+    
+    % Calculate the value of q_scaling, i.e., the dotproduct achieved at
+    % scaling layer.
+    q_scaling(1:scaleCount) = dotproduct(Tf_scaling, b(:,:,layerCount));
+    
     %Calculate the value of q_layer_mem.    
     q_layer_mem(1:memory_units) = dotproduct(Memory_Img, f(:,:,layerCount));       
-    
-    %q_layer_mem = dot(single(Memory_Img(:)), single(f3(:)));
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
     
