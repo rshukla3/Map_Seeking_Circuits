@@ -129,6 +129,7 @@ for i = 1:iterationCount
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
+    q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
     %Calculate the value of q_layer_mem.    
     q_layer_mem(1:memory_units) = dotproduct(Memory_Img, f(:,:,layerCount));       
     
@@ -144,23 +145,19 @@ for i = 1:iterationCount
         q_mem(1) = q_Top_Layer;
         q_units = 1;
     else
-        if(q_Top_Layer<0.4*q_mem(1))
-            fprintf('Below Threshold\n');
+%        if(q_Top_Layer<0.4*q_mem(1))
+%            fprintf('Below Threshold\n');
 %             if(layerCount < 4)
 %                 Transformation = Transformation+1;            
 %                 layerCount = layerCount+1;
 %                 b(:,:,layerCount) = b(:,:,layerCount-1);            
 %             end
-        else
-%             if(Transformation >= 1)
-%                 g_layer = g_layer - k_xTranslation*( 1-( q_xTranslation./max(q_xTranslation) ) );
-%                 g_layer = g_threshold(g_layer, gThresh);                
-%             end    
-                
+
+            g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
+            g_scale = g_threshold(g_scale, gThresh);                                
             
             g_mem = g_mem - k_mem*( 1-( q_layer_mem./max(q_layer_mem) ) );
             g_mem = g_threshold(g_mem, gThresh);            
-         end
     end    
     
 end
