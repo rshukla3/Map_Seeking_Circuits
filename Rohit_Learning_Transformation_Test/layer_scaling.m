@@ -1,6 +1,6 @@
 function [ Scaled_Img, Transformation_Vector ] = layer_scaling( Test_Img_Input,  scaleCount, g, path)
-% layer_1: This is the first layer of map seeking circuits where image 
-% translation is performed on x and y axes.
+% layer_scaling: In this layer of map seeking circuits we perform image
+% scaling.
 
 if(strcmpi(path, 'forward'))
     fname = 'scaling_transformation_forward.mat';
@@ -28,23 +28,24 @@ Test_Img = single(Test_Img_Input);
 
 Transformation_Vector = single(zeros(m,n,scaleCount));
 
-% Value of f0 is 0. So the vector T(f0) should be a zero vector.
-%Transformation_Vector_Zero = Transformation_Vector;
-
 Scale_Img_sum = g(1)*Test_Img;
 Transformation_Vector(1:m,1:n,1) = Scale_Img_sum;
+
+% coordinates those positions in the image that have non-zero pixel values
+% and the intensity or the pixel value.
+[coordinates]= getPointsOfInterest(Test_Img); 
 
 for i = 2:scaleCount
     
     
         if((g(i) ~=0)&&(strcmpi(path, 'forward')))            
-            Transformation_Vector(1:m,1:n,i) = (g(i)*scale_img(Test_Img, scaling_transformation_forward(:,:,i)));
+            Transformation_Vector(1:m,1:n,i) = (g(i)*scale_img(coordinates, m, n, scaling_transformation_forward(:,:,i)));
             Scale_Img_sum = Scale_Img_sum + Transformation_Vector(1:m,1:n,i);
         end
         
         
         if((g(i) ~=0)&&(strcmpi(path, 'backward')))
-            Scale_Img_sum = Scale_Img_sum + (g(i)*scale_img(Test_Img, scaling_transformation_backward(:,:,i)));
+            Scale_Img_sum = Scale_Img_sum + (g(i)*scale_img(coordinates, m, n, scaling_transformation_backward(:,:,i)));
         end        
         
 end
