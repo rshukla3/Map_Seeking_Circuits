@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 25;
+iterationCount = 5;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -89,18 +89,12 @@ fname = 'scaling_transformation_forward.mat';
 scaling_transformation_forward = [1 0 0; 0 1 0; 0 0 1];
 if exist(fname, 'file') ~= 2
     save('scaling_transformation_forward.mat', 'scaling_transformation_forward');    
-else
-    fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
-    exit(0);
 end
 
 fname = 'scaling_transformation_backward.mat';
 scaling_transformation_backward = [1 0 0; 0 1 0; 0 0 1];
 if exist(fname, 'file') ~= 2
     save('scaling_transformation_backward.mat', 'scaling_transformation_backward');    
-else
-    fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
-    exit(0);
 end
 
 
@@ -158,7 +152,7 @@ for i = 1:iterationCount
     q_scaling(1:scaleCount) = dotproduct(Tf_scaling, b(:,:,layerCount));
     
     %Calculate the value of q_layer_mem.    
-    q_layer_mem(1:memory_units) = dotproduct(Memory_Img, f(:,:,layerCount));       
+    q_layer_mem(1:memory_units) = dotproduct(Img_PointsOfInterest, f(:,:,layerCount));       
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
     
@@ -166,7 +160,7 @@ for i = 1:iterationCount
     
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
-        q_Top_Layer = dotproduct(Memory_Img(:, :, 1), Memory_Img(:, :, 1));
+        q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
         q_mem(1) = q_Top_Layer;
         q_units = 1;
     else

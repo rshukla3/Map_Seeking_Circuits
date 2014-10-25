@@ -6,14 +6,14 @@ function [ transformed_img ] = scale_img(coordinates, m, n, transformation_matri
 %   plotted on a blank image of size (m,n).
 
 [Cm, Cn] = size(coordinates);
-if(Cm ~=3)
+if(Cn ~=3)
     fprintf('Is there something wrong in generating coordinates  for scale_img functions?\n');
-    exit(0);
+    %exit(0);
 end
 
 transformed_img = zeros(m,n);
 
-for i = 1:Cn
+for i = 1:Cm
     p = [coordinates(i,1) coordinates(i,2) 1] * transformation_matrix;
     transformed_img(fix(p(1)), fix(p(2))) = coordinates(i,3);
 end

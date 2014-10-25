@@ -8,7 +8,7 @@ if(strcmpi(path, 'forward'))
         load('scaling_transformation_forward.mat', 'scaling_transformation_forward');    
     else
         fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
-        exit(0);
+        %exit(0);
     end
 end
 
@@ -18,7 +18,7 @@ if(strcmpi(path, 'backward'))
         load('scaling_transformation_backward.mat', 'scaling_transformation_backward');    
     else
         fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
-        exit(0);
+        %exit(0);
     end
 end
 
