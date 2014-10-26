@@ -1,4 +1,4 @@
-function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( new_affine_transformation_matrix, layerCount )
+function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( affine_transformation_matrix_forward, layerCount )
 %checkCombinationOfFunctions: Checks whether the new learned transformation
 %is a combination of already existing layers or is it a new independent
 %function.
@@ -9,7 +9,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
 %   functions or is it a completely new independent function. 
 
     isNewLayerAssigned = false;
-    
+    appendedToLayer = 0;
     layersSaved = layerCount - 1;
     
     % index variable will parse through or check through every layer and
@@ -27,7 +27,13 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
             end
             
+            independent = rankOfMatrix(affine_transformation_matrix_forward, scaling_transformation_forward);
             
+            if(independent == true)
+                isNewLayerAssigned = true;
+            else
+                appendedToLayer = 1;
+            end            
         end
         index = index+1;
     end

@@ -123,8 +123,8 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 %Test_Img = Img_PointsOfInterest;
-%Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
-Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
+Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
+%Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 
 %% Degenerate layer that just does identity multiplication.
 
@@ -180,13 +180,15 @@ for i = 1:iterationCount
             [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, layerCount);
             if(isNewLayerAssigned == true)
                 layerCount = layerCount+1;
+                fprintf('A new layer has been assigned\n');
             end
-        end
+        else
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
             g_scale = g_threshold(g_scale, gThresh);                                
             
             g_mem = g_mem - k_mem*( 1-( q_layer_mem./max(q_layer_mem) ) );
             g_mem = g_threshold(g_mem, gThresh);            
+        end
     end    
     
 end
