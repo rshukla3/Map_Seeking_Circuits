@@ -23,8 +23,8 @@ end
 [Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
-%Test_Img = single(imrotate(Test_Img, 180, 'nearest', 'crop'));
-Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
+Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
+%Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
@@ -49,8 +49,8 @@ end
 [tm,tn] = size(Test_Img);
 
 index = 1;
-for i = 1:1:tm
-    for j = 1:1:tn
+for j = 1:1:tm
+    for i = tn:-1:1
         if(Test_Img(i,j) ~= 0)
             Coordinate_Test(index,1) = i;
             Coordinate_Test(index,2) = j;
