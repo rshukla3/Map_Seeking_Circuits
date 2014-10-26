@@ -113,8 +113,8 @@ end
 % generating test images with affine transformations on memory image
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
-Test_Img = Img_PointsOfInterest;
-%Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
+%Test_Img = Img_PointsOfInterest;
+Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
 %Test_Img = single(imrotate(Test_Img, 180, 'nearest', 'crop'));
 
 %% Degenerate layer that just does identity multiplication.
@@ -163,15 +163,12 @@ for i = 1:iterationCount
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
         q_mem(1) = q_Top_Layer;
         q_units = 1;
+        dlmwrite('q_mem.txt', q_mem, '\t');
     else
-%        if(q_Top_Layer<0.4*q_mem(1))
-%            fprintf('Below Threshold\n');
-%             if(layerCount < 4)
-%                 Transformation = Transformation+1;            
-%                 layerCount = layerCount+1;
-%                 b(:,:,layerCount) = b(:,:,layerCount-1);            
-%             end
-
+        if(q_Top_Layer<0.4*q_mem(1))
+            fprintf('Below Threshold. Learn new transformation!\n');
+            Learned_Transformation_Matrix = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+        end
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
             g_scale = g_threshold(g_scale, gThresh);                                
             
@@ -181,3 +178,8 @@ for i = 1:iterationCount
     
 end
 
+figure(1);
+imshow(b(:,:,1));
+
+figure(2);
+imshow(f(:,:,1));
