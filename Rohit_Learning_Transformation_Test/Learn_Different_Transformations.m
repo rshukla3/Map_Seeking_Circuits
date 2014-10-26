@@ -12,7 +12,16 @@ memory_units = 1;
 
 % 3. Layer count: Has the number of layers currently available.
 
-layerCount = 2;
+% Check whether the file has number of learned layers already stored. If no
+% then store the default # of layers = 1.
+fname = 'layer.txt';
+if exist(fname, 'file') == 2
+    layersSaved = dlmread(fname, '\t');
+else
+    layersSaved = 1;
+    dlmwrite('layer.txt', layersSaved, '\t');
+end
+layerCount = 1+layersSaved;
 
 % 4. Set the value of constants k, for multiplication with g.
 
@@ -167,7 +176,11 @@ for i = 1:iterationCount
     else
         if(q_Top_Layer<0.4*q_mem(1))
             fprintf('Below Threshold. Learn new transformation!\n');
-            Learned_Transformation_Matrix = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+            [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, layerCount);
+            if(isNewLayerAssigned == true)
+                layerCount = layerCount+1;
+            end
         end
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
             g_scale = g_threshold(g_scale, gThresh);                                

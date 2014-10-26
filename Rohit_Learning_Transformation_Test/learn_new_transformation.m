@@ -1,4 +1,4 @@
-function [ affine_transformation_matrix ] = learn_new_transformation( Img_PointsOfInterest, Test_Img )
+function [ affine_transformation_matrix_forward, affine_transformation_matrix_backward ] = learn_new_transformation( Img_PointsOfInterest, Test_Img )
 %learn_new_transformation: Given the set of memory corrdinates, learn the
 %new affine transformation
 %   Img_PointsOfInterest contain the set of coordinates from memory image.
@@ -14,22 +14,38 @@ function [ affine_transformation_matrix ] = learn_new_transformation( Img_Points
     Memory_img_Coordinates_Sorted(:,3) = 1;
     Test_img_Coordinates_Sorted(:,3) = 1;
     
-    affine_transformation_matrix = Memory_img_Coordinates_Sorted\Test_img_Coordinates_Sorted;
+    affine_transformation_matrix_forward = Memory_img_Coordinates_Sorted\Test_img_Coordinates_Sorted;
     
-    [am, an] = size(affine_transformation_matrix);
+    [am, an] = size(affine_transformation_matrix_forward);
     
     for i = 1:am
         for j = 1:an
-            if(abs(affine_transformation_matrix(i,j)) < 0.0001)
-                affine_transformation_matrix(i,j) = 0;
+            if(abs(affine_transformation_matrix_forward(i,j)) < 0.0001)
+                affine_transformation_matrix_forward(i,j) = 0;
             end
-            if(abs(affine_transformation_matrix(i,j)-1) < 0.0001)
-                affine_transformation_matrix(i,j) = 1;
+            if(abs(affine_transformation_matrix_forward(i,j)-1) < 0.0001)
+                affine_transformation_matrix_forward(i,j) = 1;
             end
         end
     end
 
-    disp(affine_transformation_matrix);
+    disp(affine_transformation_matrix_forward);
+    affine_transformation_matrix_backward = Test_img_Coordinates_Sorted\Memory_img_Coordinates_Sorted;
+    
+    [am, an] = size(affine_transformation_matrix_backward);
+    
+    for i = 1:am
+        for j = 1:an
+            if(abs(affine_transformation_matrix_backward(i,j)) < 0.0001)
+                affine_transformation_matrix_backward(i,j) = 0;
+            end
+            if(abs(affine_transformation_matrix_backward(i,j)-1) < 0.0001)
+                affine_transformation_matrix_backward(i,j) = 1;
+            end
+        end
+    end
+    
+    disp(affine_transformation_matrix_backward);
     
 end
 
