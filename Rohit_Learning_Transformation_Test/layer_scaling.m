@@ -35,8 +35,7 @@ Transformation_Vector(1:m,1:n,1) = Scale_Img_sum;
 % and the intensity or the pixel value.
 [coordinates]= getPointsOfInterest(Test_Img); 
 
-for i = 2:scaleCount
-    
+for i = 2:scaleCount   
     
         if((g(i) ~=0)&&(strcmpi(path, 'forward')))            
             Transformation_Vector(1:m,1:n,i) = (g(i)*scale_img(coordinates, m, n, scaling_transformation_forward(:,:,i)));
