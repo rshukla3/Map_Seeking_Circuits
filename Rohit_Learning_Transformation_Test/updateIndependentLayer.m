@@ -1,4 +1,4 @@
-function [  ] = updateIndependentLayer(Transformation_Matrix_Forward, Transformation_Matrix_Backward, appendedToLayer)
+function [ gCount ] = updateIndependentLayer(Transformation_Matrix_Forward, Transformation_Matrix_Backward, appendedToLayer)
 %updateIndependentLayer: update the information of already learned
 %function.
 
@@ -44,6 +44,6 @@ else
         fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
     end
 end
-
+gCount = Values+1;
 end
 

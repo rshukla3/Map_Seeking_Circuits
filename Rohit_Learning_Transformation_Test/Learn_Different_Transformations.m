@@ -149,7 +149,9 @@ for i = 1:iterationCount
     % Perform inverse translation on the superimposed image along x-axis.
     b(:,:,layerCount-1) = layer_scaling(b(:,:,layerCount), scaleCount, g_scale, 'backward');
     
-    
+    if(layerCount >= 3)
+        b(:,:,layerCount-2) = layer_2(b(:,:,layerCount-1), xTranslateCount, g_scale, 'backward');
+    end
 
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), scaleCount, g_scale, 'forward');
     
@@ -189,7 +191,9 @@ for i = 1:iterationCount
                 % independent functions.
                 assignNewIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount); 
             else
-                updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
+                gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
+                % Need to update gCount for all the layers. This part was
+                % not taken care of in the original code.
             end
         else
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
