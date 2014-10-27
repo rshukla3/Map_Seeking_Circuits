@@ -23,6 +23,7 @@ end
 [Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
+[output] = FeatureExtractors(Preprocessed_Img);
 %Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 %Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
 Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
