@@ -25,7 +25,7 @@ end
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 %Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 %Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
-Test_Img = single(scaleImg(Img_PointsOfInterest, 1.2, 1.2));
+Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
@@ -41,12 +41,12 @@ for i = 1:m
         if(Img_PointsOfInterest(i,j) ~= 0)
             Coordinate(index,1) = i;
             Coordinate(index,2) = j;
-            Coordinate(index,3) = 1;
+            Coordinate(index,3) = Img_PointsOfInterest(i,j);
             index = index + 1;
         end
     end
 end
-
+index_prev = index;
 [tm,tn] = size(Test_Img);
 pixelVal = max(max(Test_Img));
 index = 1;
@@ -56,11 +56,18 @@ for i = 1:1:tm
             [row,column] = find(Test_Img == pixelVal);
             Coordinate_Test(index,1) = row(1);
             Coordinate_Test(index,2) = column(1);
-            Coordinate_Test(index,3) = 1;
+            Coordinate_Test(index,3) = Test_Img(row(1),column(1));
             index = index + 1;
             pixelVal = pixelVal-1;
-            arr(index) = Test_Img(i,j);
+            arr(index) = Test_Img(row(1),column(1));
+            fprintf('row: %d column: %d PixelVal: %d\n', row(1), column(1), Test_Img(row(1),column(1)));
         end
+        if(index == index_prev)
+            break;
+        end
+    end
+    if(index == index_prev)
+        break;
     end
 end
 
@@ -70,6 +77,11 @@ imshow(Img_PointsOfInterest);
 
 figure(2);
 imshow(Test_Img);
+Coordinate = sortrows(Coordinate, 3);
+Coordinate_Test = sortrows(Coordinate_Test, 3);
+    
+Coordinate(:,3) = 1;
+Coordinate_Test(:,3) = 1;
 
 M = Coordinate\Coordinate_Test;
 
