@@ -148,6 +148,8 @@ for i = 1:iterationCount
 
     % Perform inverse translation on the superimposed image along x-axis.
     b(:,:,layerCount-1) = layer_scaling(b(:,:,layerCount), scaleCount, g_scale, 'backward');
+    
+    
 
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), scaleCount, g_scale, 'forward');
     
@@ -181,6 +183,13 @@ for i = 1:iterationCount
             if(isNewLayerAssigned == true)
                 layerCount = layerCount+1;
                 fprintf('A new layer has been assigned\n');
+                % Update the layer count for MSC.
+                updateLayerCountFile(layerCount);
+                % Save the new affine transformation for the new
+                % independent functions.
+                assignNewIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount); 
+            else
+                updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
             end
         else
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );

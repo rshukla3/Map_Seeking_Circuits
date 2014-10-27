@@ -9,7 +9,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
 %   functions or is it a completely new independent function. 
 
     isNewLayerAssigned = false;
-    appendedToLayer = 0;
+    appendedToLayer = 1;
     layersSaved = layerCount - 1;
     
     % index variable will parse through or check through every layer and
@@ -29,10 +29,31 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             
             independent = rankOfMatrix(affine_transformation_matrix_forward, scaling_transformation_forward);
             
-            if(independent == true)
-                isNewLayerAssigned = true;
-            else
+            if(independent == false)                
                 appendedToLayer = 1;
+                break;                
+            else
+                isNewLayerAssigned = true;
+                appendedToLayer = 0;
+            end            
+        else
+            fname1 = strcat('transformation_layer_forward_', num2str(index));
+            fname = strcat(fname1, '.mat');
+
+            if exist(fname, 'file') ~= 2
+                load(fname, Transformation_Matrix_Forward);    
+            else
+                fprintf('Specified file not found for index: %d\n', index);
+            end          
+            
+            independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrix_Forward);
+            
+            if(independent == false)
+                appendedToLayer = index;
+                break;                
+            else
+                isNewLayerAssigned = true;
+                appendedToLayer = 0;
             end            
         end
         index = index+1;
