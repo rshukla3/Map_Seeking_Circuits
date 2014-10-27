@@ -29,7 +29,8 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             
             independent = rankOfMatrix(affine_transformation_matrix_forward, scaling_transformation_forward);
             
-            if(independent == false)                
+            if(independent == false) 
+                isNewLayerAssigned = false;
                 appendedToLayer = 1;
                 break;                
             else
@@ -37,18 +38,20 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 appendedToLayer = 0;
             end            
         else
+            fprintf('Executing else part of the loop\n');
             fname1 = strcat('transformation_layer_forward_', num2str(index));
             fname = strcat(fname1, '.mat');
 
-            if exist(fname, 'file') ~= 2
-                load(fname, Transformation_Matrix_Forward);    
+            if exist(fname, 'file') == 2
+                load(fname, 'Learned_Transformation_Matrix_Forward');    
             else
                 fprintf('Specified file not found for index: %d\n', index);
             end          
             
-            independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrix_Forward);
+            independent = rankOfMatrix(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
             
             if(independent == false)
+                isNewLayerAssigned = false;
                 appendedToLayer = index;
                 break;                
             else

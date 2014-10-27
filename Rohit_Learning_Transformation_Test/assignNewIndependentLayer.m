@@ -7,14 +7,14 @@ fname1 = strcat('transformation_layer_forward_', num2str(layerCount-1));
 fname = strcat(fname1, '.mat');
 
 if exist(fname, 'file') ~= 2
-    save(fname, Learned_Transformation_Matrix_Forward);    
+    save(fname, 'Learned_Transformation_Matrix_Forward');    
 end
 
 fname2 = strcat('transformation_layer_backward_', num2str(layerCount-1));
 fname = strcat(fname2, '.mat');
 
 if exist(fname, 'file') ~= 2
-    save(fname, Learned_Transformation_Matrix_Backward);    
+    save(fname, 'Learned_Transformation_Matrix_Backward');    
 end
 end
 
