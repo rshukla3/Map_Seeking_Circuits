@@ -18,6 +18,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
     index = 1;
     
     while(index <= layersSaved)
+        
         % First check whether it is a part of scaling layer.
         if(index == 1)
             fname = 'scaling_transformation_forward.mat';
@@ -49,7 +50,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             end          
             
             independent = rankOfMatrix(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
-            
+            fprintf('Value of independent for index: %d is %d\n', index, independent);
             if(independent == false)
                 isNewLayerAssigned = false;
                 appendedToLayer = index;
