@@ -71,6 +71,14 @@ rotationQuantity = 15;
 
 scaleCount = 1;
 
+% Define the count of eyt to be learned layers. Even though we can write
+% ifExist to check whether a particular variable exists or not, we will
+% simply define them as zero for the time being.
+
+layer_1_count = 0;
+layer_2_count = 0;
+layer_3_count = 0;
+
 % 7. Check whether there are any transformations going on in the circuit.
 % Initially the value  of transformation is zero, that is no transformation
 % is being done.
@@ -122,10 +130,10 @@ end
 % generating test images with affine transformations on memory image
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
-%Test_Img = Img_PointsOfInterest;
-Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
-%Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
-%Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
+Test_Img = Img_PointsOfInterest;
+% Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
+% Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
+% Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
@@ -133,6 +141,7 @@ Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
 % to perform scaling operation.
 
 g_scale = single(ones(scaleCount,1));
+
 
 %% Read the diagonally translated images for learning in MSC.
 g_mem(1:memory_units) = single(ones(memory_units,1));
@@ -147,18 +156,29 @@ for i = 1:iterationCount
     f(:,:,1) = (Test_Img);
 
     % Perform inverse translation on the superimposed image along x-axis.
-    b(:,:,layerCount-1) = layer_scaling(b(:,:,layerCount), scaleCount, g_scale, 'backward');
+    b(:,:,layerCount-1) = layer_scaling(b(:,:,layerCount), g_scale, 'backward');
     
     if(layerCount >= 3)
-        b(:,:,layerCount-2) = layer_2(b(:,:,layerCount-1), xTranslateCount, g_scale, 'backward');
+        b(:,:,layerCount-2) = layer_1(b(:,:,layerCount-1), g_layer_1, 'backward');
+    end
+    
+    if(layerCount >= 3)
+        [f(:,:,layerCount-1), Tf_layer_1] = layer_1(f(:,:,layerCount-2), g_layer_1, 'forward');
     end
 
-    [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), scaleCount, g_scale, 'forward');
+    [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), g_scale, 'forward');    
     
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
     q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
+    
+    if(layerCount >= 3)
+        % Calculate the value of q_layer_1, i.e., the dotproduct achieved at
+        % layer 1 of MSC.
+        q_layer_1(1:layer_1_Count) = single(zeros(1,layer_1_Count));
+        q_layer_1(1:layer_1_Count) = dotproduct(Tf_layer_1, b(:,:,layerCount-1));
+    end
     
     % Calculate the value of q_scaling, i.e., the dotproduct achieved at
     % scaling layer.
@@ -181,7 +201,14 @@ for i = 1:iterationCount
         if(q_Top_Layer<0.4*q_mem(1))
             fprintf('Below Threshold. Learn new transformation!\n');
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+            
+            % This function needs to be changed in case we have multiple
+            % transformations going on. Instead of checking for just one
+            % column or one transformation at a time, check for multiple of
+            % them. 
             [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, layerCount);
+            
+            
             if(isNewLayerAssigned == true)
                 layerCount = layerCount+1;
                 fprintf('A new layer has been assigned\n');
@@ -194,13 +221,47 @@ for i = 1:iterationCount
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
                 % Need to update gCount for all the layers. This part was
                 % not taken care of in the original code.
+                if(find(appendedToLayer == 1))
+                    scaleCount = scaleCount + 1;
+                    g_scale = single(ones(scaleCount,1));
+                end
+                
+                if(find(appendedToLayer == 2))
+                    layer_1_Count = layer_1_Count + 1;
+                    g_layer_1 = single(ones(layer_1_Count,1));
+                end
+                
+                if(find(appendedToLayer == 3))
+                    layer_2_Count = layer_2_Count + 1;
+                    g_layer_2 = single(ones(layer_2_Count,1));
+                end
+                
+                if(find(appendedToLayer == 4))
+                    layer_3_Count = layer_3_Count + 1;
+                    g_layer_3 = single(ones(layer_3_Count,1));
+                end
             end
         else
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
             g_scale = g_threshold(g_scale, gThresh);                                
             
             g_mem = g_mem - k_mem*( 1-( q_layer_mem./max(q_layer_mem) ) );
-            g_mem = g_threshold(g_mem, gThresh);            
+            g_mem = g_threshold(g_mem, gThresh);   
+            
+            if(layer_1_Count >= 1)
+                g_layer_1 = g_layer_1 - k_layer_1*( 1-( q_layer_1./max(q_layer_1) ) );
+                g_layer_1 = g_threshold(g_layer_1, gThresh);                                
+            end
+            
+            if(layer_2_Count >= 1)
+                g_layer_2 = g_layer_2 - k_layer_2*( 1-( q_layer_2./max(q_layer_2) ) );
+                g_layer_2 = g_threshold(g_layer_2, gThresh);                                
+            end
+            
+            if(layer_3_Count >= 1)
+                g_layer_3 = g_layer_3 - k_layer_3*( 1-( q_layer_3./max(q_layer_3) ) );
+                g_layer_3 = g_threshold(g_layer_3, gThresh);                                
+            end
         end
     end    
     

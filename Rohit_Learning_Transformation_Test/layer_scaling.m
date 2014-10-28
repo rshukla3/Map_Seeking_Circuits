@@ -1,4 +1,4 @@
-function [ Scaled_Img, Transformation_Vector ] = layer_scaling( Test_Img_Input,  scaleCount, g, path)
+function [ Scaled_Img, Transformation_Vector ] = layer_scaling( Test_Img_Input,  g, path)
 % layer_scaling: In this layer of map seeking circuits we perform image
 % scaling.
 
@@ -6,6 +6,7 @@ if(strcmpi(path, 'forward'))
     fname = 'scaling_transformation_forward.mat';
     if exist(fname, 'file') == 2
         load('scaling_transformation_forward.mat', 'scaling_transformation_forward');    
+        [rows,columns,scaleCount] = size(scaling_transformation_forward);
     else
         fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
         %exit(0);
@@ -16,6 +17,7 @@ if(strcmpi(path, 'backward'))
     fname = 'scaling_transformation_backward.mat';
     if exist(fname, 'file') == 2
         load('scaling_transformation_backward.mat', 'scaling_transformation_backward');    
+        [rows,columns,scaleCount] = size(scaling_transformation_backward);
     else
         fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
         %exit(0);
