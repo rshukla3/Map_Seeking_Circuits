@@ -75,9 +75,9 @@ scaleCount = 1;
 % ifExist to check whether a particular variable exists or not, we will
 % simply define them as zero for the time being.
 
-layer_1_count = 0;
-layer_2_count = 0;
-layer_3_count = 0;
+layer_1_Count = 0;
+layer_2_Count = 0;
+layer_3_Count = 0;
 
 % 7. Check whether there are any transformations going on in the circuit.
 % Initially the value  of transformation is zero, that is no transformation
@@ -130,8 +130,8 @@ end
 % generating test images with affine transformations on memory image
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
-Test_Img = Img_PointsOfInterest;
-% Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
+% Test_Img = Img_PointsOfInterest;
+Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
 % Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
@@ -217,6 +217,22 @@ for i = 1:iterationCount
                 % Save the new affine transformation for the new
                 % independent functions.
                 assignNewIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount); 
+                
+                if(layerCount == 3)
+                    layer_1_Count = layer_1_Count + 2;
+                    g_layer_1 = single(ones(layer_1_Count,1));
+                end
+                
+                if(layerCount == 4)
+                    layer_2_Count = layer_2_Count + 2;
+                    g_layer_2 = single(ones(layer_2_Count,1));
+                end
+                
+                if(layerCount == 5)
+                    layer_3_Count = layer_3_Count + 2;
+                    g_layer_3 = single(ones(layer_3_Count,1));
+                end
+                
             else
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
                 % Need to update gCount for all the layers. This part was
