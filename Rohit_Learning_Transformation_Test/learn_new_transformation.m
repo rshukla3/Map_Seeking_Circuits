@@ -14,7 +14,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     Memory_img_Coordinates_Sorted(:,3) = 1;
     Test_img_Coordinates_Sorted(:,3) = 1;
     
-    affine_transformation_matrix_forward = Memory_img_Coordinates_Sorted\Test_img_Coordinates_Sorted;
+    affine_transformation_matrix_forward = Test_img_Coordinates_Sorted\Memory_img_Coordinates_Sorted;
     
     [am, an] = size(affine_transformation_matrix_forward);
     
@@ -30,7 +30,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     end
 
     disp(affine_transformation_matrix_forward);
-    affine_transformation_matrix_backward = Test_img_Coordinates_Sorted\Memory_img_Coordinates_Sorted;
+    affine_transformation_matrix_backward = Memory_img_Coordinates_Sorted\Test_img_Coordinates_Sorted;
     
     [am, an] = size(affine_transformation_matrix_backward);
     

@@ -28,11 +28,16 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
             end
             
-            independent = rankOfMatrix(affine_transformation_matrix_forward, scaling_transformation_forward);
+            independent = rankOfMatrix(affine_transformation_matrix_forward, scaling_transformation_forward(:,:,1));
             
             if(independent == false) 
                 isNewLayerAssigned = false;
-                appendedToLayer = 1;
+                findResult = findWhetherExisting(affine_transformation_matrix_forward, scaling_transformation_forward);
+                if(findResult == false)
+                    appendedToLayer = 1;
+                else 
+                    appendedToLayer = 0;
+                end
                 break;                
             else
                 isNewLayerAssigned = true;
@@ -49,11 +54,16 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('Specified file not found for index: %d\n', index);
             end          
             
-            independent = rankOfMatrix(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
+            independent = rankOfMatrix(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward(:,:,1));
             fprintf('Value of independent for index: %d is %d\n', index, independent);
             if(independent == false)
                 isNewLayerAssigned = false;
-                appendedToLayer = index;
+                findResult = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
+                if(findResult == false)
+                    appendedToLayer = index;
+                else 
+                    appendedToLayer = 0;
+                end
                 break;                
             else
                 isNewLayerAssigned = true;

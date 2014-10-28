@@ -26,9 +26,9 @@ layerCount = 1+layersSaved;
 % 4. Set the value of constants k, for multiplication with g.
 
 k_mem = 0.3;
-k_xTranslation = 0.5;
-k_yTranslation = 0.5;
-k_rotation = 0.5;
+k_layer_1 = 0.5;
+k_layer_2 = 0.5;
+k_layer_3 = 0.5;
 k_scaling = 0.5;
 
 % 5. Read the matching values of q already stored in the file.
@@ -220,41 +220,41 @@ for i = 1:iterationCount
                 
                 if(layerCount == 3)
                     layer_1_Count = layer_1_Count + 2;
-                    g_layer_1 = single(ones(layer_1_Count,1));
+                    g_layer_1 = single(ones(1,layer_1_Count));
                 end
                 
                 if(layerCount == 4)
                     layer_2_Count = layer_2_Count + 2;
-                    g_layer_2 = single(ones(layer_2_Count,1));
+                    g_layer_2 = single(ones(1,layer_2_Count));
                 end
                 
                 if(layerCount == 5)
                     layer_3_Count = layer_3_Count + 2;
-                    g_layer_3 = single(ones(layer_3_Count,1));
+                    g_layer_3 = single(ones(1,layer_3_Count));
                 end
                 
-            else
+            elseif(appendedToLayer ~= 0)
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
                 % Need to update gCount for all the layers. This part was
                 % not taken care of in the original code.
                 if(find(appendedToLayer == 1))
                     scaleCount = scaleCount + 1;
-                    g_scale = single(ones(scaleCount,1));
+                    g_scale = single(ones(1,scaleCount));
                 end
                 
                 if(find(appendedToLayer == 2))
                     layer_1_Count = layer_1_Count + 1;
-                    g_layer_1 = single(ones(layer_1_Count,1));
+                    g_layer_1 = single(ones(1,layer_1_Count));
                 end
                 
                 if(find(appendedToLayer == 3))
                     layer_2_Count = layer_2_Count + 1;
-                    g_layer_2 = single(ones(layer_2_Count,1));
+                    g_layer_2 = single(ones(1,layer_2_Count));
                 end
                 
                 if(find(appendedToLayer == 4))
                     layer_3_Count = layer_3_Count + 1;
-                    g_layer_3 = single(ones(layer_3_Count,1));
+                    g_layer_3 = single(ones(1,layer_3_Count));
                 end
             end
         else
@@ -265,7 +265,8 @@ for i = 1:iterationCount
             g_mem = g_threshold(g_mem, gThresh);   
             
             if(layer_1_Count >= 1)
-                g_layer_1 = g_layer_1 - k_layer_1*( 1-( q_layer_1./max(q_layer_1) ) );
+                div = ( q_layer_1./max(q_layer_1));
+                g_layer_1 = g_layer_1 - k_layer_1*( 1-div ) ;
                 g_layer_1 = g_threshold(g_layer_1, gThresh);                                
             end
             

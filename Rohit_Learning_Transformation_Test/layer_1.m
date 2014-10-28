@@ -29,7 +29,8 @@ Test_Img = single(Test_Img_Input);
 
 [m,n] = size(Test_Img);
 %if(strcmpi(path, 'forward'))
-    Transformation_Vector = single(zeros(m,n,layerCount));
+fprintf('Declaration just before transformation vector, value of (layerCount+1) is: %d\n', layerCount+1);
+    Transformation_Vector = single(zeros(m,n,layerCount+1));
 %end
 
 Layer_Img_sum = g(1)*Test_Img;
@@ -45,7 +46,11 @@ Layer_Img_sum = g(1)*Test_Img;
 for i = 2:layerCount+1   
     
         if((g(i) ~=0)&&(strcmpi(path, 'forward')))            
-            Transformation_Vector(1:m,1:n,i) = (g(i)*img_transform(coordinates, m, n, Learned_Transformation_Matrix_Forward(:,:,i-1)));
+            g_T = g(i);
+            T = (g_T*img_transform(coordinates, m, n, Learned_Transformation_Matrix_Forward(:,:,i-1)));
+            [T_m, T_n] = size(Learned_Transformation_Matrix_Forward);
+            fprintf('In the forward path, the size of Matrix is (%d, %d)\n', T_m, T_n);
+            Transformation_Vector(1:m,1:n,i) = T;
             Layer_Img_sum = Layer_Img_sum + Transformation_Vector(1:m,1:n,i);
         end
         
