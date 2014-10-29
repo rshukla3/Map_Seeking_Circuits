@@ -28,7 +28,9 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
             end
             
-            independent = rankOfMatrix(affine_transformation_matrix_forward, scaling_transformation_forward(:,:,1));
+            Transformation_Matrices_Stored(:,:,1) = scaling_transformation_forward(:,:,1);
+            
+            independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
             
             if(independent == false) 
                 isNewLayerAssigned = false;
@@ -54,7 +56,11 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('Specified file not found for index: %d\n', index);
             end          
             
-            independent = rankOfMatrix(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward(:,:,1));
+            [x,y,z] = size(Transformation_Matrices_Stored);
+            
+            Transformation_Matrices_Stored(:,:,index) = Learned_Transformation_Matrix_Forward(:,:,1);            
+           
+            independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
             fprintf('Value of independent for index: %d is %d\n', index, independent);
             if(independent == false)
                 isNewLayerAssigned = false;

@@ -71,14 +71,6 @@ rotationQuantity = 15;
 
 scaleCount = 1;
 
-% Define the count of eyt to be learned layers. Even though we can write
-% ifExist to check whether a particular variable exists or not, we will
-% simply define them as zero for the time being.
-
-layer_1_Count = 0;
-layer_2_Count = 0;
-layer_3_Count = 0;
-
 % 7. Check whether there are any transformations going on in the circuit.
 % Initially the value  of transformation is zero, that is no transformation
 % is being done.
@@ -131,7 +123,7 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
+Test_Img = translate_img(Img_PointsOfInterest, 0, 50);
 % Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
@@ -142,7 +134,49 @@ Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
 
 g_scale = single(ones(scaleCount,1));
 
+%% Read the g values of other values in layersSaved is more than 1.
 
+% If the value of layersSaved is more than 1 (that is, the value of
+% layerCount is more than 2), this implies that we should already have some
+% information about g for other layers. To resolve this issue we have saved
+% the value of g in text files. For a much simpler implementation we can
+% simply check the value of layerCount and if it is more  than 2, just read
+% the transformation matrices for different layers. To know how many
+% transformations we have stored, simply look at the third dimension of
+% these transformation matrices.
+
+if(layerCount >= 3)
+    fname = 'g_layer_1.mat';
+    if exist(fname, 'file') == 2
+        load(fname, 'layer_1_Count');    
+    else
+        fprintf('Specified file not found for g_layer_1\n');
+        return;
+    end          
+    g_layer_1 = single(ones(1,layer_1_Count));
+end
+                
+if(layerCount >= 4)
+    fname = 'g_layer_2.mat';
+    if exist(fname, 'file') == 2
+        load(fname, 'layer_2_Count');    
+    else
+        fprintf('Specified file not found for g_layer_2\n');
+        return;
+    end          
+    g_layer_2 = single(ones(1,layer_2_Count));
+end
+                
+if(layerCount >= 5)
+    fname = 'g_layer_3.mat';
+    if exist(fname, 'file') == 2
+        load(fname, 'layer_3_Count');    
+    else
+        fprintf('Specified file not found for g_layer_3\n');
+        return;
+    end          
+    g_layer_3 = single(ones(1,layer_3_Count));
+end
 %% Read the diagonally translated images for learning in MSC.
 g_mem(1:memory_units) = single(ones(memory_units,1));
 
@@ -219,18 +253,39 @@ for i = 1:iterationCount
                 assignNewIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount); 
                 
                 if(layerCount == 3)
-                    layer_1_Count = layer_1_Count + 2;
+                    layer_1_Count = 2;
                     g_layer_1 = single(ones(1,layer_1_Count));
+                    fname = 'g_layer_1.mat';
+                    if exist(fname, 'file') ~= 2
+                        save(fname, 'layer_1_Count');    
+                    else
+                        fprintf('Delete file for g_layer_1\n');
+                        return;
+                    end          
                 end
                 
                 if(layerCount == 4)
-                    layer_2_Count = layer_2_Count + 2;
+                    layer_2_Count = 2;
                     g_layer_2 = single(ones(1,layer_2_Count));
+                    fname = 'g_layer_2.mat';
+                    if exist(fname, 'file') ~= 2
+                        save(fname, 'layer_2_Count');    
+                    else
+                        fprintf('Delete file for g_layer_2\n');
+                        return;
+                    end          
                 end
                 
                 if(layerCount == 5)
-                    layer_3_Count = layer_3_Count + 2;
+                    layer_3_Count = 2;
                     g_layer_3 = single(ones(1,layer_3_Count));
+                    fname = 'g_layer_3.mat';
+                    if exist(fname, 'file') ~= 2
+                        save(fname, 'layer_3_Count');    
+                    else
+                        fprintf('Delete file for g_layer_3\n');
+                        return;
+                    end          
                 end
                 
             elseif(appendedToLayer ~= 0)
@@ -264,18 +319,18 @@ for i = 1:iterationCount
             g_mem = g_mem - k_mem*( 1-( q_layer_mem./max(q_layer_mem) ) );
             g_mem = g_threshold(g_mem, gThresh);   
             
-            if(layer_1_Count >= 1)
+            if(layerCount >= 3)
                 div = ( q_layer_1./max(q_layer_1));
                 g_layer_1 = g_layer_1 - k_layer_1*( 1-div ) ;
                 g_layer_1 = g_threshold(g_layer_1, gThresh);                                
             end
             
-            if(layer_2_Count >= 1)
+            if(layerCount >= 4)
                 g_layer_2 = g_layer_2 - k_layer_2*( 1-( q_layer_2./max(q_layer_2) ) );
                 g_layer_2 = g_threshold(g_layer_2, gThresh);                                
             end
             
-            if(layer_3_Count >= 1)
+            if(layerCount >= 5)
                 g_layer_3 = g_layer_3 - k_layer_3*( 1-( q_layer_3./max(q_layer_3) ) );
                 g_layer_3 = g_threshold(g_layer_3, gThresh);                                
             end
