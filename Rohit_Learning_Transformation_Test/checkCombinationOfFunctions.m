@@ -35,9 +35,12 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             if(independent == false) 
                 isNewLayerAssigned = false;
                 findResult = findWhetherExisting(affine_transformation_matrix_forward, scaling_transformation_forward);
+                fprintf('The value of independent is %d and findResult is %d\n', independent, findResult);
+                
                 if(findResult == false)
                     appendedToLayer = 1;
                 else 
+                    scaling_transformation_forward
                     appendedToLayer = 0;
                 end
                 break;                
@@ -61,13 +64,15 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             Transformation_Matrices_Stored(:,:,index) = Learned_Transformation_Matrix_Forward(:,:,1);            
            
             independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
-            fprintf('Value of independent for index: %d is %d\n', index, independent);
+            
             if(independent == false)
                 isNewLayerAssigned = false;
                 findResult = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
+                
                 if(findResult == false)
                     appendedToLayer = index;
                 else 
+                    affine_transformation_matrix_forward
                     appendedToLayer = 0;
                 end
                 break;                

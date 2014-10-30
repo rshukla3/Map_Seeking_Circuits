@@ -4,8 +4,13 @@ function [ existing ] = findWhetherExisting(affine_transformation_matrix_forward
 %   Detailed explanation goes here
     existing = false;
     
-    if(find(transformation_forward == affine_transformation_matrix_forward))
-        existing = true;
+    [x,y,z] = size(transformation_forward);
+    
+    for i = 1:z
+        if(isequal(transformation_forward(:,:,i),affine_transformation_matrix_forward))
+            existing = true;
+            break;
+        end
     end
 end
 

@@ -123,7 +123,7 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = translate_img(Img_PointsOfInterest, 0, 50);
+Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
 % Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
@@ -241,7 +241,7 @@ for i = 1:iterationCount
             % column or one transformation at a time, check for multiple of
             % them. 
             [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, layerCount);
-            
+            fprintf('Value of appendedToLayer after check case is: %d\n', appendedToLayer);
             
             if(isNewLayerAssigned == true)
                 layerCount = layerCount+1;
@@ -289,6 +289,7 @@ for i = 1:iterationCount
                 end
                 
             elseif(appendedToLayer ~= 0)
+                fprintf('Value of appendedToLayer in update case is: %d\n', appendedToLayer);
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
                 % Need to update gCount for all the layers. This part was
                 % not taken care of in the original code.
@@ -297,17 +298,17 @@ for i = 1:iterationCount
                     g_scale = single(ones(1,scaleCount));
                 end
                 
-                if(find(appendedToLayer == 2))
+                if((appendedToLayer == 2))
                     layer_1_Count = layer_1_Count + 1;
                     g_layer_1 = single(ones(1,layer_1_Count));
                 end
                 
-                if(find(appendedToLayer == 3))
+                if((appendedToLayer == 3))
                     layer_2_Count = layer_2_Count + 1;
                     g_layer_2 = single(ones(1,layer_2_Count));
                 end
                 
-                if(find(appendedToLayer == 4))
+                if((appendedToLayer == 4))
                     layer_3_Count = layer_3_Count + 1;
                     g_layer_3 = single(ones(1,layer_3_Count));
                 end
