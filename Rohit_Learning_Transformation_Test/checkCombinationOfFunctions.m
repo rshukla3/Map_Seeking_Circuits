@@ -40,7 +40,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 if(findResult == false)
                     appendedToLayer = 1;
                 else 
-                    scaling_transformation_forward
+                    % scaling_transformation_forward
                     appendedToLayer = 0;
                 end
                 break;                
@@ -72,7 +72,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 if(findResult == false)
                     appendedToLayer = index;
                 else 
-                    affine_transformation_matrix_forward
+                    % affine_transformation_matrix_forward
                     appendedToLayer = 0;
                 end
                 break;                

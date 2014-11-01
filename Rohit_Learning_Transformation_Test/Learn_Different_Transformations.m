@@ -123,7 +123,7 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = translate_img(Img_PointsOfInterest, 0, 50);
+Test_Img = translate_img(Img_PointsOfInterest, -100, 0);
 % Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
