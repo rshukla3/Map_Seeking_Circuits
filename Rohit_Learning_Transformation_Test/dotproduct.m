@@ -5,7 +5,7 @@ function [ q_layer ] = dotproduct( Tf, b )
 q_layer = single(zeros(1,z));
 for i = 1:z
     Img = Tf(1:m, 1:n, i);
-    q_layer(i) = dot(single(Img(:)), single(b(:)));
+    q_layer(i) = dot((Img(:)), (b(:)));
 end
 
 end
