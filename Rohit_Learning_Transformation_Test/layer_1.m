@@ -1,9 +1,9 @@
-function [ Layer_Img, Transformation_Vector ] = layer_1( Test_Img_Input,  g, path)
+function [ Layer_Img, Transformation_Vector ] = layer_1( Test_Img_Input,  g, path, fileIndex)
 % layer_scaling: In this layer of map seeking circuits we perform image
 % scaling.
 
 if(strcmpi(path, 'forward'))
-    fname1 = 'transformation_layer_forward_2';
+    fname1 = strcat('transformation_layer_forward_',num2str(fileIndex));
     fname = strcat(fname1, '.mat');
     if exist(fname, 'file') == 2
         load(fname, 'Learned_Transformation_Matrix_Forward');   
@@ -14,7 +14,7 @@ if(strcmpi(path, 'forward'))
 end
 
 if(strcmpi(path, 'backward'))
-    fname1 = 'transformation_layer_backward_2';
+    fname1 = strcat('transformation_layer_backward_',num2str(fileIndex));
     fname = strcat(fname1, '.mat');
     if exist(fname, 'file') == 2
         load(fname, 'Learned_Transformation_Matrix_Backward');    

@@ -123,8 +123,8 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = translate_img(Img_PointsOfInterest, -100, 0);
-% Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
+Test_Img = translate_img(Img_PointsOfInterest, 100, 100);
+Test_Img = single(imrotate(Test_Img, 90, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
 
@@ -193,11 +193,27 @@ for i = 1:iterationCount
     b(:,:,layerCount-1) = layer_scaling(b(:,:,layerCount), g_scale, 'backward');
     
     if(layerCount >= 3)
-        b(:,:,layerCount-2) = layer_1(b(:,:,layerCount-1), g_layer_1, 'backward');
+        b(:,:,layerCount-2) = layer_1(b(:,:,layerCount-1), g_layer_1, 'backward', 2);
+    end
+    
+    if(layerCount >= 4)
+        b(:,:,layerCount-3) = layer_1(b(:,:,layerCount-2), g_layer_2, 'backward', 3);
+    end
+    
+    if(layerCount >= 5)
+        b(:,:,layerCount-4) = layer_1(b(:,:,layerCount-3), g_layer_3, 'backward', 4);
+    end
+    
+    if(layerCount >= 5)
+        [f(:,:,layerCount-3), Tf_layer_3] = layer_1(f(:,:,layerCount-4), g_layer_3, 'forward', 4);
+    end
+    
+    if(layerCount >= 4)
+        [f(:,:,layerCount-2), Tf_layer_2] = layer_1(f(:,:,layerCount-3), g_layer_2, 'forward', 3);
     end
     
     if(layerCount >= 3)
-        [f(:,:,layerCount-1), Tf_layer_1] = layer_1(f(:,:,layerCount-2), g_layer_1, 'forward');
+        [f(:,:,layerCount-1), Tf_layer_1] = layer_1(f(:,:,layerCount-2), g_layer_1, 'forward', 2);
     end
 
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), g_scale, 'forward');    
@@ -212,6 +228,20 @@ for i = 1:iterationCount
         % layer 1 of MSC.
         q_layer_1(1:layer_1_Count) = single(zeros(1,layer_1_Count));
         q_layer_1(1:layer_1_Count) = dotproduct(Tf_layer_1, b(:,:,layerCount-1));
+    end
+    
+    if(layerCount >= 4)
+        % Calculate the value of q_layer_2, i.e., the dotproduct achieved at
+        % layer 2 of MSC.
+        q_layer_2(1:layer_2_Count) = single(zeros(1,layer_2_Count));
+        q_layer_2(1:layer_2_Count) = dotproduct(Tf_layer_2, b(:,:,layerCount-2));
+    end
+    
+    if(layerCount >= 5)
+        % Calculate the value of q_layer_3, i.e., the dotproduct achieved at
+        % layer 3 of MSC.
+        q_layer_3(1:layer_3_Count) = single(zeros(1,layer_3_Count));
+        q_layer_3(1:layer_3_Count) = dotproduct(Tf_layer_3, b(:,:,layerCount-3));
     end
     
     % Calculate the value of q_scaling, i.e., the dotproduct achieved at
