@@ -12,9 +12,24 @@ if(Cn ~=3)
 end
 
 transformed_img = zeros(m,n);
-
+transformation_matrix
 for i = 1:Cm
     p = [coordinates(i,1) coordinates(i,2) 1] * transformation_matrix;
+    if(p(1) > m)
+        p(1) = m;
+    end
+    
+    if(p(2) > n)
+        p(2) = n;
+    end
+    
+    if(p(1) < 1)
+        p(1) = 1;
+    end
+    
+    if(p(2) < 1)
+        p(2) = 1;
+    end
     transformed_img(fix(p(1)), fix(p(2))) = coordinates(i,3);
 end
 

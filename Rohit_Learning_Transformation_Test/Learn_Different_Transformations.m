@@ -301,16 +301,37 @@ for i = 1:iterationCount
                 if((appendedToLayer == 2))
                     layer_1_Count = layer_1_Count + 1;
                     g_layer_1 = single(ones(1,layer_1_Count));
+                    fname = 'g_layer_1.mat';
+                    if exist(fname, 'file') == 2
+                        save(fname, 'layer_1_Count');    
+                    else
+                        fprintf('File for g_layer_1 does not exist\n');
+                        return;
+                    end          
                 end
                 
                 if((appendedToLayer == 3))
                     layer_2_Count = layer_2_Count + 1;
                     g_layer_2 = single(ones(1,layer_2_Count));
+                    fname = 'g_layer_2.mat';
+                    if exist(fname, 'file') == 2
+                        save(fname, 'layer_2_Count');    
+                    else
+                        fprintf('File for g_layer_2 does not exist\n');
+                        return;
+                    end          
                 end
                 
                 if((appendedToLayer == 4))
                     layer_3_Count = layer_3_Count + 1;
                     g_layer_3 = single(ones(1,layer_3_Count));
+                    fname = 'g_layer_3.mat';
+                    if exist(fname, 'file') == 2
+                        save(fname, 'layer_3_Count');    
+                    else
+                        fprintf('File for g_layer_3 does not exist\n');
+                        return;
+                    end          
                 end
             end
         else
