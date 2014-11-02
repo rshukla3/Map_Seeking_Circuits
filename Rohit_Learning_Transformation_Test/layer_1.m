@@ -56,7 +56,10 @@ for i = 2:layerCount+1
         
         
         if((g(i) ~=0)&&(strcmpi(path, 'backward')))
-            Layer_Img_sum = Layer_Img_sum + (g(i)*img_transform(coordinates, m, n, Learned_Transformation_Matrix_Backward(:,:,i-1)));
+            if(fileIndex == 4)
+                Learned_Transformation_Matrix_Backward(:,:,i-1)
+            end
+            Layer_Img_sum = Layer_Img_sum + (g(i)*img_transform(coordinates, m, n, Learned_Transformation_Matrix_Backward(:,:,i-1)));            
         end        
         
 end

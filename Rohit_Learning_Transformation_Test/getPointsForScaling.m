@@ -38,5 +38,8 @@ elseif(Tm > Mm)
             break;
         end
     end
+else
+    New_Memory_img_Coordinates_Sorted = Memory_img_Coordinates_Sorted;
+    New_Test_img_Coordinates_Sorted = Test_img_Coordinates_Sorted;
 end
 

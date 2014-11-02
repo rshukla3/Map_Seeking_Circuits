@@ -29,7 +29,6 @@ k_mem = 0.3;
 k_layer_1 = 0.5;
 k_layer_2 = 0.5;
 k_layer_3 = 0.5;
-k_layer_4 = 0.5;
 k_scaling = 0.5;
 
 % 5. Read the matching values of q already stored in the file.
@@ -126,8 +125,8 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-% Test_Img = translate_img(Img_PointsOfInterest, 100, -100);
-Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
+Test_Img = translate_img(Img_PointsOfInterest, 100, 0);
+% Test_Img = single(imrotate(Img_PointsOfInterest, 180, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
 %% Degenerate layer that just does identity multiplication.
 
@@ -180,24 +179,10 @@ if(layerCount >= 5)
     end          
     g_layer_3 = single(ones(1,layer_3_Count));
 end
-
-if(layerCount >= 6)
-    fname = 'g_layer_4.mat';
-    if exist(fname, 'file') == 2
-        load(fname, 'layer_4_Count');    
-    else
-        fprintf('Specified file not found for g_layer_4\n');
-        return;
-    end          
-    g_layer_4 = single(ones(1,layer_4_Count));
-end
 %% Read the diagonally translated images for learning in MSC.
 g_mem(1:memory_units) = single(ones(memory_units,1));
 
-%% Initialize the value of q_mem(1).
-
-q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
-q_mem(1) = q_Top_Layer;
+%% Initialize the value of q_mem.
 
 for i = 1:iterationCount
     
@@ -220,16 +205,6 @@ for i = 1:iterationCount
     if(layerCount >= 5)
         fprintf('Layer 4 is being executed\n');
         b(:,:,layerCount-4) = layer_1(b(:,:,layerCount-3), g_layer_3, 'backward', 4);
-    end
-    
-    if(layerCount >= 6)
-        fprintf('Layer 5 is being executed\n');
-        b(:,:,layerCount-5) = layer_1(b(:,:,layerCount-4), g_layer_4, 'backward', 5);
-    end
-
- % Set the values of forward path   
-    if(layerCount >= 6)
-        [f(:,:,layerCount-4), Tf_layer_4] = layer_1(f(:,:,layerCount-5), g_layer_4, 'forward', 5);
     end
     
     if(layerCount >= 5)
@@ -270,13 +245,6 @@ for i = 1:iterationCount
         % layer 3 of MSC.
         q_layer_3(1:layer_3_Count) = single(zeros(1,layer_3_Count));
         q_layer_3(1:layer_3_Count) = dotproduct(Tf_layer_3, b(:,:,layerCount-3));
-    end
-    
-    if(layerCount >= 6)
-        % Calculate the value of q_layer_4, i.e., the dotproduct achieved at
-        % layer 4 of MSC.
-        q_layer_4(1:layer_4_Count) = single(zeros(1,layer_4_Count));
-        q_layer_4(1:layer_4_Count) = dotproduct(Tf_layer_4, b(:,:,layerCount-4));
     end
     
     % Calculate the value of q_scaling, i.e., the dotproduct achieved at
@@ -353,18 +321,6 @@ for i = 1:iterationCount
                     end          
                 end
                 
-                if(layerCount == 6)
-                    layer_4_Count = 2;
-                    g_layer_4 = single(ones(1,layer_4_Count));
-                    fname = 'g_layer_4.mat';
-                    if exist(fname, 'file') ~= 2
-                        save(fname, 'layer_4_Count');    
-                    else
-                        fprintf('Delete file for g_layer_4\n');
-                        return;
-                    end          
-                end
-                
             elseif(appendedToLayer ~= 0)
                 fprintf('Value of appendedToLayer in update case is: %d\n', appendedToLayer);
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
@@ -410,18 +366,6 @@ for i = 1:iterationCount
                         return;
                     end          
                 end
-                
-                if((appendedToLayer == 5))
-                    layer_4_Count = layer_4_Count + 1;
-                    g_layer_4 = single(ones(1,layer_4_Count));
-                    fname = 'g_layer_4.mat';
-                    if exist(fname, 'file') == 2
-                        save(fname, 'layer_4_Count');    
-                    else
-                        fprintf('File for g_layer_4 does not exist\n');
-                        return;
-                    end          
-                end
             end
         else
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
@@ -444,11 +388,6 @@ for i = 1:iterationCount
             if(layerCount >= 5)
                 g_layer_3 = g_layer_3 - k_layer_3*( 1-( q_layer_3./max(q_layer_3) ) );
                 g_layer_3 = g_threshold(g_layer_3, gThresh);                                
-            end
-            
-            if(layerCount >= 6)
-                g_layer_4 = g_layer_4 - k_layer_4*( 1-( q_layer_4./max(q_layer_4) ) );
-                g_layer_4 = g_threshold(g_layer_4, gThresh);                                
             end
         end
     end    
