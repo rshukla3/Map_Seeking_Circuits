@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 5;
+iterationCount = 10;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -30,6 +30,7 @@ k_layer_1 = 0.5;
 k_layer_2 = 0.5;
 k_layer_3 = 0.5;
 k_layer_4 = 0.5;
+k_layer_5 = 0.5;
 k_scaling = 0.5;
 
 % 5. Read the matching values of q already stored in the file.
@@ -126,9 +127,9 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-% Test_Img = translate_img(Img_PointsOfInterest, 100, -100);
-% Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
-Test_Img = scaleImg(Img_PointsOfInterest, 0.6, 0.6);
+Test_Img = translate_img(Img_PointsOfInterest, 100, 0);
+% Test_Img = single(imrotate(Test_Img, -90, 'nearest', 'crop'));
+% Test_Img = scaleImg(Test_Img, 1.6, 1.6);
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
@@ -191,12 +192,23 @@ if(layerCount >= 6)
     end          
     g_layer_4 = single(ones(1,layer_4_Count));
 end
+
+if(layerCount >= 7)
+    fname = 'g_layer_5.mat';
+    if exist(fname, 'file') == 2
+        load(fname, 'layer_5_Count');    
+    else
+        fprintf('Specified file not found for g_layer_5\n');
+        return;
+    end          
+    g_layer_5 = single(ones(1,layer_5_Count));
+end
 %% Read the diagonally translated images for learning in MSC.
 g_mem(1:memory_units) = single(ones(memory_units,1));
 
 %% Initialize the value of q_mem(1).
 
-q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
+q_Top_Layer = dotproduct(Test_Img, Test_Img);
 q_mem(1) = q_Top_Layer;
 
 for i = 1:iterationCount
@@ -226,8 +238,16 @@ for i = 1:iterationCount
         fprintf('Layer 5 is being executed\n');
         b(:,:,layerCount-5) = layer_1(b(:,:,layerCount-4), g_layer_4, 'backward', 5);
     end
+    
+    if(layerCount >= 7)        
+        b(:,:,layerCount-6) = layer_1(b(:,:,layerCount-5), g_layer_5, 'backward', 6);
+    end
 
- % Set the values of forward path   
+ % Set the values of forward path 
+    if(layerCount >= 7)
+        [f(:,:,layerCount-5), Tf_layer_5] = layer_1(f(:,:,layerCount-6), g_layer_5, 'forward', 6);
+    end
+ 
     if(layerCount >= 6)
         [f(:,:,layerCount-4), Tf_layer_4] = layer_1(f(:,:,layerCount-5), g_layer_4, 'forward', 5);
     end
@@ -279,6 +299,13 @@ for i = 1:iterationCount
         q_layer_4(1:layer_4_Count) = dotproduct(Tf_layer_4, b(:,:,layerCount-4));
     end
     
+    if(layerCount >= 7)
+        % Calculate the value of q_layer_5, i.e., the dotproduct achieved at
+        % layer 5 of MSC.
+        q_layer_5(1:layer_5_Count) = single(zeros(1,layer_5_Count));
+        q_layer_5(1:layer_5_Count) = dotproduct(Tf_layer_5, b(:,:,layerCount-5));
+    end
+    
     % Calculate the value of q_scaling, i.e., the dotproduct achieved at
     % scaling layer.
     q_scaling(1:scaleCount) = dotproduct(Tf_scaling, b(:,:,layerCount));
@@ -297,8 +324,8 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        %if(q_Top_Layer<0.02*q_mem(1))
-        if(q_Top_Layer==0)
+        if(q_Top_Layer<0.02*q_mem(1))
+        %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
             
@@ -366,6 +393,18 @@ for i = 1:iterationCount
                     end          
                 end
                 
+                if(layerCount == 7)
+                    layer_5_Count = 2;
+                    g_layer_5 = single(ones(1,layer_5_Count));
+                    fname = 'g_layer_5.mat';
+                    if exist(fname, 'file') ~= 2
+                        save(fname, 'layer_5_Count');    
+                    else
+                        fprintf('Delete file for g_layer_5\n');
+                        return;
+                    end          
+                end
+                
             elseif(appendedToLayer ~= 0)
                 fprintf('Value of appendedToLayer in update case is: %d\n', appendedToLayer);
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
@@ -423,6 +462,18 @@ for i = 1:iterationCount
                         return;
                     end          
                 end
+                
+                if((appendedToLayer == 6))
+                    layer_5_Count = layer_5_Count + 1;
+                    g_layer_5 = single(ones(1,layer_5_Count));
+                    fname = 'g_layer_5.mat';
+                    if exist(fname, 'file') == 2
+                        save(fname, 'layer_5_Count');    
+                    else
+                        fprintf('File for g_layer_5 does not exist\n');
+                        return;
+                    end          
+                end
             end
         else
             g_scale = g_scale - k_scaling*( 1-( q_scaling./max(q_scaling) ) );
@@ -451,6 +502,12 @@ for i = 1:iterationCount
                 g_layer_4 = g_layer_4 - k_layer_4*( 1-( q_layer_4./max(q_layer_4) ) );
                 g_layer_4 = g_threshold(g_layer_4, gThresh);                                
             end
+            
+            if(layerCount >= 7)
+                g_layer_5 = g_layer_5 - k_layer_5*( 1-( q_layer_5./max(q_layer_5) ) );
+                g_layer_5 = g_threshold(g_layer_5, gThresh);                                
+            end
+            
         end
     end    
     
