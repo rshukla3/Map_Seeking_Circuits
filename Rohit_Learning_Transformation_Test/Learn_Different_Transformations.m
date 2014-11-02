@@ -127,8 +127,8 @@ end
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 % Test_Img = translate_img(Img_PointsOfInterest, 100, -100);
-Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
-% Test_Img = scaleImg(Img_PointsOfInterest, 0.7, 0.7);
+% Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
+Test_Img = scaleImg(Img_PointsOfInterest, 0.6, 0.6);
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
@@ -297,7 +297,8 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.02*q_mem(1))
+        %if(q_Top_Layer<0.02*q_mem(1))
+        if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
             
@@ -307,7 +308,7 @@ for i = 1:iterationCount
             % them. 
             [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, layerCount);
             
-            
+            fprintf('appendedToLayer: %d\n', appendedToLayer);
             if(isNewLayerAssigned == true)
                 layerCount = layerCount+1;
                 fprintf('A new layer has been assigned\n');

@@ -11,25 +11,34 @@ function [New_Memory_img_Coordinates_Sorted, New_Test_img_Coordinates_Sorted] = 
 if(Mm > Tm)
     % This means image has been scaled down. This means memory has more
     % number of pixels than Test_img.
+    fprintf('Image has been scaled down\n');
     New_Test_img_Coordinates_Sorted = Test_img_Coordinates_Sorted;
     New_Memory_img_Coordinates_Sorted = single(zeros(Tm, Tn));
     
     for i = 1:Tm
-        if(find(Memory_img_Coordinates_Sorted(:,3) == Test_img_Coordinates_Sorted(i,3)))
-            New_Memory_img_Coordinates_Sorted(i,:) = Test_img_Coordinates_Sorted(i,:);
+        [row, column] = find(Memory_img_Coordinates_Sorted(:,3) == Test_img_Coordinates_Sorted(i,3));
+        if(row)
+            New_Memory_img_Coordinates_Sorted(i,:) = Memory_img_Coordinates_Sorted(row(1),:);
         end
     end
     
+    %New_Memory_img_Coordinates_Sorted
+    %New_Test_img_Coordinates_Sorted
+    
 elseif(Tm > Mm)
-    % This means image has been scaled down. This means memory has more
+    % This means image has been scaled up. This means memory has less
     % number of pixels than Test_img.
+    
     New_Memory_img_Coordinates_Sorted = Memory_img_Coordinates_Sorted;
     New_Test_img_Coordinates_Sorted = single(zeros(Mm, Mn));
     pixelVal = max(max(Memory_img_Coordinates_Sorted(:,3)));
     index = 1;
-    for i = 1:Tm
+    
+    for i = Tm:-1:1
         if(Test_img_Coordinates_Sorted(i,3) == pixelVal)
-            New_Test_img_Coordinates_Sorted(index,:) = Test_img_Coordinates_Sorted(i,:);
+            New_Test_img_Coordinates_Sorted(index,1) = Test_img_Coordinates_Sorted(i,1);
+            New_Test_img_Coordinates_Sorted(index,2) = Test_img_Coordinates_Sorted(i,2);
+            New_Test_img_Coordinates_Sorted(index,3) = Test_img_Coordinates_Sorted(i,3);
             pixelVal = pixelVal - 1;
             index = index + 1;
         end
@@ -38,6 +47,9 @@ elseif(Tm > Mm)
             break;
         end
     end
+    New_Test_img_Coordinates_Sorted = sortrows(New_Test_img_Coordinates_Sorted, 3);    
+    
+    
 else
     New_Memory_img_Coordinates_Sorted = Memory_img_Coordinates_Sorted;
     New_Test_img_Coordinates_Sorted = Test_img_Coordinates_Sorted;
