@@ -29,7 +29,7 @@ for i = 1:Cm
     if(p(2) < 1)
         p(2) = 1;
     end
-    transformed_img(fix(p(1)), fix(p(2))) = coordinates(i,3);
+    transformed_img(round(p(1)), round(p(2))) = coordinates(i,3);
 end
 
 end

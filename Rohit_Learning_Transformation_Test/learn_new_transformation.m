@@ -31,9 +31,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
 
-    disp(affine_transformation_matrix_forward);
+    affine_transformation_matrix_forward
+    
     affine_transformation_matrix_backward = Memory_img_Coordinates_Sorted\Test_img_Coordinates_Sorted;
-    disp(affine_transformation_matrix_backward);
+    
     [am, an] = size(affine_transformation_matrix_backward);
     
     for i = 1:am
@@ -47,7 +48,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     
-    disp(affine_transformation_matrix_backward);
+    affine_transformation_matrix_backward
     
 end
 

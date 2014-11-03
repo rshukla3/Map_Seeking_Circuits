@@ -10,7 +10,7 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     end
     
     rankMatrices = rank([affine_transformation_matrix_forward(:) test_transformation]);
-    rankMatrices
+    
     if(rankMatrices == layerCount)
         independent = true;
     end

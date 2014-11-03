@@ -19,7 +19,6 @@ if(strcmpi(path, 'backward'))
     if exist(fname, 'file') == 2
         load(fname, 'Learned_Transformation_Matrix_Backward');    
         [rows,columns,layerCount] = size(Learned_Transformation_Matrix_Backward);
-        fprintf('In the backward path the value of rows: %d columns: %d layerCount: %d\n',rows,columns,layerCount);
     else
         fprintf('Specified file not found in backward path for layer_1\n');
     end          
@@ -55,10 +54,7 @@ for i = 2:layerCount+1
         end
         
         
-        if((g(i) ~=0)&&(strcmpi(path, 'backward')))
-            if(fileIndex == 4)
-                Learned_Transformation_Matrix_Backward(:,:,i-1)
-            end
+        if((g(i) ~=0)&&(strcmpi(path, 'backward')))            
             Layer_Img_sum = Layer_Img_sum + (g(i)*img_transform(coordinates, m, n, Learned_Transformation_Matrix_Backward(:,:,i-1)));            
         end        
         
