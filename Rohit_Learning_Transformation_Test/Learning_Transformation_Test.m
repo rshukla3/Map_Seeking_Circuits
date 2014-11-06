@@ -23,10 +23,10 @@ end
 [Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
-[output] = FeatureExtractors(Preprocessed_Img);
-%Test_Img = single(imrotate(Img_PointsOfInterest, 90, 'nearest', 'crop'));
-%Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
-Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
+%[output] = FeatureExtractors(Preprocessed_Img);
+Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
+% Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
+% Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
@@ -35,13 +35,13 @@ Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
 
 Memory_Img_tmp = Memory_Img(:,:,1);
 
-
+center = round(size(Img_PointsOfInterest)/2);
 index = 1;
 for i = 1:m
     for j = 1:n
         if(Img_PointsOfInterest(i,j) ~= 0)
-            Coordinate(index,1) = i;
-            Coordinate(index,2) = j;
+            Coordinate(index,1) = i-center(1)-0.5;
+            Coordinate(index,2) = j-center(2)-0.5;
             Coordinate(index,3) = Img_PointsOfInterest(i,j);
             index = index + 1;
         end
@@ -55,12 +55,12 @@ for i = 1:1:tm
     for j = 1:1:tn
         if(find(Test_Img == pixelVal))
             [row,column] = find(Test_Img == pixelVal);
-            Coordinate_Test(index,1) = row(1);
-            Coordinate_Test(index,2) = column(1);
+            Coordinate_Test(index,1) = row(1)-center(1)-0.5;
+            Coordinate_Test(index,2) = column(1)-center(2)-0.5;
             Coordinate_Test(index,3) = Test_Img(row(1),column(1));
             index = index + 1;
             pixelVal = pixelVal-1;
-            arr(index) = Test_Img(row(1),column(1));
+%             arr(index) = Test_Img(row(1),column(1));
             fprintf('row: %d column: %d PixelVal: %d\n', row(1), column(1), Test_Img(row(1),column(1)));
         end
         if(index == index_prev)
@@ -72,7 +72,7 @@ for i = 1:1:tm
     end
 end
 
-sort(arr)
+
 figure(1);
 imshow(Img_PointsOfInterest);
 
@@ -111,11 +111,11 @@ New_Img = zeros(tm,tn);
 for i = 1:tm
     for j = 1:tn
         if(Test_Img_2(i,j) ~= 0)
-            P = [i j 1]*M;
+            P = [i-center(1)-0.5 j-center(2)-0.5 1]*M;
             Coordinate_Test(index,1) = P(1);
             Coordinate_Test(index,2) = P(2);
             Coordinate_Test(index,3) = P(3);
-            New_Img(fix(P(1)), fix(P(2))) = 1;
+            New_Img(round(P(1)+center(1)+0.5), round(P(2)+center(2)+0.5)) = 1;
             index = index + 1;
         end
     end
