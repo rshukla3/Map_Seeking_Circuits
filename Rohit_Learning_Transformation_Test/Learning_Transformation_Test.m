@@ -24,7 +24,7 @@ end
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 %[output] = FeatureExtractors(Preprocessed_Img);
-Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
 % Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
 % Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
 %% Transform the image matrix to single dimension.
@@ -40,8 +40,8 @@ index = 1;
 for i = 1:m
     for j = 1:n
         if(Img_PointsOfInterest(i,j) ~= 0)
-            Coordinate(index,1) = i-center(1)-0.5;
-            Coordinate(index,2) = j-center(2)-0.5;
+            Coordinate(index,1) = i;
+            Coordinate(index,2) = j;
             Coordinate(index,3) = Img_PointsOfInterest(i,j);
             index = index + 1;
         end
@@ -53,33 +53,35 @@ pixelVal = max(max(Test_Img));
 index = 1;
 for i = 1:1:tm
     for j = 1:1:tn
-        if(find(Test_Img == pixelVal))
-            [row,column] = find(Test_Img == pixelVal);
-            Coordinate_Test(index,1) = row(1)-center(1)-0.5;
-            Coordinate_Test(index,2) = column(1)-center(2)-0.5;
-            Coordinate_Test(index,3) = Test_Img(row(1),column(1));
+        if((Test_Img(i,j) ~= 0))
+            %[row,column] = find(Test_Img == pixelVal);
+            Coordinate_Test(index,1) = i;
+            Coordinate_Test(index,2) = j;
+            Coordinate_Test(index,3) = Test_Img(i,j);
             index = index + 1;
-            pixelVal = pixelVal-1;
 %             arr(index) = Test_Img(row(1),column(1));
-            fprintf('row: %d column: %d PixelVal: %d\n', row(1), column(1), Test_Img(row(1),column(1)));
+            fprintf('row: %d column: %d PixelVal: %d\n', i, j, Test_Img(i,j));
         end
-        if(index == index_prev)
+        if(index > index_prev)
             break;
         end
     end
-    if(index == index_prev)
+    if(index > index_prev)
         break;
     end
 end
 
+
+Coordinate = sortrows(Coordinate, 3);
+Coordinate_Test = sortrows(Coordinate_Test, 3);
+
+[Coordinate, Coordinate_Test] = getPointsForScaling(Coordinate, Coordinate_Test);
 
 figure(1);
 imshow(Img_PointsOfInterest);
 
 figure(2);
 imshow(Test_Img);
-Coordinate = sortrows(Coordinate, 3);
-Coordinate_Test = sortrows(Coordinate_Test, 3);
     
 Coordinate(:,3) = 1;
 Coordinate_Test(:,3) = 1;
@@ -111,11 +113,11 @@ New_Img = zeros(tm,tn);
 for i = 1:tm
     for j = 1:tn
         if(Test_Img_2(i,j) ~= 0)
-            P = [i-center(1)-0.5 j-center(2)-0.5 1]*M;
+            P = [i j 1]*M;
             Coordinate_Test(index,1) = P(1);
             Coordinate_Test(index,2) = P(2);
             Coordinate_Test(index,3) = P(3);
-            New_Img(round(P(1)+center(1)+0.5), round(P(2)+center(2)+0.5)) = 1;
+            New_Img(round(P(1)), round(P(2))) = 1;
             index = index + 1;
         end
     end
