@@ -24,7 +24,7 @@ end
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 %[output] = FeatureExtractors(Preprocessed_Img);
-Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
 % Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
 % Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
 %% Transform the image matrix to single dimension.
@@ -60,7 +60,7 @@ for i = 1:1:tm
             Coordinate_Test(index,3) = Test_Img(i,j);
             index = index + 1;
 %             arr(index) = Test_Img(row(1),column(1));
-            fprintf('row: %d column: %d PixelVal: %d\n', i, j, Test_Img(i,j));
+%             fprintf('row: %d column: %d PixelVal: %d\n', i, j, Test_Img(i,j));
         end
         if(index > index_prev)
             break;
@@ -72,11 +72,14 @@ for i = 1:1:tm
 end
 
 
-Coordinate = sortrows(Coordinate, 3);
-Coordinate_Test = sortrows(Coordinate_Test, 3);
+Coordinate_tmp = sortrows(Coordinate, 3);
+Coordinate_Test_tmp = sortrows(Coordinate_Test, 3);
+fprintf('Displaying the Coordinate_Test_tmp array\n');
+disp(Coordinate_Test_tmp);
 
-[Coordinate, Coordinate_Test] = getPointsForScaling(Coordinate, Coordinate_Test);
-
+[Coordinate, Coordinate_Test] = getPointsForRotation(Coordinate_tmp, Coordinate_Test_tmp);
+fprintf('Displaying the Coordinate_Test array\n');
+disp(Coordinate_Test);
 figure(1);
 imshow(Img_PointsOfInterest);
 
@@ -85,17 +88,17 @@ imshow(Test_Img);
     
 Coordinate(:,3) = 1;
 Coordinate_Test(:,3) = 1;
-
+[Cm, Cn] = size(Coordinate);
 M = Coordinate\Coordinate_Test;
 
 [m,n] = size(M);
 
 for i = 1:m
     for j = 1:n
-        if(abs(M(i,j)) < 0.001)
+        if(abs(M(i,j)) < 0.00000001)
             M(i,j) = 0;
         end
-        if(abs(M(i,j)-1) < 0.001)
+        if(abs(M(i,j)-1) < 0.00000001)
             M(i,j) = 1;
         end
     end
@@ -114,10 +117,10 @@ for i = 1:tm
     for j = 1:tn
         if(Test_Img_2(i,j) ~= 0)
             P = [i j 1]*M;
-            Coordinate_Test(index,1) = P(1);
-            Coordinate_Test(index,2) = P(2);
-            Coordinate_Test(index,3) = P(3);
-            New_Img(round(P(1)), round(P(2))) = 1;
+            Coordinate_Test_2(index,1) = P(1);
+            Coordinate_Test_2(index,2) = P(2);
+            Coordinate_Test_2(index,3) = P(3);
+            New_Img(floor(P(1)), floor(P(2))) = 1;
             index = index + 1;
         end
     end
