@@ -24,9 +24,9 @@ end
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 %[output] = FeatureExtractors(Preprocessed_Img);
-% Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
+% Test_Img = single(imrotate(Img_PointsOfInterest, -45, 'nearest', 'crop'));
 % Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
-Test_Img = single(scaleImg(Img_PointsOfInterest, 1.6, 1.6));
+Test_Img = single(scaleImg(Img_PointsOfInterest, 0.6, 0.6));
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
@@ -37,11 +37,14 @@ Memory_Img_tmp = Memory_Img(:,:,1);
 
 center = round(size(Img_PointsOfInterest)/2);
 index = 1;
+
+X = center(1)+0.5;
+Y = center(2)+0.5;
 for i = 1:m
     for j = 1:n
         if(Img_PointsOfInterest(i,j) ~= 0)
-            Coordinate(index,1) = i;
-            Coordinate(index,2) = j;
+            Coordinate(index,1) = i-X;
+            Coordinate(index,2) = j-Y;
             Coordinate(index,3) = Img_PointsOfInterest(i,j);
             index = index + 1;
         end
@@ -55,8 +58,8 @@ for i = 1:1:tm
     for j = 1:1:tn
         if((Test_Img(i,j) ~= 0))
             %[row,column] = find(Test_Img == pixelVal);
-            Coordinate_Test(index,1) = i;
-            Coordinate_Test(index,2) = j;
+            Coordinate_Test(index,1) = i-X;
+            Coordinate_Test(index,2) = j-Y;
             Coordinate_Test(index,3) = Test_Img(i,j);
             index = index + 1;
 %             arr(index) = Test_Img(row(1),column(1));
@@ -95,15 +98,18 @@ M = Coordinate\Coordinate_Test;
 
 for i = 1:m
     for j = 1:n
-        if(abs(M(i,j)) < 0.00000001)
+        if(abs(M(i,j)) < 0.001)
             M(i,j) = 0;
         end
-        if(abs(M(i,j)-1) < 0.00000001)
+        if(abs(M(i,j)-1) < 0.001)
             M(i,j) = 1;
         end
     end
 end
 
+M(3,1) = 0;
+
+M(3,2) = 0;
 
 [Test_Img_2] = imagePreProcessing('sailboat_2.jpg');
 figure(3);
@@ -116,11 +122,11 @@ New_Img = zeros(tm,tn);
 for i = 1:tm
     for j = 1:tn
         if(Test_Img_2(i,j) ~= 0)
-            P = [i j 1]*M;
+            P = [i-X j-Y 1]*M;
             Coordinate_Test_2(index,1) = P(1);
             Coordinate_Test_2(index,2) = P(2);
             Coordinate_Test_2(index,3) = P(3);
-            New_Img(floor(P(1)), floor(P(2))) = 1;
+            New_Img(floor(P(1)+X), floor(P(2)+Y)) = 1;
             index = index + 1;
         end
     end
