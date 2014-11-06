@@ -24,9 +24,9 @@ end
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 %[output] = FeatureExtractors(Preprocessed_Img);
-Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
+% Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
 % Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
-% Test_Img = single(scaleImg(Img_PointsOfInterest, 2, 2));
+Test_Img = single(scaleImg(Img_PointsOfInterest, 1.6, 1.6));
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
