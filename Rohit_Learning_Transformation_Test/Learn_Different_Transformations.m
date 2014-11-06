@@ -129,8 +129,8 @@ end
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 % Test_Img = translate_img(Img_PointsOfInterest, 100, 100);
-% Test_Img = single(imrotate(Img_PointsOfInterest, 180, 'nearest', 'crop'));
-Test_Img = scaleImg(Img_PointsOfInterest, 1.6, 1.6);
+Test_Img = single(imrotate(Img_PointsOfInterest, -90, 'nearest', 'crop'));
+% Test_Img = scaleImg(Img_PointsOfInterest, 1.6, 1.6);
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
