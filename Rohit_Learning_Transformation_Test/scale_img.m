@@ -13,9 +13,30 @@ end
 
 transformed_img = zeros(m,n);
 
+% Remember the transforms that we have learned are after we have shifted
+% the origin of image from top left corner to the center of the image. This
+% transformation is performed in getPointsOfInterest function. Thus after
+% we do matrix multiplication, we ensure that we have taken care of
+% transformation from center to top-left.
+
+center(1) = round(m/2);
+center(2) = round(n/2);
+
+if(mod(m,2) == 0)
+    X = center(1)+0.5;
+else
+    X = center(1);
+end
+
+if(mod(n,2) == 0)
+    Y = center(2)+0.5;
+else
+    Y = center(2);
+end
+
 for i = 1:Cm
     p = [coordinates(i,1) coordinates(i,2) 1] * transformation_matrix;
-    transformed_img(fix(p(1)), fix(p(2))) = coordinates(i,3);
+    transformed_img(floor(p(1)+X), floor(p(2)+Y)) = coordinates(i,3);
 end
 
 end
