@@ -1,4 +1,4 @@
-function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( affine_transformation_matrix_forward, layerCount )
+function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( affine_transformation_matrix_forward, affine_transformation_matrix_backward, layerCount )
 %checkCombinationOfFunctions: Checks whether the new learned transformation
 %is a combination of already existing layers or is it a new independent
 %function.
@@ -7,6 +7,11 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
 %   independent function, we look at the rank of the matrix. Rank will tell
 %   us whether this new function is a combination previous independent
 %   functions or is it a completely new independent function. 
+
+% One thing to note is that rank of the matrix is not able to distinguish
+% between clockwise and counterclockwise rotations. Thus, to circumvent
+% this problem, this function will be performing checks using bot backward
+% and forward transformations. 
 
     isNewLayerAssigned = false;
     appendedToLayer = 1;
@@ -21,6 +26,8 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
         
         % First check whether it is a part of scaling layer.
         if(index == 1)
+            
+            % Perform rank check for forward path matrices.
             fname = 'scaling_transformation_forward.mat';
             if exist(fname, 'file') == 2
                 load('scaling_transformation_forward.mat', 'scaling_transformation_forward');    
@@ -28,16 +35,29 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
             end
             
-            Transformation_Matrices_Stored(:,:,1) = scaling_transformation_forward(:,:,1);
+            Transformation_Matrices_Stored_Forward(:,:,1) = scaling_transformation_forward(:,:,1);
             
-            independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
+            independent_forward = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored_Forward, index+1);
             
-            if(independent == false) 
+            % Perform rank check for backward path matrices.
+            fname = 'scaling_transformation_backward.mat';
+            if exist(fname, 'file') == 2
+                load('scaling_transformation_backward.mat', 'scaling_transformation_backward');    
+            else
+                fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
+            end
+            
+            Transformation_Matrices_Stored_Backward(:,:,1) = scaling_transformation_backward(:,:,1);
+            
+            independent_backward = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored_Backward, index+1);
+            
+            if(independent_forward == false || independent_backward == false) 
                 isNewLayerAssigned = false;
-                findResult = findWhetherExisting(affine_transformation_matrix_forward, scaling_transformation_forward);
-                fprintf('The value of independent is %d and findResult is %d\n', independent, findResult);
+                findResult_forward = findWhetherExisting(affine_transformation_matrix_forward, scaling_transformation_forward);
+                findResult_backward = findWhetherExisting(affine_transformation_matrix_forward, scaling_transformation_backward);
+                fprintf('The value of independent_forward is %d, independent_backward is %d and findResult_forward is %d, findResult_backward is %d\n', independent_forward, independent_backward, findResult_forward, findResult_backward);
                 
-                if(findResult == false)
+                if(findResult_forward == false && findResult_backward == false)
                     appendedToLayer = 1;
                 else 
                     % scaling_transformation_forward
@@ -49,6 +69,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 appendedToLayer = 0;
             end            
         else
+            % Perform rank check for forward path matrices.
             fprintf('Executing else part of the loop\n');
             fname1 = strcat('transformation_layer_forward_', num2str(index));
             fname = strcat(fname1, '.mat');
@@ -56,20 +77,37 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             if exist(fname, 'file') == 2
                 load(fname, 'Learned_Transformation_Matrix_Forward');    
             else
-                fprintf('Specified file not found for index: %d\n', index);
+                fprintf('Specified forward path file not found for index: %d\n', index);
             end          
             
-            [x,y,z] = size(Transformation_Matrices_Stored);
+            [x,y,z] = size(Transformation_Matrices_Stored_Forward);
             
-            Transformation_Matrices_Stored(:,:,index) = Learned_Transformation_Matrix_Forward(:,:,1);            
+            Transformation_Matrices_Stored_Forward(:,:,index) = Learned_Transformation_Matrix_Forward(:,:,1);            
            
-            independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
+            independent_forward = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored_Forward, index+1);
             
-            if(independent == false)
+            % Perform rank check for backward path matrices.
+            fprintf('Executing else part of the loop\n');
+            fname1 = strcat('transformation_layer_backward_', num2str(index));
+            fname = strcat(fname1, '.mat');
+
+            if exist(fname, 'file') == 2
+                load(fname, 'Learned_Transformation_Matrix_Backward');    
+            else
+                fprintf('Specified backward path file not found for index: %d\n', index);
+            end          
+            
+            [x,y,z] = size(Transformation_Matrices_Stored_Backward);
+            
+            Transformation_Matrices_Stored_Backward(:,:,index) = Learned_Transformation_Matrix_Backward(:,:,1);            
+           
+            independent_backward = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored_Backward, index+1);
+            
+            if(independent_forward == false || independent_backward == false)
                 isNewLayerAssigned = false;
-                findResult = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
-                
-                if(findResult == false)
+                findResult_forward = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
+                findResult_backward = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Backward);
+                if(findResult_forward == false && findResult_backward == false)
                     appendedToLayer = index;
                 else 
                     % affine_transformation_matrix_forward

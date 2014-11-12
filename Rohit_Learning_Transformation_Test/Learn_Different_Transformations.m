@@ -129,7 +129,7 @@ end
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 % Test_Img = translate_img(Img_PointsOfInterest, 100, 0);
-Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
 % Test_Img = scaleImg(Img_PointsOfInterest, 0.8, 0.8);
 %% Degenerate layer that just does identity multiplication.
 
@@ -358,7 +358,7 @@ for i = 1:iterationCount
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
             % them. 
-            [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, layerCount);
+            [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount);
             
             fprintf('appendedToLayer: %d\n', appendedToLayer);
             if(isNewLayerAssigned == true)
