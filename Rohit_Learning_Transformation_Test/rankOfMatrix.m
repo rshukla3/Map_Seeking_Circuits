@@ -8,8 +8,8 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
         tmp = transformation_forward(:,:,i);
         test_transformation(:,i) = tmp(:);
     end
-    
-    rankMatrices = rank([affine_transformation_matrix_forward(:) test_transformation]);
+    A = [test_transformation affine_transformation_matrix_forward(:)]
+    rankMatrices = rank([test_transformation affine_transformation_matrix_forward(:)])
     
     if(rankMatrices == layerCount)
         independent = true;
