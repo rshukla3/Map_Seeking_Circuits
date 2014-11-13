@@ -7,7 +7,7 @@ if(appendedToLayer == 1)
         load('scaling_transformation_forward.mat', 'scaling_transformation_forward'); 
         [m,n,Values] = size(scaling_transformation_forward);
         scaling_transformation_forward(:,:,Values+1) = Transformation_Matrix_Forward;
-        save('scaling_transformation_forward.mat', scaling_transformation_forward);
+        save('scaling_transformation_forward.mat', 'scaling_transformation_forward');
     else
         fprintf('The selected scaling_transformation_forward.mat file does not exist\n');    
     end
@@ -16,7 +16,7 @@ if(appendedToLayer == 1)
         load('scaling_transformation_backward.mat', 'scaling_transformation_backward');  
         [m,n,Values] = size(scaling_transformation_backward);
         scaling_transformation_backward(:,:,Values+1) = Transformation_Matrix_Backward;
-        save('scaling_transformation_backward.mat', scaling_transformation_backward);
+        save('scaling_transformation_backward.mat', 'scaling_transformation_backward');
     else
         fprintf('The selected scaling_transformation_backward.mat file does not exist\n');    
     end
