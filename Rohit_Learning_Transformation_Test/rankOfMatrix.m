@@ -9,9 +9,10 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
         test_transformation(:,i) = tmp(:);
     end
     A = [test_transformation affine_transformation_matrix_forward(:)]
-    rankMatrices = rank([test_transformation affine_transformation_matrix_forward(:)])
+    rankMatrices = rank(test_transformation)
+    rankMatrices_learned_transformation = rank([test_transformation affine_transformation_matrix_forward(:)])
     
-    if(rankMatrices == layerCount)
+    if(rankMatrices_learned_transformation > rankMatrices)
         independent = true;
     end
 end
