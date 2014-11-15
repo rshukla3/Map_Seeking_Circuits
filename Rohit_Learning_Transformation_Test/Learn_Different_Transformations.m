@@ -128,17 +128,26 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = translate_img(Img_PointsOfInterest, 100, 0);
-% Test_Img = single(imrotate(Img_PointsOfInterest, 45, 'nearest', 'crop'));
-% Test_Img = scaleImg(Img_PointsOfInterest, 0.8, 0.8);
+% Test_Img = single(imrotate(Img_PointsOfInterest, -30, 'nearest', 'crop'));
+Test_Img = translate_img(Img_PointsOfInterest, 0, -100);
+% Test_Img = scaleImg(Test_Img, 1.6, 1.6);
+figure(1);
+imshow(Test_Img);
+pause(1);
+
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
 % matrix multiplication in the beginning. Later this layer will be changed
 % to perform scaling operation.
 
-g_scale = single(ones(scaleCount,1));
-
+fname = 'g_scale.mat';
+if exist(fname, 'file') ~= 2
+    save('g_scale.mat', 'scaleCount');    
+else
+    load('g_scale.mat', 'scaleCount');    
+end
+g_scale = single(ones(1,scaleCount));
 %% Read the g values of other values in layersSaved is more than 1.
 
 % If the value of layersSaved is more than 1 (that is, the value of
@@ -222,6 +231,13 @@ g_mem(1:memory_units) = single(ones(memory_units,1));
 
 q_Top_Layer = dotproduct(Test_Img, Test_Img);
 q_mem(1) = q_Top_Layer;
+
+%% Count the number of times MSC tries to learn image.
+
+%Count the number of times MSC tries to learn image when a new object is
+%shown. This should not be more than once.
+
+learnCount = 1;
 
 for i = 1:iterationCount
     
@@ -349,9 +365,13 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.2*q_mem(1))
+        if(q_Top_Layer<0.1*q_mem(1))
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
+            if(learnCount > 1)
+                return;
+            end
+            learnCount = learnCount + 1;
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
             
             % This function needs to be changed in case we have multiple
@@ -447,9 +467,16 @@ for i = 1:iterationCount
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
                 % Need to update gCount for all the layers. This part was
                 % not taken care of in the original code.
-                if(find(appendedToLayer == 1))
+                if((appendedToLayer == 1))
                     scaleCount = scaleCount + 1;
                     g_scale = single(ones(1,scaleCount));
+                    fname = 'g_scale.mat';
+                    if exist(fname, 'file') == 2
+                        save(fname, 'scaleCount');    
+                    else
+                        fprintf('File for g_scale does not exist\n');
+                        return;
+                    end 
                 end
                 
                 if((appendedToLayer == 2))
@@ -569,47 +596,53 @@ end
 figure(1);
 imshow(b(:,:,1));
 
-if(layerCount >= 3)
-    figure(2);
-    imshow(b(:,:,2));
-end
+figure(2);
+imshow(b(:,:,2));
 
-if(layerCount >= 4)
+if(layerCount >= 3)
     figure(3);
     imshow(b(:,:,3));
 end
 
-if(layerCount >= 5)
+if(layerCount >= 4)
     figure(4);
     imshow(b(:,:,4));
 end
 
-if(layerCount >= 6)
+if(layerCount >= 5)
     figure(5);
     imshow(b(:,:,5));
 end
 
-
-
-figure(6);
-imshow(f(:,:,1));
-
-if(layerCount >= 3)
-    figure(7);
-    imshow(f(:,:,2));
+if(layerCount >= 6)
+    figure(6);
+    imshow(b(:,:,6));
 end
 
-if(layerCount >= 4)
-    figure(8);
+
+
+figure(7);
+imshow(f(:,:,1));
+
+figure(8);
+imshow(f(:,:,2));
+
+if(layerCount >= 3)
+    figure(9);
     imshow(f(:,:,3));
 end
 
-if(layerCount >= 5)
-    figure(9);
+if(layerCount >= 4)
+    figure(10);
     imshow(f(:,:,4));
 end
 
-if(layerCount >= 6)
-    figure(10);
+if(layerCount >= 5)
+    figure(11);
     imshow(f(:,:,5));
+end
+
+if(layerCount >= 6)
+    figure(12);
+    imshow(f(:,:,6));
 end

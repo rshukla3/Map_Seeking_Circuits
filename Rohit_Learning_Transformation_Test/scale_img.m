@@ -36,7 +36,24 @@ end
 
 for i = 1:Cm
     p = [coordinates(i,1) coordinates(i,2) 1] * transformation_matrix;
-    transformed_img(floor(p(1)+X), floor(p(2)+Y)) = coordinates(i,3);
+    C1 = p(1) + X;
+    C2 = p(2) + Y;
+    if(C1 > m)
+        C1 = m;
+    end
+    
+    if(C2 > n)
+        C2 = n;
+    end
+    
+    if(C1 < 1)
+        C1 = 1;
+    end
+    
+    if(C2 < 1)
+        C2 = 1;
+    end
+    transformed_img(round(C1), round(C2)) = coordinates(i,3);
 end
 
 end
