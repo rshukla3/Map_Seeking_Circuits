@@ -129,8 +129,8 @@ end
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 % Test_Img = single(imrotate(Img_PointsOfInterest, -30, 'nearest', 'crop'));
-Test_Img = translate_img(Img_PointsOfInterest, 0, -100);
-% Test_Img = scaleImg(Test_Img, 1.6, 1.6);
+% Test_Img = translate_img(Img_PointsOfInterest, 0, -120);
+Test_Img = scaleImg(Img_PointsOfInterest, 1.4, 1.4);
 figure(1);
 imshow(Test_Img);
 pause(1);
@@ -488,7 +488,7 @@ for i = 1:iterationCount
                     else
                         fprintf('File for g_layer_1 does not exist\n');
                         return;
-                    end          
+                    end      
                 end
                 
                 if((appendedToLayer == 3))
@@ -512,7 +512,7 @@ for i = 1:iterationCount
                     else
                         fprintf('File for g_layer_3 does not exist\n');
                         return;
-                    end          
+                    end         
                 end
                 
                 if((appendedToLayer == 5))
@@ -524,7 +524,7 @@ for i = 1:iterationCount
                     else
                         fprintf('File for g_layer_4 does not exist\n');
                         return;
-                    end          
+                    end 
                 end
                 
                 if((appendedToLayer == 6))
@@ -536,7 +536,7 @@ for i = 1:iterationCount
                     else
                         fprintf('File for g_layer_5 does not exist\n');
                         return;
-                    end          
+                    end   
                 end
                 
                 if((appendedToLayer == 7))
@@ -548,7 +548,26 @@ for i = 1:iterationCount
                     else
                         fprintf('File for g_layer_6 does not exist\n');
                         return;
-                    end          
+                    end                     
+                end
+                g_scale = single(ones(1,scaleCount));
+                if(layerCount >= 3)
+                    g_layer_1 = single(ones(1,layer_1_Count));
+                end
+                if(layerCount >= 4)
+                    g_layer_2 = single(ones(1,layer_2_Count));
+                end
+                if(layerCount >= 5)
+                    g_layer_3 = single(ones(1,layer_3_Count));
+                end
+                if(layerCount >= 6)
+                    g_layer_4 = single(ones(1,layer_4_Count));
+                end
+                if(layerCount >= 7)
+                    g_layer_5 = single(ones(1,layer_5_Count));
+                end
+                if(layerCount >= 8)
+                    g_layer_6 = single(ones(1,layer_6_Count));
                 end
             end
         else
