@@ -118,7 +118,7 @@ end
 % later do preprocessing on them.
 
 [Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
-
+Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 
@@ -128,9 +128,10 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-% Test_Img = single(imrotate(Img_PointsOfInterest, -30, 'nearest', 'crop'));
-% Test_Img = translate_img(Img_PointsOfInterest, 0, -120);
-Test_Img = scaleImg(Img_PointsOfInterest, 1.4, 1.4);
+Test_Img = scaleImg(Img_PointsOfInterest, 1.6, 1.6);
+Test_Img = single(imrotate(Test_Img, -45, 'nearest', 'crop'));
+Test_Img = translate_img(Test_Img, -20, 0);
+
 figure(1);
 imshow(Test_Img);
 pause(1);
@@ -365,11 +366,12 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.1*q_mem(1))
+        if(q_Top_Layer<0.02*q_mem(1))
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
+            return;
             if(learnCount > 1)
-                return;
+%                 return;
             end
             learnCount = learnCount + 1;
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);

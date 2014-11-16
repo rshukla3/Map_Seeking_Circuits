@@ -58,8 +58,14 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     R2 = round2(affine_transformation_matrix_forward(2,1),0.01);
     affine_transformation_matrix_forward(1,3) = round2(affine_transformation_matrix_forward(1,3),0.01);
     affine_transformation_matrix_forward(2,3) = round2(affine_transformation_matrix_forward(2,3),0.01);
-    affine_transformation_matrix_forward(3,1) = round2(affine_transformation_matrix_forward(3,1),1);
-    affine_transformation_matrix_forward(3,2) = round2(affine_transformation_matrix_forward(3,2),1);
+    if(abs(affine_transformation_matrix_forward(3,1)) < 1)
+        affine_transformation_matrix_forward(3,1) = 0;
+    end
+    
+    if(abs(affine_transformation_matrix_forward(3,2)) < 1)
+        affine_transformation_matrix_forward(3,2) = 0;
+    end
+    
     if(R1 == 0 && R2 == 0)
         affine_transformation_matrix_forward(1,2) = round2(affine_transformation_matrix_forward(1,2),0.01);
         affine_transformation_matrix_forward(2,1) = round2(affine_transformation_matrix_forward(2,1),0.01);
@@ -104,8 +110,13 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     R2 = round2(affine_transformation_matrix_backward(2,1),0.01);
     affine_transformation_matrix_backward(1,3) = round2(affine_transformation_matrix_backward(1,3),0.01);
     affine_transformation_matrix_backward(2,3) = round2(affine_transformation_matrix_backward(2,3),0.01);
-    affine_transformation_matrix_backward(3,1) = round2(affine_transformation_matrix_backward(3,1),1);
-    affine_transformation_matrix_backward(3,2) = round2(affine_transformation_matrix_backward(3,2),1);
+    if(abs(affine_transformation_matrix_backward(3,1)) < 1)
+        affine_transformation_matrix_backward(3,1) = 0;
+    end
+    
+    if(abs(affine_transformation_matrix_backward(3,2)) < 1)
+        affine_transformation_matrix_backward(3,2) = 0;
+    end
     if(R1 == 0 && R2 == 0)
         affine_transformation_matrix_backward(1,2) = round2(affine_transformation_matrix_backward(1,2),0.01);
         affine_transformation_matrix_backward(2,1) = round2(affine_transformation_matrix_backward(2,1),0.01);

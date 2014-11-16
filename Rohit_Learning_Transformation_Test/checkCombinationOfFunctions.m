@@ -46,8 +46,8 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             Transformation_Matrices_Stored(:,:,Transformation_Matrices_Indices) = scaling_transformation_forward(:,:,1);
             Transformation_Matrices_Indices = Transformation_Matrices_Indices + 1;
             
-%             Transformation_Matrices_Stored(:,:,Transformation_Matrices_Indices) = scaling_transformation_backward(:,:,1);
-%             Transformation_Matrices_Indices = Transformation_Matrices_Indices + 1;
+            Transformation_Matrices_Stored(:,:,Transformation_Matrices_Indices) = scaling_transformation_backward(:,:,1);
+            Transformation_Matrices_Indices = Transformation_Matrices_Indices + 1;
             
             independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
             
@@ -95,9 +95,9 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             
             Transformation_Matrices_Indices = Transformation_Matrices_Indices + 1;
             
-%             Transformation_Matrices_Stored(:,:,Transformation_Matrices_Indices) = Learned_Transformation_Matrix_Backward(:,:,1);    
-%             
-%             Transformation_Matrices_Indices = Transformation_Matrices_Indices + 1;
+            Transformation_Matrices_Stored(:,:,Transformation_Matrices_Indices) = Learned_Transformation_Matrix_Backward(:,:,1);    
+            
+            Transformation_Matrices_Indices = Transformation_Matrices_Indices + 1;
            
             independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
             
