@@ -129,13 +129,19 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 Test_Img = scaleImg(Img_PointsOfInterest, 1.6, 1.6);
-Test_Img = single(imrotate(Test_Img, -45, 'nearest', 'crop'));
-Test_Img = translate_img(Test_Img, -20, 0);
+Test_Img = single(imrotate(Test_Img, -30, 'nearest', 'crop'));
+% Test_Img = translate_img(Test_Img, -20, 0);
 
 figure(1);
 imshow(Test_Img);
 pause(1);
 
+
+%% Is this the learning phase? 
+% Is this experiment implementing the learning phase? If not then next
+% layer or below threshold section should not be executed.
+
+learning = true; 
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
@@ -369,9 +375,9 @@ for i = 1:iterationCount
         if(q_Top_Layer<0.02*q_mem(1))
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
-            return;
-            if(learnCount > 1)
-%                 return;
+
+            if(learning == false)
+                return;
             end
             learnCount = learnCount + 1;
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
