@@ -128,8 +128,8 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = scaleImg(Img_PointsOfInterest, 1.6, 1.6);
-Test_Img = single(imrotate(Test_Img, -30, 'nearest', 'crop'));
+% Test_Img = scaleImg(Img_PointsOfInterest, 0.6, 0.6);
+Test_Img = single(imrotate(Img_PointsOfInterest, -30, 'nearest', 'crop'));
 % Test_Img = translate_img(Test_Img, -20, 0);
 
 figure(1);
@@ -372,7 +372,7 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.02*q_mem(1))
+        if(q_Top_Layer<0.1*q_mem(1))
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
 

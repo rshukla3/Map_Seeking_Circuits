@@ -102,6 +102,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
             independent = rankOfMatrix(affine_transformation_matrix_forward, Transformation_Matrices_Stored, index+1);
             
             if(independent == false)
+                fprintf('Independent is false\n');
                 isNewLayerAssigned = false;
                 findResult_forward = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
                 findResult_backward = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Backward);

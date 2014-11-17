@@ -8,7 +8,10 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     test_transformation(:,1) = Identity_Matrix(:);
     for i = 1:p
         tmp = transformation_forward(:,:,i); 
-        determinant_transformation(i) = round2(det(tmp),0.01);
+        determinant_transformation(i) = det(tmp);
+        if(abs(determinant_transformation(i)-1) < 0.01)
+            determinant_transformation(i) = 1;
+        end
         test_transformation(:,i+1) = tmp(:);        
     end    
     
@@ -16,15 +19,20 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     rankMatrices = rank(test_transformation)
     rankMatrices_learned_transformation = rank([test_transformation affine_transformation_matrix_forward(:)])
     
-    determinant_affine_transformation = round(det(affine_transformation_matrix_forward));
+    determinant_affine_transformation = (det(affine_transformation_matrix_forward));
     
+    if(abs(determinant_affine_transformation-1) < 0.01)
+        determinant_affine_transformation = 1;
+    end
+    determinant_transformation(1)
+    determinant_affine_transformation
     if((determinant_transformation(1) == 1) && determinant_affine_transformation == 1)
         if(rankMatrices_learned_transformation > rankMatrices)
             independent = true;
         end
     elseif(determinant_affine_transformation ~= 1)
         fprintf('Determinant is not equal to one\n');
-        if(isequal(test_transformation(:,2),Identity_Matrix(:))&& rankMatrices_learned_transformation ~= 2)
+        if(rankMatrices_learned_transformation > rankMatrices)
             independent = true;
         end
     end
