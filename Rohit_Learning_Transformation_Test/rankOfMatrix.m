@@ -22,8 +22,10 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     affine_transformation_tmp(4:6,1) = affine_transformation_matrix_forward(2,:);
     affine_transformation_tmp(7:9,1) = affine_transformation_matrix_forward(3,:);
     A = [test_transformation affine_transformation_tmp]
-    rankMatrices = rank(test_transformation, 0.001)
-    rankMatrices_learned_transformation = rank([test_transformation affine_transformation_tmp], 0.001)
+    test_transformation_row_echelon = rref(test_transformation);
+    rankMatrices = rank(test_transformation_row_echelon)
+    affine_transformation_row_echelon = rref([test_transformation affine_transformation_tmp]);
+    rankMatrices_learned_transformation = rank(affine_transformation_row_echelon)
     
     determinant_affine_transformation = (det(affine_transformation_matrix_forward));
     
