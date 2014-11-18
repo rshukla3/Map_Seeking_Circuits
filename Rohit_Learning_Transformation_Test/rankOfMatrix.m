@@ -22,11 +22,25 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     affine_transformation_tmp(4:6,1) = affine_transformation_matrix_forward(2,:);
     affine_transformation_tmp(7:9,1) = affine_transformation_matrix_forward(3,:);
     A = [test_transformation affine_transformation_tmp]
-    test_transformation_row_echelon = rref(test_transformation);
-    rankMatrices = rank(test_transformation_row_echelon)
-    affine_transformation_row_echelon = rref([test_transformation affine_transformation_tmp]);
-    rankMatrices_learned_transformation = rank(affine_transformation_row_echelon)
     
+    % rref calculates reduced row echelon value of the matrix. The purpose of
+    % adding this function was to get correct value of rank of the matrix.
+    % Due to approximation errors rank is coming out to be something
+    % strange or a wrong value. 
+    % Even after calculating rref values of the matrix, rank is still
+    % wrong. This might be due to tol or tolerance that is calculated for
+    % the rank. To take of this issue I've added threshold 0.01 for
+    % tolerance. Since we are considering values till second decimal place,
+    % that is why I am choosing the tolerance value to be 0.01.
+    test_transformation_row_echelon = rref(test_transformation);    
+    rankMatrices = rank(test_transformation_row_echelon, 0.01)
+    affine_transformation_row_echelon = rref([test_transformation affine_transformation_tmp]);
+    rankMatrices_learned_transformation = rank(affine_transformation_row_echelon, 0.01)
+    
+    
+    % Determinant is used to separate scaling function from all the other
+    % functions. For all of the other functions value of det is one,
+    % whereas, for scaling it is something different.
     determinant_affine_transformation = (det(affine_transformation_matrix_forward));
     
     if(abs(determinant_affine_transformation-1) < 0.01)
@@ -45,6 +59,9 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
         end
     elseif(determinant_affine_transformation ~= 1 && determinant_transformation(1) == 1)
         fprintf('Determinant affine transformation is not equal to one\n');
+        independent = true;
+    elseif(determinant_affine_transformation == 1 && determinant_transformation(1) ~= 1)
+        fprintf('Determinant stored transformation is not equal to one\n');
         independent = true;
     end
 end

@@ -128,9 +128,9 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = single(imrotate(Img_PointsOfInterest, -30, 'nearest', 'crop'));
-% Test_Img = scaleImg(Test_Img, 1.4, 1.4);
-Test_Img = translate_img(Test_Img, -60, -80);
+Test_Img = single(imrotate(Img_PointsOfInterest, 15, 'nearest', 'crop'));
+Test_Img = scaleImg(Test_Img, 1.4, 1.4);
+Test_Img = translate_img(Test_Img, -60, 40);
 
 figure(1);
 imshow(Test_Img);
@@ -141,7 +141,14 @@ pause(1);
 % Is this experiment implementing the learning phase? If not then next
 % layer or below threshold section should not be executed.
 
-learning = true; 
+% This is particularly meant for testing when scaling is implemented. I
+% noticed that even though the answers are correct, the MSC went into
+% learning phase. This might be due to discretization. When we scale up, a
+% lot of pixels get replicated or repeated. That is why q_mem value is
+% always higher than q_top_layer. To circumvent this problem I've added
+% this condition.
+
+learning = false; 
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
