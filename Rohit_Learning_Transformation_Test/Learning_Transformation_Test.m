@@ -23,10 +23,10 @@ end
 [Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
 
 [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
-%[output] = FeatureExtractors(Preprocessed_Img);
+
 % Test_Img = single(imrotate(Img_PointsOfInterest, -45, 'nearest', 'crop'));
-% Test_Img = translate_img(Img_PointsOfInterest, 180, 0);
-Test_Img = single(scaleImg(Img_PointsOfInterest, 0.6, 0.6));
+Test_Img = translate_img(Img_PointsOfInterest, 160, 0);
+% Test_Img = single(scaleImg(Img_PointsOfInterest, 0.6, 0.6));
 %% Transform the image matrix to single dimension.
 % Transform the image matrix to single dimension with only the value (or 
 % coordinates of the image) in it.
@@ -107,15 +107,24 @@ for i = 1:m
     end
 end
 
-M(3,1) = 0;
+if(abs(M(3,1)) < 1)
+    M(3,1) = 0;
+end
 
-M(3,2) = 0;
+if(abs(M(3,2)) < 1)
+    M(3,2) = 0;
+end
+
+
 
 [Test_Img_2] = imagePreProcessing('sailboat_2.jpg');
 figure(3);
 imshow(Test_Img_2);
 [tm,tn] = size(Test_Img_2);
-
+[output] = FeatureExtractors(Test_Img_2);
+figure(10);
+imshow(Test_Img_2); hold on;
+plot(output.selectStrongest(10));
 index = 1;
 
 New_Img = zeros(tm,tn);
@@ -137,3 +146,7 @@ disp(M);
 
 figure(4);
 imshow(New_Img);
+[output] = FeatureExtractors(New_Img);
+figure(12);
+imshow(New_Img); hold on;
+plot(output.selectStrongest(10));
