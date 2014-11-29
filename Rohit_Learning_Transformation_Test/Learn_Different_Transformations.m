@@ -117,10 +117,10 @@ end
 % Read the test image and the image that is to be stored in memory and
 % later do preprocessing on them.
 
-[Preprocessed_Img] = imagePreProcessing('sailboat_2.jpg');
-Img_PointsOfInterest = Preprocessed_Img;
+[Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
+% Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
-% [Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
+[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 
 %% Perform affine transformations on this memory image.
 % Since we do not have any movie of the memory images, so we will be
@@ -128,7 +128,7 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = single(imrotate(Img_PointsOfInterest, 15, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
 Test_Img = scaleImg(Test_Img, 1.4, 1.4);
 Test_Img = translate_img(Test_Img, -60, 40);
 
@@ -382,7 +382,7 @@ for i = 1:iterationCount
         if(q_Top_Layer<0.1*q_mem(1) && learning == true)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
-
+             
             if(learning == false)
                 return;
             end
