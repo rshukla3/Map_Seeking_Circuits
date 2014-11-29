@@ -130,7 +130,7 @@ end
 % Test_Img = Img_PointsOfInterest;
 Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
 Test_Img = scaleImg(Test_Img, 1.4, 1.4);
-Test_Img = translate_img(Test_Img, -60, 40);
+Test_Img = translate_img(Test_Img, 60, -40);
 
 figure(1);
 imshow(Test_Img);
@@ -148,7 +148,7 @@ pause(1);
 % always higher than q_top_layer. To circumvent this problem I've added
 % this condition.
 
-learning = false; 
+learning = true; 
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
@@ -243,7 +243,7 @@ g_mem(1:memory_units) = single(ones(memory_units,1));
 
 %% Initialize the value of q_mem(1).
 
-q_Top_Layer = dotproduct(Test_Img, Test_Img);
+q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
 q_mem(1) = q_Top_Layer;
 
 %% Count the number of times MSC tries to learn image.
@@ -314,7 +314,7 @@ for i = 1:iterationCount
 
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), g_scale, 'forward');    
     
-    q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
+    q_Top_Layer = dotproduct(f(:,:,layerCount), b(:,:,layerCount));
     
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
     q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
