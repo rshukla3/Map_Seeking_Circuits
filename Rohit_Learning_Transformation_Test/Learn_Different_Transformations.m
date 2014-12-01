@@ -129,7 +129,7 @@ end
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
-Test_Img = scaleImg(Test_Img, 1.4, 1.4);
+% Test_Img = scaleImg(Test_Img, 1.4, 1.4);
 Test_Img = translate_img(Test_Img, 60, -40);
 
 figure(1);
@@ -379,7 +379,7 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.1*q_mem(1) && learning == true)
+        if(q_Top_Layer<0.05*q_mem(1) && learning == true)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
              
@@ -627,6 +627,10 @@ for i = 1:iterationCount
     
 end
 
+[Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+
+D = det(Learned_Transformation_Matrix_Forward);
+fprintf('The value of determinant is: %d\n', D);
 figure(1);
 imshow(b(:,:,1));
 
