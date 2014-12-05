@@ -13,6 +13,11 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
         if(abs(determinant_transformation(i)-1) < 0.01)
             determinant_transformation(i) = 1;
         end
+        
+        test_transformation_1 = tmp(1,:);        
+        test_transformation_2 = tmp(2,:);        
+        test_transformation_3 = tmp(3,:);  
+        
         test_transformation(1:3,i+1) = tmp(1,:);        
         test_transformation(4:6,i+1) = tmp(2,:);        
         test_transformation(7:9,i+1) = tmp(3,:);        
@@ -21,7 +26,16 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     affine_transformation_tmp(1:3,1) = affine_transformation_matrix_forward(1,:);
     affine_transformation_tmp(4:6,1) = affine_transformation_matrix_forward(2,:);
     affine_transformation_tmp(7:9,1) = affine_transformation_matrix_forward(3,:);
+    
+    affine_transformation_tmp_1 = affine_transformation_matrix_forward(1,:);
+    affine_transformation_tmp_2 = affine_transformation_matrix_forward(2,:);
+    affine_transformation_tmp_3 = affine_transformation_matrix_forward(3,:);
+    
     A = [test_transformation affine_transformation_tmp]
+    
+    A_1 = [test_transformation_1 affine_transformation_tmp_1]
+    A_2 = [test_transformation_2 affine_transformation_tmp_2]
+    A_3 = [test_transformation_3 affine_transformation_tmp_3]
     
     % rref calculates reduced row echelon value of the matrix. The purpose of
     % adding this function was to get correct value of rank of the matrix.
@@ -37,6 +51,20 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     affine_transformation_row_echelon = rref([test_transformation affine_transformation_tmp]);
     rankMatrices_learned_transformation = rank(affine_transformation_row_echelon, 0.01)
     
+    test_transformation_row_echelon_1 = rref(test_transformation_1);    
+    rankMatrices_1 = rank(test_transformation_row_echelon_1, 0.01)
+    affine_transformation_row_echelon_1 = rref([test_transformation_1 affine_transformation_tmp_1]);
+    rankMatrices_learned_transformation_1 = rank(affine_transformation_row_echelon_1, 0.01)
+    
+    test_transformation_row_echelon_2 = rref(test_transformation_2);    
+    rankMatrices_2 = rank(test_transformation_row_echelon_2, 0.01)
+    affine_transformation_row_echelon_2 = rref([test_transformation_2 affine_transformation_tmp_2]);
+    rankMatrices_learned_transformation_2 = rank(affine_transformation_row_echelon_2, 0.01)
+    
+    test_transformation_row_echelon_3 = rref(test_transformation_3);    
+    rankMatrices_3 = rank(test_transformation_row_echelon_3, 0.01)
+    affine_transformation_row_echelon_3 = rref([test_transformation_3 affine_transformation_tmp_3]);
+    rankMatrices_learned_transformation_3 = rank(affine_transformation_row_echelon_3, 0.01)
     
     % Determinant is used to separate scaling function from all the other
     % functions. For all of the other functions value of det is one,
