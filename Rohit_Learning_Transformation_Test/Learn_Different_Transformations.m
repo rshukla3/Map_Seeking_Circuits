@@ -128,9 +128,9 @@ end
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
-% Test_Img = scaleImg(Test_Img, 1.4, 1.4);
-Test_Img = translate_img(Test_Img, 60, -40);
+%Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
+Test_Img = scaleImg(Img_PointsOfInterest, 1.0, 1.0);
+%Test_Img = translate_img(Test_Img, 60, -40);
 
 figure(1);
 imshow(Test_Img);
