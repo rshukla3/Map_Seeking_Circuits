@@ -118,9 +118,9 @@ end
 % later do preprocessing on them.
 
 [Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
-% Img_PointsOfInterest = Preprocessed_Img;
+Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
-[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
+%[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 
 %% Perform affine transformations on this memory image.
 % Since we do not have any movie of the memory images, so we will be
@@ -387,8 +387,8 @@ for i = 1:iterationCount
                 return;
             end
             learnCount = learnCount + 1;
-            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
-            
+%             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Img_PointsOfInterest, Test_Img);
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of

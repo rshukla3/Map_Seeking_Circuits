@@ -48,9 +48,9 @@ close all;
 % imshow(recovered);
 
 
-% Test_Img = translate_img(Preprocessed_Img, 170, 0);
-% Test_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));
-Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
+Test_Img = translate_img(Preprocessed_Img, 170, 0);
+% Test_Img = (imrotate(Preprocessed_Img, 15, 'bilinear', 'crop'));
+% Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
 ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
 ptsDistorted = detectSURFFeatures(Test_Img);
 
@@ -70,8 +70,26 @@ indexPairs = matchFeatures(featuresOriginal, featuresDistorted);
 matchedOriginal  = validPtsOriginal(indexPairs(:,1));
 matchedDistorted = validPtsDistorted(indexPairs(:,2));
 
+% [iDm, iDn] = size(matchedDistorted.Location);
+% [iOm, iOn] = size(matchedOriginal.Location);
+
+% matchedDistorted.Location = matchedDistorted.Location - 256.*ones(iDm, iDn);
+% matchedOriginal.Location = matchedOriginal.Location - 256.*ones(iOm, iOn);
 
 [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
+
+[iDm, iDn] = size(inlierDistorted.Location);
+[iOm, iOn] = size(inlierOriginal.Location);
+
+iDistorted = inlierDistorted.Location - 256.*ones(iDm, iDn);
+iOriginal = inlierOriginal.Location - 256.*ones(iOm, iOn);
+
+iDistorted(:,3) = 1;
+iOriginal(:,3) = 1;
+
+T1 = iDistorted\iOriginal
+T2 = iOriginal\iDistorted
+
 figure(4);
 showMatchedFeatures(Preprocessed_Img,Test_Img, inlierOriginal, inlierDistorted);
 title('Matching points (inliers only)');
