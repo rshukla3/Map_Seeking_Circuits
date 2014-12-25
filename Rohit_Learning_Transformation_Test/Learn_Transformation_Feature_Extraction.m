@@ -48,8 +48,8 @@ close all;
 % imshow(recovered);
 
 
-Test_Img = translate_img(Preprocessed_Img, 170, 0);
-% Test_Img = (imrotate(Preprocessed_Img, 15, 'bilinear', 'crop'));
+% Test_Img = translate_img(Preprocessed_Img, 170, 0);
+Test_Img = (imrotate(Preprocessed_Img, 15, 'bilinear', 'crop'));
 % Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
 ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
 ptsDistorted = detectSURFFeatures(Test_Img);
@@ -78,17 +78,19 @@ matchedDistorted = validPtsDistorted(indexPairs(:,2));
 
 [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
 
+[tform_1, inlierOriginal_1, inlierDistorted_1] = estimateGeometricTransform(matchedOriginal, matchedDistorted.Location, 'similarity');
+res = isTranslation(tform)
 [iDm, iDn] = size(inlierDistorted.Location);
 [iOm, iOn] = size(inlierOriginal.Location);
 
-iDistorted = inlierDistorted.Location - 256.*ones(iDm, iDn);
-iOriginal = inlierOriginal.Location - 256.*ones(iOm, iOn);
+iDistorted = (inlierDistorted.Location - 256.*ones(iDm, iDn));
+iOriginal = (inlierOriginal.Location - 256.*ones(iOm, iOn));
 
 iDistorted(:,3) = 1;
 iOriginal(:,3) = 1;
 
-T1 = iDistorted\iOriginal
-T2 = iOriginal\iDistorted
+T1 = round2(iDistorted\iOriginal, 0.01)
+T2 = round2(iOriginal\iDistorted, 0.01)
 
 figure(4);
 showMatchedFeatures(Preprocessed_Img,Test_Img, inlierOriginal, inlierDistorted);
@@ -103,8 +105,9 @@ imshow(Preprocessed_Img); hold on;
 plot(inlierOriginal.selectStrongest(10));
 
 Tinv  = tform.invert.T;
+Tinv_1  = tform_1.invert.T;
 
-ss = Tinv(2,1);
-sc = Tinv(1,1);
+ss = T1(2,1);
+sc = T1(1,1);
 scale_recovered = sqrt(ss*ss + sc*sc)
 theta_recovered = atan2(ss,sc)*180/pi
