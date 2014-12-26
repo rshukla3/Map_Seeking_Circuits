@@ -129,7 +129,7 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 %Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
-Test_Img = scaleImg(Img_PointsOfInterest, 1.0, 1.0);
+Test_Img = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
 %Test_Img = translate_img(Test_Img, 60, -40);
 
 figure(1);
@@ -627,10 +627,10 @@ for i = 1:iterationCount
     
 end
 
-[Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
-
-D = det(Learned_Transformation_Matrix_Forward);
-fprintf('The value of determinant is: %d\n', D);
+% [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
+% 
+% D = det(Learned_Transformation_Matrix_Forward);
+% fprintf('The value of determinant is: %d\n', D);
 figure(1);
 imshow(b(:,:,1));
 
