@@ -77,7 +77,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
             end
         end
     end
-    
+    A31 = affine_transformation_matrix_forward(3,1);
+    A32 = affine_transformation_matrix_forward(3,2);
+    affine_transformation_matrix_forward(3,1) = -A32;
+    affine_transformation_matrix_forward(3,2) = -A31;
     if(abs(affine_transformation_matrix_forward(3,1)) < 5)
         affine_transformation_matrix_forward(3,1) = 0;
     end
@@ -121,7 +124,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
             end
         end
     end
-    
+    A31 = affine_transformation_matrix_backward(3,1);
+    A32 = affine_transformation_matrix_backward(3,2);
+    affine_transformation_matrix_backward(3,1) = -A32;
+    affine_transformation_matrix_backward(3,2) = -A31;
     if(abs(affine_transformation_matrix_backward(3,1)) < 5)
         affine_transformation_matrix_backward(3,1) = 0;
     end
