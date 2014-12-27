@@ -9,7 +9,7 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
 %     test_transformation(:,2) = Identity_Matrix(:);
     for i = 1:p
         tmp = transformation_forward(:,:,i); 
-        determinant_transformation(i) = det(tmp);
+        determinant_transformation(i) = round2(det(tmp),0.1);
         if(abs(determinant_transformation(i)-1) < 0.01)
             determinant_transformation(i) = 1;
         end
@@ -69,7 +69,7 @@ function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, tr
     % Determinant is used to separate scaling function from all the other
     % functions. For all of the other functions value of det is one,
     % whereas, for scaling it is something different.
-    determinant_affine_transformation = (det(affine_transformation_matrix_forward));
+    determinant_affine_transformation = round2(det(affine_transformation_matrix_forward),0.1);
     
     if(abs(determinant_affine_transformation-1) < 0.01)
         determinant_affine_transformation = 1;

@@ -49,11 +49,10 @@ close all;
 
 
 % Test_Img = translate_img(Preprocessed_Img, 170, 0);
-Test_Img = (imrotate(Preprocessed_Img, 15, 'bilinear', 'crop'));
+Test_Img = (imrotate(Preprocessed_Img, -15, 'bilinear', 'crop'));
 % Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
 ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
 ptsDistorted = detectSURFFeatures(Test_Img);
-
 figure(10);
 imshow(Preprocessed_Img); hold on;
 plot(ptsOriginal.selectStrongest(10));

@@ -42,7 +42,7 @@ Layer_Img_sum = g(1)*Test_Img;
 % and the intensity or the pixel value.
 [coordinates]= getPointsOfInterest(Test_Img); 
 
-for i = 2:layerCount+1   
+for i = 2:layerCount+1  
     
         if((g(i) ~=0)&&(strcmpi(path, 'forward')))            
             g_T = g(i);
@@ -61,5 +61,8 @@ for i = 2:layerCount+1
 end
 
 Layer_Img = single(Layer_Img_sum); 
+figure(1);
+imshow(Layer_Img);
+pause(1);
 end
 
