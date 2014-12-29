@@ -8,7 +8,7 @@ clc;
 iterationCount = 10;
 
 % 2. Read the already stored images from tif image file.
-memory_units = 1;
+memory_units = 2;
 
 % 3. Layer count: Has the number of layers currently available.
 
@@ -111,13 +111,39 @@ if exist(fname, 'file') ~= 2
     save('scaling_transformation_backward.mat', 'scaling_transformation_backward');    
 end
 
+%% Read the images that have to be stored in the memory. 
+
+% Two separate memory locations will be allocated for storing images. One
+% memory location will store all the edge detected images, that will be
+% later used in MSC. 
+% Second memory location will store segmented images that will be later
+% used for learning transformations.
+
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('pepper_2.jpg');
+[m,n] = size(Preprocessed_Img);
+mem_img(1:m, 1:n, 1) = Preprocessed_Img;
+learn_mem_img(1:m,1:n,1) = Memory_PreProcessed_Img;
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
+[m,n] = size(Preprocessed_Img);
+mem_img(1:m, 1:n, 2) = Preprocessed_Img;
+learn_mem_img(1:m,1:n,2) = Memory_PreProcessed_Img;
+
+fname = 'mem_img.mat';
+if exist(fname, 'file') ~= 2
+    save('mem_img.mat', 'mem_img');    
+end
+
+fname = 'learn_mem_img.mat';
+if exist(fname, 'file') ~= 2
+    save('learn_mem_img.mat', 'learn_mem_img');    
+end
+
 
 %% Read the test image and the image that is to be stored in memory.
 
-% Read the test image and the image that is to be stored in memory and
-% later do preprocessing on them.
+% Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('pepper_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -128,10 +154,14 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
-Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 30, 'nearest', 'crop'));
+
+% Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
+% Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 30, 'nearest', 'crop'));
+
 %Test_Img = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
-% Test_Img = translate_img(Img_PointsOfInterest, -100, 0);
+
+Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
+Learning_Test_Img = translate_img(Memory_PreProcessed_Img, 0, 100);
 
 figure(1);
 imshow(Test_Img);
@@ -367,7 +397,7 @@ for i = 1:iterationCount
     q_scaling(1:scaleCount) = dotproduct(Tf_scaling, b(:,:,layerCount));
     
     %Calculate the value of q_layer_mem.    
-    q_layer_mem(1:memory_units) = dotproduct(Img_PointsOfInterest, f(:,:,layerCount));       
+    q_layer_mem(1:memory_units) = dotproduct(mem_img, f(:,:,layerCount));       
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
     

@@ -1,5 +1,15 @@
 function [ b_memoryLayer ] = layer_memory( g_mem, Memory_Img, memory_units )
-%Calculates the superposition of images on the backward path.
+%Get the images stored in the memory from the files tha have been written.
+
+
+fname = strcat('mem_img', '.mat');
+if exist(fname, 'file') == 2
+    load(fname, 'mem_img');   
+    [rows,columns,memory_units] = size(mem_img);
+else
+    fprintf('Specified file not found in forward path for layer_1\n');
+end          
+
 
 % g_mem is the g value for competing memory layer values and Memory_Img has
 % all the memory images.
@@ -7,12 +17,12 @@ function [ b_memoryLayer ] = layer_memory( g_mem, Memory_Img, memory_units )
 % Get the dimensions of the first Memory_Img and use it to initialize the
 % dimension of superimposed images.
 
-[m,n] = size(Memory_Img(:,:,1));
+[m,n] = size(mem_img(:,:,1));
 
 superposition = single(zeros(m,n));
 
 for i=1:memory_units
-    superposition = superposition + g_mem(i)*(Memory_Img(:,:,i));
+    superposition = superposition + g_mem(i)*(mem_img(:,:,i));
 end
 
 b_memoryLayer = superposition;
