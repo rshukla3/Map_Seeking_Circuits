@@ -117,7 +117,7 @@ end
 % Read the test image and the image that is to be stored in memory and
 % later do preprocessing on them.
 
-[Preprocessed_Img] = imagePreProcessing('pepper_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('pepper_2.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -128,9 +128,10 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-%Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
+Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 30, 'nearest', 'crop'));
 %Test_Img = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
-Test_Img = translate_img(Img_PointsOfInterest, 50, 0);
+% Test_Img = translate_img(Img_PointsOfInterest, -100, 0);
 
 figure(1);
 imshow(Test_Img);
@@ -379,7 +380,7 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.05*q_mem(1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.1*q_mem(1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
              
@@ -388,7 +389,7 @@ for i = 1:iterationCount
             end
             learnCount = learnCount + 1;
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
-            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Img_PointsOfInterest, Test_Img);
+            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of

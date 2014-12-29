@@ -3,7 +3,7 @@ clear all;
 close all;
 
 [Preprocessed_Img] = image_rgb2gray('pepper_2.jpg');
-
+[Test_Img] = image_rgb2gray('sailboat_2.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
 % Test_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));
@@ -49,7 +49,7 @@ close all;
 
 
 % Test_Img = translate_img(Preprocessed_Img, 170, 0);
-Test_Img = (imrotate(Preprocessed_Img, -15, 'bilinear', 'crop'));
+% Test_Img = (imrotate(Preprocessed_Img, -15, 'bilinear', 'crop'));
 % Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
 ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
 ptsDistorted = detectSURFFeatures(Test_Img);
@@ -77,7 +77,7 @@ matchedDistorted = validPtsDistorted(indexPairs(:,2));
 
 [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
 
-[tform_1, inlierOriginal_1, inlierDistorted_1] = estimateGeometricTransform(matchedOriginal, matchedDistorted.Location, 'similarity');
+% [tform_1, inlierOriginal_1, inlierDistorted_1] = estimateGeometricTransform(matchedOriginal, matchedDistorted.Location, 'similarity');
 res = isTranslation(tform)
 [iDm, iDn] = size(inlierDistorted.Location);
 [iOm, iOn] = size(inlierOriginal.Location);
@@ -104,7 +104,7 @@ imshow(Preprocessed_Img); hold on;
 plot(inlierOriginal.selectStrongest(10));
 
 Tinv  = tform.invert.T;
-Tinv_1  = tform_1.invert.T;
+% Tinv_1  = tform_1.invert.T;
 
 ss = T1(2,1);
 sc = T1(1,1);

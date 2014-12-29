@@ -5,22 +5,22 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 %   Based on these set of memory image coordinates and the new input image,
 %   learn the new affine trasformation.
     
-    Memory_Image = imageFeatExtractProcessing(Preprocessed_Img);
-    Input_Img = imageFeatExtractProcessing(Test_Img);
-    figure(12);
-    imshow(Input_Img);
-    ptsOriginal  = detectSURFFeatures(Memory_Image);
-    ptsDistorted = detectSURFFeatures(Input_Img);
+%     Memory_Image = imageFeatExtractProcessing(Preprocessed_Img);
+%     Input_Img = imageFeatExtractProcessing(Test_Img);
+%     figure(12);
+%     imshow(Input_Img);
+    ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
+    ptsDistorted = detectSURFFeatures(Test_Img);
     
-    figure(10);
-    imshow(Memory_Image); hold on;
-    plot(ptsOriginal.selectStrongest(10));
+%     figure(10);
+%     imshow(Memory_Image); hold on;
+%     plot(ptsOriginal.selectStrongest(10));
 
 %      hold on;
 %     plot(ptsDistorted.selectStrongest(10));
 
-    [featuresOriginal,   validPtsOriginal]  = extractFeatures(Memory_Image,  ptsOriginal);
-    [featuresDistorted, validPtsDistorted]  = extractFeatures(Input_Img, ptsDistorted);
+    [featuresOriginal,   validPtsOriginal]  = extractFeatures(Preprocessed_Img,  ptsOriginal);
+    [featuresDistorted, validPtsDistorted]  = extractFeatures(Test_Img, ptsDistorted);
 
     indexPairs = matchFeatures(featuresOriginal, featuresDistorted);
 
@@ -30,7 +30,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 
     [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
     figure(4);
-    showMatchedFeatures(Memory_Image,Input_Img, inlierOriginal, inlierDistorted);
+    showMatchedFeatures(Preprocessed_Img,Test_Img, inlierOriginal, inlierDistorted);
     [iDm, iDn] = size(inlierDistorted.Location);
     [iOm, iOn] = size(inlierOriginal.Location);
     T1 = tform.invert.T
