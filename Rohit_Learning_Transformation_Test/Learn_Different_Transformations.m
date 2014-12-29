@@ -25,7 +25,7 @@ layerCount = 1+layersSaved;
 
 % 4. Set the value of constants k, for multiplication with g.
 
-k_mem = 0.3;
+k_mem = 0.5;
 k_layer_1 = 0.5;
 k_layer_2 = 0.5;
 k_layer_3 = 0.5;
@@ -155,13 +155,13 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-% Test_Img = single(imrotate(Img_PointsOfInterest, 30, 'nearest', 'crop'));
-% Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 30, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
+Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, -15, 'nearest', 'crop'));
 
 %Test_Img = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
 
-Test_Img = translate_img(Img_PointsOfInterest, 0, 100);
-Learning_Test_Img = translate_img(Memory_PreProcessed_Img, 0, 100);
+% Test_Img = translate_img(Test_Img_1, -50, 100);
+% Learning_Test_Img = translate_img(Learning_Test_Img_1, -50, 100);
 
 figure(1);
 imshow(Test_Img);
@@ -419,7 +419,8 @@ for i = 1:iterationCount
             end
             learnCount = learnCount + 1;
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
-            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
+%              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
+            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img);
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
