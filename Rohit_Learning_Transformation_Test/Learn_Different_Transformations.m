@@ -8,7 +8,7 @@ clc;
 iterationCount = 10;
 
 % 2. Read the already stored images from tif image file.
-memory_units = 2;
+memory_units = 1;
 
 % 3. Layer count: Has the number of layers currently available.
 
@@ -123,10 +123,10 @@ end
 [m,n] = size(Preprocessed_Img);
 mem_img(1:m, 1:n, 1) = Preprocessed_Img;
 learn_mem_img(1:m,1:n,1) = Memory_PreProcessed_Img;
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
-[m,n] = size(Preprocessed_Img);
-mem_img(1:m, 1:n, 2) = Preprocessed_Img;
-learn_mem_img(1:m,1:n,2) = Memory_PreProcessed_Img;
+% [Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
+% [m,n] = size(Preprocessed_Img);
+% mem_img(1:m, 1:n, 2) = Preprocessed_Img;
+% learn_mem_img(1:m,1:n,2) = Memory_PreProcessed_Img;
 
 fname = 'mem_img.mat';
 if exist(fname, 'file') ~= 2
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('pepper_2.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -155,8 +155,8 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-Test_Img = single(imrotate(Img_PointsOfInterest, -15, 'nearest', 'crop'));
-Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, -15, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, 75, 'nearest', 'crop'));
+Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 75, 'nearest', 'crop'));
 
 %Test_Img = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
 
@@ -180,6 +180,14 @@ pause(1);
 % this condition.
 
 learning = true; 
+
+fname = 'g_mem.mat';
+if exist(fname, 'file') ~= 2
+    save('g_mem.mat', 'memory_units');    
+else
+    load('g_mem.mat', 'memory_units');    
+end
+g_mem = single(ones(1,memory_units));
 %% Degenerate layer that just does identity multiplication.
 
 % We will start off with a degerate layer that just performs identity
@@ -287,7 +295,7 @@ learnCount = 1;
 for i = 1:iterationCount
     
 % Set the value of backward path 
-    b(:,:,layerCount) = layer_memory(g_mem, Img_PointsOfInterest, memory_units);       
+    [b(:,:,layerCount), mem_img] = layer_memory(g_mem, Img_PointsOfInterest, memory_units);       
     
     f(:,:,1) = (Test_Img);
 
@@ -410,7 +418,7 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.1*q_mem(1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.08*q_mem(1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
              
@@ -418,17 +426,56 @@ for i = 1:iterationCount
 %                 break;
             end
             learnCount = learnCount + 1;
+            isNewLayerAssigned = false;
+            appendedToLayer = 0;
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
-            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img);
+            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img);
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
             % them. 
-            [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount);
+            if(objectFound == true)
+                [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount);
+                fprintf('appendedToLayer: %d\n', appendedToLayer);
+            else
+                memory_units = memory_units + 1;
+                g_mem = single(ones(1,memory_units));
+                fname = 'g_mem.mat';
+                if exist(fname, 'file') == 2
+                    save(fname, 'memory_units');    
+                else
+                    fprintf('File for g_mem does not exist\n');
+                    return;
+                end 
+                
+                % Since a new object has been added, re-implement the
+                % entire MSC functions with all of the other g values
+                % re-initialized to one.
+                g_mem = single(ones(1,memory_units));
+                g_scale = single(ones(1,scaleCount));
+                if(layerCount >= 3)
+                    g_layer_1 = single(ones(1,layer_1_Count));
+                end
+                if(layerCount >= 4)
+                    g_layer_2 = single(ones(1,layer_2_Count));
+                end
+                if(layerCount >= 5)
+                    g_layer_3 = single(ones(1,layer_3_Count));
+                end
+                if(layerCount >= 6)
+                    g_layer_4 = single(ones(1,layer_4_Count));
+                end
+                if(layerCount >= 7)
+                    g_layer_5 = single(ones(1,layer_5_Count));
+                end
+                if(layerCount >= 8)
+                    g_layer_6 = single(ones(1,layer_6_Count));
+                end
+            end
             
-            fprintf('appendedToLayer: %d\n', appendedToLayer);
-            if(isNewLayerAssigned == true)
+            
+            if(isNewLayerAssigned == true && objectFound == true)
                 layerCount = layerCount+1;
                 fprintf('A new layer has been assigned\n');
                 % Update the layer count for MSC.
@@ -509,7 +556,7 @@ for i = 1:iterationCount
                     end          
                 end
                 
-            elseif(appendedToLayer ~= 0)
+            elseif(appendedToLayer ~= 0 && objectFound == true)
                 fprintf('Value of appendedToLayer in update case is: %d\n', appendedToLayer);
                 gCount = updateIndependentLayer(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, appendedToLayer); 
                 % Need to update gCount for all the layers. This part was
@@ -597,6 +644,10 @@ for i = 1:iterationCount
                         return;
                     end                     
                 end
+                % Since a new transformation function has been learnt,
+                % re-implement the entire MSC functions with all of the
+                % other g values re-initialized to one.
+                g_mem = single(ones(1,memory_units));
                 g_scale = single(ones(1,scaleCount));
                 if(layerCount >= 3)
                     g_layer_1 = single(ones(1,layer_1_Count));

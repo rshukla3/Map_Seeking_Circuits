@@ -1,4 +1,4 @@
-function [ b_memoryLayer ] = layer_memory( g_mem, Memory_Img, memory_units )
+function [ b_memoryLayer, mem_img_output ] = layer_memory( g_mem, Memory_Img, memory_units )
 %Get the images stored in the memory from the files tha have been written.
 
 
@@ -22,7 +22,9 @@ end
 superposition = single(zeros(m,n));
 
 for i=1:memory_units
-    superposition = superposition + g_mem(i)*(mem_img(:,:,i));
+    T = g_mem(i)*(mem_img(:,:,i));
+    mem_img_output(1:m,1:n,i) = T;
+    superposition = superposition + T;
 end
 
 b_memoryLayer = superposition;

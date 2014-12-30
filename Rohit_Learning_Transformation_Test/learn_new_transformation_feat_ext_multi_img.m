@@ -1,4 +1,4 @@
-function [ affine_transformation_matrix_forward, affine_transformation_matrix_backward ] = learn_new_transformation_feat_ext_multi_img( Test_Img )
+function [ affine_transformation_matrix_forward, affine_transformation_matrix_backward, objectFound ] = learn_new_transformation_feat_ext_multi_img( Test_Img, Edge_Detected_Img )
 %learn_new_transformation: Given the set of memory corrdinates, learn the
 %new affine transformation
 %   Img_PointsOfInterest contain the set of coordinates from memory image.
@@ -15,6 +15,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     
     [lm, ln, memory_units] = size(learn_mem_img);
     
+    objectFound = false;
+    affine_transformation_matrix_forward = [1 0 0; 0 1 0; 0 0 1];
+    affine_transformation_matrix_backward = [1 0 0; 0 1 0; 0 0 1];
     for mu = 1:memory_units
         Preprocessed_Img(1:lm, 1:ln) = learn_mem_img(1:lm, 1:ln, mu);
         ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
@@ -42,8 +45,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
             sc = T1(1,1);
             T1_scale_recovered = round2(sqrt(ss*ss + sc*sc), 0.1);
             T1_theta_recovered = round2(atan2(ss,sc)*180/pi, 1);
-            if((T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) > 5)||(T1_scale_recovered > 1.1 && T1_scale_recovered < 0.9 && abs(T1_theta_recovered) < 5))
+            if((T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) > 5)||(T1_scale_recovered > 1.1 && T1_scale_recovered < 0.9 && abs(T1_theta_recovered) < 5) || (T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) >= 0 && abs(T1_theta_recovered <= 2)))
     
+                objectFound = true;
+                
                 iDistorted = (inlierDistorted.Location - 256.*ones(iDm, iDn));
                 iOriginal = (inlierOriginal.Location - 256.*ones(iOm, iOn));
 
@@ -145,5 +150,17 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
             end
         end
     end
+    objectFound
+    if(objectFound == false)
+        % If the input object was not found, then,
+        % store the new object in the memory.
+        learn_mem_img(:,:,memory_units+1) = Test_Img;
+        save('learn_mem_img.mat', 'learn_mem_img');        
+        load('mem_img.mat', 'mem_img'); 
+        [m,n,Values] = size(mem_img);
+        mem_img(:,:,Values+1) = Edge_Detected_Img;
+        save('mem_img.mat', 'mem_img');
+    end
+    
 end
 
