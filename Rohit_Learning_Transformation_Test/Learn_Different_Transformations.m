@@ -155,11 +155,11 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-Test_Img_1 = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
-Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, 1.2, 1.2);
+% Test_Img = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
+% Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, 1.2, 1.2);
 
-Test_Img = single(imrotate(Test_Img_1, -15, 'nearest', 'crop'));
-Learning_Test_Img = single(imrotate(Learning_Test_Img_1, -15, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, 0, 'nearest', 'crop'));
+Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 0, 'nearest', 'crop'));
 
 % Test_Img = translate_img(Img_PointsOfInterest, 0, -80);
 % Learning_Test_Img = translate_img(Memory_PreProcessed_Img, 0, -80);
@@ -354,7 +354,7 @@ for i = 1:iterationCount
 
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), g_scale, 'forward');    
     
-%     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
+    q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
     
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
     q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
@@ -410,8 +410,8 @@ for i = 1:iterationCount
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
     
-%     F_1 = sum(sum(f(:,:,1)));
-%     B_1 = sum(sum(b(:,:,1)));
+    F_1 = memory_units*sum(sum(f(:,:,1)));
+    B_1 = sum(sum(b(:,:,layerCount)));
     
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
@@ -420,10 +420,10 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.08*q_mem(1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.1*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
-            
+            Q = q_mem(1)*(B_1/F_1)
             if(learnCount == 2)
 %                 break;
             end
