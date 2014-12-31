@@ -13,6 +13,14 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         fprintf('Specified file not found in forward path for layer_mem_img\n');
     end
     
+    fname = strcat('mem_img', '.mat');
+    if exist(fname, 'file') == 2
+        load(fname, 'mem_img');   
+        [rows,columns,memory_units_edge_detected] = size(mem_img);
+    else
+        fprintf('Specified file not found in forward path for mem_img\n');
+    end
+    
     [lm, ln, memory_units] = size(learn_mem_img);
     
     objectFound = false;
@@ -45,9 +53,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
             sc = T1(1,1);
             T1_scale_recovered = round2(sqrt(ss*ss + sc*sc), 0.1);
             T1_theta_recovered = round2(atan2(ss,sc)*180/pi, 1);
-            if((T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) > 5)||(T1_scale_recovered > 1.1 && T1_scale_recovered < 0.9 && abs(T1_theta_recovered) < 5) || (T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) >= 0 && abs(T1_theta_recovered <= 2)))
+%             if((T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) > 5)||(T1_scale_recovered > 1.1 && T1_scale_recovered < 0.9 && abs(T1_theta_recovered) < 5) || (T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) >= 0 && abs(T1_theta_recovered <= 2)))
     
-                objectFound = true;
+%                 objectFound = true;
                 
                 iDistorted = (inlierDistorted.Location - 256.*ones(iDm, iDn));
                 iOriginal = (inlierOriginal.Location - 256.*ones(iOm, iOn));
@@ -100,6 +108,21 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 end
 
                 affine_transformation_matrix_forward
+                
+                % Get the new image after applying this learnt
+                % transformation and see whether it matches the image in
+                % the memory.
+                
+                % coordinates those positions in the image that have non-zero pixel values
+                % and the intensity or the pixel value.
+                [m,n] = size(Test_Img);
+                [coordinates]= getPointsOfInterest(Edge_Detected_Img); 
+                T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
+                
+                D = dotproduct(T,mem_img(:,:,mu))
+                
+            if(D>20)
+                objectFound = true;
                 ss = affine_transformation_matrix_forward(2,1);
                 sc = affine_transformation_matrix_forward(1,1);
                 scale_recovered = sqrt(ss*ss + sc*sc)
