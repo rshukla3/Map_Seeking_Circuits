@@ -63,24 +63,24 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 iDistorted(:,3) = 1;
                 iOriginal(:,3) = 1;
 
-                affine_transformation_matrix_forward = round2(iOriginal\iDistorted, 0.01);
+                affine_transformation_matrix_forward = round2(iOriginal\iDistorted, 0.01)
 
                 [am, an] = size(affine_transformation_matrix_forward);
 
-                if(1-abs(affine_transformation_matrix_forward(1,1)) < 0.01)
+                if(abs(1-abs(affine_transformation_matrix_forward(1,1))) < 0.01)
                     affine_transformation_matrix_forward(1,1) = 1;
                 end
 
-                if(1-abs(affine_transformation_matrix_forward(2,2)) < 0.01)
+                if(abs(1-abs(affine_transformation_matrix_forward(2,2))) < 0.01)
                     affine_transformation_matrix_forward(2,2) = 1;
                 end
 
 
 
-                A11 = affine_transformation_matrix_forward(1,1);
+                A11 = affine_transformation_matrix_forward(1,1)
                 A12 = affine_transformation_matrix_forward(1,2);
                 A21 = affine_transformation_matrix_forward(2,1);
-                A22 = affine_transformation_matrix_forward(2,2);
+                A22 = affine_transformation_matrix_forward(2,2)
 
                 affine_transformation_matrix_forward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
                 affine_transformation_matrix_forward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2,0.01);
@@ -119,14 +119,19 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 [coordinates]= getPointsOfInterest(Edge_Detected_Img); 
                 T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
                 
-                D = dotproduct(T,mem_img(:,:,mu))
+                D_1 = dotproduct(T,mem_img(:,:,mu))
                 
-            if(D>20)
+                [coordinates]= getPointsOfInterest(mem_img(:,:,mu)); 
+                T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
+                
+                D_2 = dotproduct(Edge_Detected_Img,T)
+                
+            if(D_1>20 || D_2 > 20)
                 objectFound = true;
                 ss = affine_transformation_matrix_forward(2,1);
                 sc = affine_transformation_matrix_forward(1,1);
-                scale_recovered = sqrt(ss*ss + sc*sc)
-                theta_recovered = atan2(ss,sc)*180/pi
+                scale_recovered = sqrt(ss*ss + sc*sc);
+                theta_recovered = atan2(ss,sc)*180/pi;
                 affine_transformation_matrix_backward = round2(iDistorted\iOriginal, 0.01);
 
                 [am, an] = size(affine_transformation_matrix_backward);
@@ -140,10 +145,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 end
 
 
-                A11 = affine_transformation_matrix_backward(1,1);
+                A11 = affine_transformation_matrix_backward(1,1)
                 A12 = affine_transformation_matrix_backward(1,2);
                 A21 = affine_transformation_matrix_backward(2,1);
-                A22 = affine_transformation_matrix_backward(2,2);
+                A22 = affine_transformation_matrix_backward(2,2)
 
                 affine_transformation_matrix_backward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
                 affine_transformation_matrix_backward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2, 0.01);
@@ -170,6 +175,14 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 end
 
                 affine_transformation_matrix_backward
+                
+                if(D_2 > 20 && D_1 < 20)
+                    F = affine_transformation_matrix_forward;
+                    B = affine_transformation_matrix_backward;
+                    
+                    affine_transformation_matrix_forward = B;
+                    affine_transformation_matrix_backward = F;
+                end
             end
         end
     end
