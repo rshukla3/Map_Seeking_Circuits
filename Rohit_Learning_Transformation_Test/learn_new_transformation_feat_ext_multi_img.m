@@ -57,13 +57,21 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     
 %                 objectFound = true;
                 
-                iDistorted = (inlierDistorted.Location - 256.*ones(iDm, iDn));
-                iOriginal = (inlierOriginal.Location - 256.*ones(iOm, iOn));
+                iDistorted_tmp = (inlierDistorted.Location - 256.*ones(iDm, iDn));
+                iOriginal_tmp = (inlierOriginal.Location - 256.*ones(iOm, iOn));
 
-                iDistorted(:,3) = 1;
-                iOriginal(:,3) = 1;
+                iDistorted_tmp(:,3) = 1;
+                iOriginal_tmp(:,3) = 1;
+                
+                iDistorted(:,1) = iDistorted_tmp(:,2);
+                iDistorted(:,2) = iDistorted_tmp(:,1);
+                iDistorted(:,3) = iDistorted_tmp(:,3);
+                
+                iOriginal(:,1) = iOriginal_tmp(:,2);
+                iOriginal(:,2) = iOriginal_tmp(:,1);
+                iOriginal(:,3) = iOriginal_tmp(:,3);
 
-                affine_transformation_matrix_forward = round2(iOriginal\iDistorted, 0.01)
+                affine_transformation_matrix_forward = round2(iDistorted\iOriginal, 0.01)
 
                 [am, an] = size(affine_transformation_matrix_forward);
 
@@ -75,12 +83,18 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                     affine_transformation_matrix_forward(2,2) = 1;
                 end
 
+                if(abs(affine_transformation_matrix_forward(2,1)) < 0.1)
+                    affine_transformation_matrix_forward(2,1) = 0;
+                end
 
+                if(abs(affine_transformation_matrix_forward(1,2)) < 0.1)
+                    affine_transformation_matrix_forward(1,2) = 0;
+                end
 
-                A11 = affine_transformation_matrix_forward(1,1)
+                A11 = affine_transformation_matrix_forward(1,1);
                 A12 = affine_transformation_matrix_forward(1,2);
                 A21 = affine_transformation_matrix_forward(2,1);
-                A22 = affine_transformation_matrix_forward(2,2)
+                A22 = affine_transformation_matrix_forward(2,2);
 
                 affine_transformation_matrix_forward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
                 affine_transformation_matrix_forward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2,0.01);
@@ -95,10 +109,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                         end
                     end
                 end
-                A31 = affine_transformation_matrix_forward(3,1);
-                A32 = affine_transformation_matrix_forward(3,2);
-                affine_transformation_matrix_forward(3,1) = -A32;
-                affine_transformation_matrix_forward(3,2) = -A31;
+%                 A31 = affine_transformation_matrix_forward(3,1);
+%                 A32 = affine_transformation_matrix_forward(3,2);
+%                 affine_transformation_matrix_forward(3,1) = -A32;
+%                 affine_transformation_matrix_forward(3,2) = -A31;
                 if(abs(affine_transformation_matrix_forward(3,1)) < 5)
                     affine_transformation_matrix_forward(3,1) = 0;
                 end
@@ -121,29 +135,36 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 
                 D_1 = dotproduct(T,mem_img(:,:,mu))
                 
-                [coordinates]= getPointsOfInterest(mem_img(:,:,mu)); 
-                T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
+%                 [coordinates]= getPointsOfInterest(mem_img(:,:,mu)); 
+%                 T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
+%                 
+%                 D_2 = dotproduct(Edge_Detected_Img,T)
                 
-                D_2 = dotproduct(Edge_Detected_Img,T)
-                
-            if(D_1>20 || D_2 > 20)
+            if(D_1>20)
                 objectFound = true;
                 ss = affine_transformation_matrix_forward(2,1);
                 sc = affine_transformation_matrix_forward(1,1);
                 scale_recovered = sqrt(ss*ss + sc*sc);
                 theta_recovered = atan2(ss,sc)*180/pi;
-                affine_transformation_matrix_backward = round2(iDistorted\iOriginal, 0.01);
+                affine_transformation_matrix_backward = round2(iOriginal\iDistorted, 0.01);
 
                 [am, an] = size(affine_transformation_matrix_backward);
 
-                if(1-abs(affine_transformation_matrix_backward(1,1)) < 0.01)
+                if(abs(1-abs(affine_transformation_matrix_backward(1,1))) < 0.01)
                     affine_transformation_matrix_backward(1,1) = 1;
                 end
 
-                if(1-abs(affine_transformation_matrix_backward(2,2)) < 0.01)
+                if(abs(1-abs(affine_transformation_matrix_backward(2,2))) < 0.01)
                     affine_transformation_matrix_backward(2,2) = 1;
                 end
+                
+                if(abs(affine_transformation_matrix_backward(2,1)) < 0.1)
+                    affine_transformation_matrix_backward(2,1) = 0;
+                end
 
+                if(abs(affine_transformation_matrix_backward(1,2)) < 0.1)
+                    affine_transformation_matrix_backward(1,2) = 0;
+                end
 
                 A11 = affine_transformation_matrix_backward(1,1)
                 A12 = affine_transformation_matrix_backward(1,2);
@@ -162,10 +183,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                         end
                     end
                 end
-                A31 = affine_transformation_matrix_backward(3,1);
-                A32 = affine_transformation_matrix_backward(3,2);
-                affine_transformation_matrix_backward(3,1) = -A32;
-                affine_transformation_matrix_backward(3,2) = -A31;
+%                 A31 = affine_transformation_matrix_backward(3,1);
+%                 A32 = affine_transformation_matrix_backward(3,2);
+%                 affine_transformation_matrix_backward(3,1) = -A32;
+%                 affine_transformation_matrix_backward(3,2) = -A31;
                 if(abs(affine_transformation_matrix_backward(3,1)) < 5)
                     affine_transformation_matrix_backward(3,1) = 0;
                 end
@@ -176,13 +197,13 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 
                 affine_transformation_matrix_backward
                 
-                if(D_2 > 20 && D_1 < 20)
-                    F = affine_transformation_matrix_forward;
-                    B = affine_transformation_matrix_backward;
-                    
-                    affine_transformation_matrix_forward = B;
-                    affine_transformation_matrix_backward = F;
-                end
+%                 if(D_2 > 20 && D_1 < 20)
+%                     F = affine_transformation_matrix_forward;
+%                     B = affine_transformation_matrix_backward;
+%                     
+%                     affine_transformation_matrix_forward = B;
+%                     affine_transformation_matrix_backward = F;
+%                 end
             end
         end
     end
