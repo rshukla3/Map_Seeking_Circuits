@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_shoe.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -154,15 +154,16 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
+Scaling = 1;
+Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
+Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
 
-% Test_Img_1 = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
-% Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, 1.2, 1.2);
-
-Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
-Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, -75, 'nearest', 'crop'));
-
-% Test_Img = translate_img(Test_Img_2, -80, -80);
-% Learning_Test_Img = translate_img(Learning_Test_Img_2, -80, -80);
+% Rotation = -15;
+% Test_Img = single(imrotate(Img_PointsOfInterest, Rotation, 'nearest', 'crop'));
+% Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, Rotation, 'nearest', 'crop'));
+% 
+% Test_Img = translate_img(Test_Img_2, 60, 0);
+% Learning_Test_Img = translate_img(Learning_Test_Img_2, 60, 0);
 
 figure(1);
 imshow(Test_Img);

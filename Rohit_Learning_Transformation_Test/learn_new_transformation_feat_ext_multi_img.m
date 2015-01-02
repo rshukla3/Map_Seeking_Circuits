@@ -76,67 +76,72 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 iOriginal(1:iOm,3) = iOriginal_tmp(:,3);
 
                 affine_transformation_matrix_forward = round2(iDistorted\iOriginal, 0.01)
+                if(~isnan(affine_transformation_matrix_forward))
 
-                [am, an] = size(affine_transformation_matrix_forward);
+                    [am, an] = size(affine_transformation_matrix_forward);
 
-                if(abs(1-abs(affine_transformation_matrix_forward(1,1))) < 0.01)
-                    affine_transformation_matrix_forward(1,1) = 1;
-                end
+                    if(abs(1-abs(affine_transformation_matrix_forward(1,1))) < 0.01)
+                        affine_transformation_matrix_forward(1,1) = 1;
+                    end
 
-                if(abs(1-abs(affine_transformation_matrix_forward(2,2))) < 0.01)
-                    affine_transformation_matrix_forward(2,2) = 1;
-                end
+                    if(abs(1-abs(affine_transformation_matrix_forward(2,2))) < 0.01)
+                        affine_transformation_matrix_forward(2,2) = 1;
+                    end
 
-                if(abs(affine_transformation_matrix_forward(2,1)) < 0.1)
-                    affine_transformation_matrix_forward(2,1) = 0;
-                end
+                    if(abs(affine_transformation_matrix_forward(2,1)) < 0.1)
+                        affine_transformation_matrix_forward(2,1) = 0;
+                    end
 
-                if(abs(affine_transformation_matrix_forward(1,2)) < 0.1)
-                    affine_transformation_matrix_forward(1,2) = 0;
-                end
+                    if(abs(affine_transformation_matrix_forward(1,2)) < 0.1)
+                        affine_transformation_matrix_forward(1,2) = 0;
+                    end
 
-                A11 = affine_transformation_matrix_forward(1,1);
-                A12 = affine_transformation_matrix_forward(1,2);
-                A21 = affine_transformation_matrix_forward(2,1);
-                A22 = affine_transformation_matrix_forward(2,2);
+                    A11 = affine_transformation_matrix_forward(1,1);
+                    A12 = affine_transformation_matrix_forward(1,2);
+                    A21 = affine_transformation_matrix_forward(2,1);
+                    A22 = affine_transformation_matrix_forward(2,2);
 
-                affine_transformation_matrix_forward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
-                affine_transformation_matrix_forward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2,0.01);
-                affine_transformation_matrix_forward(1,2) = sign(A12)*round2((abs(A12)+abs(A21))/2,0.01);
-                affine_transformation_matrix_forward(2,1) = sign(A21)*round2((abs(A12)+abs(A21))/2,0.01);
+                    affine_transformation_matrix_forward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
+                    affine_transformation_matrix_forward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2,0.01);
+                    affine_transformation_matrix_forward(1,2) = sign(A12)*round2((abs(A12)+abs(A21))/2,0.01);
+                    affine_transformation_matrix_forward(2,1) = sign(A21)*round2((abs(A12)+abs(A21))/2,0.01);
 
-                for i = 1:am
-                    for j = 1:an
-                        if(abs(affine_transformation_matrix_forward(i,j)) < 0.01)
-                            affine_transformation_matrix_forward(i,j) = 0;
+                    for i = 1:am
+                        for j = 1:an
+                            if(abs(affine_transformation_matrix_forward(i,j)) < 0.01)
+                                affine_transformation_matrix_forward(i,j) = 0;
+                            end
                         end
                     end
-                end
-%                 A31 = affine_transformation_matrix_forward(3,1);
-%                 A32 = affine_transformation_matrix_forward(3,2);
-%                 affine_transformation_matrix_forward(3,1) = -A32;
-%                 affine_transformation_matrix_forward(3,2) = -A31;
-                if(abs(affine_transformation_matrix_forward(3,1)) < 5)
-                    affine_transformation_matrix_forward(3,1) = 0;
-                end
+    %                 A31 = affine_transformation_matrix_forward(3,1);
+    %                 A32 = affine_transformation_matrix_forward(3,2);
+    %                 affine_transformation_matrix_forward(3,1) = -A32;
+    %                 affine_transformation_matrix_forward(3,2) = -A31;
+                    if(abs(affine_transformation_matrix_forward(3,1)) < 5)
+                        affine_transformation_matrix_forward(3,1) = 0;
+                    end
 
-                if(abs(affine_transformation_matrix_forward(3,2)) < 5)
-                    affine_transformation_matrix_forward(3,2) = 0;
-                end
+                    if(abs(affine_transformation_matrix_forward(3,2)) < 5)
+                        affine_transformation_matrix_forward(3,2) = 0;
+                    end
 
-                affine_transformation_matrix_forward
-                
-                % Get the new image after applying this learnt
-                % transformation and see whether it matches the image in
-                % the memory.
-                
-                % coordinates those positions in the image that have non-zero pixel values
-                % and the intensity or the pixel value.
-                [m,n] = size(Test_Img);
-                [coordinates]= getPointsOfInterest(Edge_Detected_Img); 
-                T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
-                
-                D_1 = dotproduct(T,mem_img(:,:,mu))
+                    affine_transformation_matrix_forward
+
+                    % Get the new image after applying this learnt
+                    % transformation and see whether it matches the image in
+                    % the memory.
+
+                    % coordinates those positions in the image that have non-zero pixel values
+                    % and the intensity or the pixel value.
+                    [m,n] = size(Test_Img);
+                    [coordinates]= getPointsOfInterest(Edge_Detected_Img); 
+                    T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
+
+                    D_1 = dotproduct(T,mem_img(:,:,mu))
+
+                else
+                     D_1 = 0;
+                end
                 
 %                 [coordinates]= getPointsOfInterest(mem_img(:,:,mu)); 
 %                 T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
@@ -199,7 +204,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 end
 
                 affine_transformation_matrix_backward
-                
+                break;
 %                 if(D_2 > 20 && D_1 < 20)
 %                     F = affine_transformation_matrix_forward;
 %                     B = affine_transformation_matrix_backward;
