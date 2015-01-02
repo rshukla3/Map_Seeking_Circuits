@@ -28,6 +28,8 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     affine_transformation_matrix_backward = [1 0 0; 0 1 0; 0 0 1];
     for mu = 1:memory_units
         Preprocessed_Img(1:lm, 1:ln) = learn_mem_img(1:lm, 1:ln, mu);
+        clear ptsOriginal;
+        clear ptsDistorted;
         ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
         ptsDistorted = detectSURFFeatures(Test_Img);
 
@@ -35,7 +37,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         [featuresDistorted, validPtsDistorted]  = extractFeatures(Test_Img, ptsDistorted);
 
         indexPairs = matchFeatures(featuresOriginal, featuresDistorted);
-
+        
         matchedOriginal  = validPtsOriginal(indexPairs(:,1));
         matchedDistorted = validPtsDistorted(indexPairs(:,2));
         
@@ -63,13 +65,15 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 iDistorted_tmp(:,3) = 1;
                 iOriginal_tmp(:,3) = 1;
                 
-                iDistorted(:,1) = iDistorted_tmp(:,2);
-                iDistorted(:,2) = iDistorted_tmp(:,1);
-                iDistorted(:,3) = iDistorted_tmp(:,3);
+                [iDm, iDn] = size(iDistorted_tmp);                
+                iDistorted(1:iDm,1) = iDistorted_tmp(:,2);
+                iDistorted(1:iDm,2) = iDistorted_tmp(:,1);
+                iDistorted(1:iDm,3) = iDistorted_tmp(:,3);
                 
-                iOriginal(:,1) = iOriginal_tmp(:,2);
-                iOriginal(:,2) = iOriginal_tmp(:,1);
-                iOriginal(:,3) = iOriginal_tmp(:,3);
+                [iOm, iOn] = size(iOriginal_tmp);
+                iOriginal(1:iOm,1) = iOriginal_tmp(:,2);
+                iOriginal(1:iOm,2) = iOriginal_tmp(:,1);
+                iOriginal(1:iOm,3) = iOriginal_tmp(:,3);
 
                 affine_transformation_matrix_forward = round2(iDistorted\iOriginal, 0.01)
 
@@ -104,7 +108,6 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 for i = 1:am
                     for j = 1:an
                         if(abs(affine_transformation_matrix_forward(i,j)) < 0.01)
-                            affine_transformation_matrix_forward(i,j)
                             affine_transformation_matrix_forward(i,j) = 0;
                         end
                     end

@@ -119,7 +119,7 @@ end
 % Second memory location will store segmented images that will be later
 % used for learning transformations.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('pepper_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
 [m,n] = size(Preprocessed_Img);
 mem_img(1:m, 1:n, 1) = Preprocessed_Img;
 learn_mem_img(1:m,1:n,1) = Memory_PreProcessed_Img;
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_shoe.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -155,14 +155,14 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-Test_Img = scaleImg(Img_PointsOfInterest, 1.6, 1.6);
-Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, 1.6, 1.6);
+% Test_Img_1 = scaleImg(Img_PointsOfInterest, 1.2, 1.2);
+% Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, 1.2, 1.2);
 
-% Test_Img = single(imrotate(Img_PointsOfInterest, 15, 'nearest', 'crop'));
-% Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, 15, 'nearest', 'crop'));
+Test_Img = single(imrotate(Img_PointsOfInterest, -75, 'nearest', 'crop'));
+Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, -75, 'nearest', 'crop'));
 
-% Test_Img = translate_img(Img_PointsOfInterest, 0, -80);
-% Learning_Test_Img = translate_img(Memory_PreProcessed_Img, 0, -80);
+% Test_Img = translate_img(Test_Img_2, -80, -80);
+% Learning_Test_Img = translate_img(Learning_Test_Img_2, -80, -80);
 
 figure(1);
 imshow(Test_Img);
@@ -420,7 +420,7 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.2*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.4*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
             Q = q_mem(1)*(B_1/F_1)
