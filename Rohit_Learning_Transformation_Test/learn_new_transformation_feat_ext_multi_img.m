@@ -26,7 +26,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     objectFound = false;
     affine_transformation_matrix_forward = [1 0 0; 0 1 0; 0 0 1];
     affine_transformation_matrix_backward = [1 0 0; 0 1 0; 0 0 1];
-    for mu = 1:memory_units
+    mu = 0;
+    while (mu < memory_units && objectFound == false)
+        mu = mu + 1;
         Preprocessed_Img(1:lm, 1:ln) = learn_mem_img(1:lm, 1:ln, mu);
         clear ptsOriginal;
         clear ptsDistorted;

@@ -105,7 +105,7 @@ function [ isNewLayerAssigned, appendedToLayer ] = checkCombinationOfFunctions( 
                 fprintf('Independent is false\n');
                 isNewLayerAssigned = false;
                 findResult_forward = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Forward);
-                findResult_backward = findWhetherExisting(affine_transformation_matrix_forward, Learned_Transformation_Matrix_Backward);
+                findResult_backward = findWhetherExisting(affine_transformation_matrix_backward, Learned_Transformation_Matrix_Backward);
                 if(findResult_forward == false && findResult_backward == false)
                     appendedToLayer = index;
                 else 
