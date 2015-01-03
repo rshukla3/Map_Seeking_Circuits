@@ -2,8 +2,8 @@ clc;
 clear all;
 close all;
 
-[Preprocessed_Img] = image_rgb2gray('pepper_2.jpg');
-[Test_Img] = image_rgb2gray('sailboat_2.jpg');
+[Preprocessed_Img] = image_rgb2gray('monopoly_battleShip.jpg');
+[Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
 % Test_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));

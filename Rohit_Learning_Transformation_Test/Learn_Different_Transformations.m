@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 10;
+iterationCount = 15;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -25,14 +25,14 @@ layerCount = 1+layersSaved;
 
 % 4. Set the value of constants k, for multiplication with g.
 
-k_mem = 0.5;
-k_layer_1 = 0.5;
-k_layer_2 = 0.5;
-k_layer_3 = 0.5;
-k_layer_4 = 0.5;
-k_layer_5 = 0.5;
-k_layer_6 = 0.5;
-k_scaling = 0.5;
+k_mem = 0.15;
+k_layer_1 = 0.3;
+k_layer_2 = 0.3;
+k_layer_3 = 0.3;
+k_layer_4 = 0.3;
+k_layer_5 = 0.3;
+k_layer_6 = 0.3;
+k_scaling = 0.3;
 
 % 5. Read the matching values of q already stored in the file.
 
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_battleShip.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -154,18 +154,21 @@ Img_PointsOfInterest = Preprocessed_Img;
 % itself. Later we will test our learned transforms on these MATLAB
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
-% Scaling = 0.6;
-% Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
-% Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
 
-Rotation = -60;
-Test_Img = single(imrotate(Img_PointsOfInterest, Rotation, 'nearest', 'crop'));
-Learning_Test_Img = single(imrotate(Memory_PreProcessed_Img, Rotation, 'nearest', 'crop'));
-% 
-% x_Translation = 60;
-% y_Translation = 0;
-% Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
-% Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
+
+Rotation = -30;
+Test_Img_1 = single(imrotate(Img_PointsOfInterest, Rotation, 'nearest', 'crop'));
+Learning_Test_Img_1 = single(imrotate(Memory_PreProcessed_Img, Rotation, 'nearest', 'crop'));
+ 
+x_Translation = 100;
+y_Translation = 100;
+Test_Img_2 = translate_img(Test_Img_1, x_Translation, y_Translation);
+Learning_Test_Img_2 = translate_img(Learning_Test_Img_1, x_Translation, y_Translation);
+
+Scaling = 0.8;
+Test_Img = scaleImg(Test_Img_2, Scaling, Scaling);
+Learning_Test_Img = scaleImg(Learning_Test_Img_2, Scaling, Scaling);
+
 
 figure(1);
 imshow(Test_Img);
@@ -183,7 +186,7 @@ pause(1);
 % always higher than q_top_layer. To circumvent this problem I've added
 % this condition.
 
-learning = true; 
+learning = false; 
 
 fname = 'g_mem.mat';
 if exist(fname, 'file') ~= 2
@@ -423,10 +426,11 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.4*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.3*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');
             Q = q_mem(1)*(B_1/F_1)
+            return;
             if(learnCount == 2)
 %                 break;
             end
@@ -559,6 +563,30 @@ for i = 1:iterationCount
                         fprintf('Delete file for g_layer_6\n');
                         return;
                     end          
+                end
+                
+                % Since a new object has been added, re-implement the
+                % entire MSC functions with all of the other g values
+                % re-initialized to one.
+                g_mem = single(ones(1,memory_units));
+                g_scale = single(ones(1,scaleCount));
+                if(layerCount >= 3)
+                    g_layer_1 = single(ones(1,layer_1_Count));
+                end
+                if(layerCount >= 4)
+                    g_layer_2 = single(ones(1,layer_2_Count));
+                end
+                if(layerCount >= 5)
+                    g_layer_3 = single(ones(1,layer_3_Count));
+                end
+                if(layerCount >= 6)
+                    g_layer_4 = single(ones(1,layer_4_Count));
+                end
+                if(layerCount >= 7)
+                    g_layer_5 = single(ones(1,layer_5_Count));
+                end
+                if(layerCount >= 8)
+                    g_layer_6 = single(ones(1,layer_6_Count));
                 end
                 
             elseif(appendedToLayer ~= 0 && objectFound == true)
