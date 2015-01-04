@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 15;
+iterationCount = 25;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_battleShip.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_ring.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -155,19 +155,18 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
+Scaling = 1;
+Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
+Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
 
-Rotation = -30;
-Test_Img_1 = single(imrotate(Img_PointsOfInterest, Rotation, 'nearest', 'crop'));
-Learning_Test_Img_1 = single(imrotate(Memory_PreProcessed_Img, Rotation, 'nearest', 'crop'));
- 
-x_Translation = 100;
-y_Translation = 100;
-Test_Img_2 = translate_img(Test_Img_1, x_Translation, y_Translation);
-Learning_Test_Img_2 = translate_img(Learning_Test_Img_1, x_Translation, y_Translation);
-
-Scaling = 0.8;
-Test_Img = scaleImg(Test_Img_2, Scaling, Scaling);
-Learning_Test_Img = scaleImg(Learning_Test_Img_2, Scaling, Scaling);
+% Rotation = -30;
+% Test_Img_2 = single(imrotate(Test_Img_1, Rotation, 'nearest', 'crop'));
+% Learning_Test_Img_2 = single(imrotate(Learning_Test_Img_1, Rotation, 'nearest', 'crop'));
+%  
+% x_Translation = 100;
+% y_Translation = 100;
+% Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
+% Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
 
 
 figure(1);
@@ -186,7 +185,7 @@ pause(1);
 % always higher than q_top_layer. To circumvent this problem I've added
 % this condition.
 
-learning = false; 
+learning = true; 
 
 fname = 'g_mem.mat';
 if exist(fname, 'file') ~= 2
@@ -418,7 +417,7 @@ for i = 1:iterationCount
     
     F_1 = memory_units*sum(sum(f(:,:,1)));
     B_1 = sum(sum(b(:,:,layerCount)));
-    
+    Q = q_mem(1)*(B_1/F_1)*0.35;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
@@ -426,11 +425,9 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.3*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.35*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
-            fprintf('Below Threshold. Learn new transformation!\n');
-            Q = q_mem(1)*(B_1/F_1)
-            return;
+            fprintf('Below Threshold. Learn new transformation!\n');           
             if(learnCount == 2)
 %                 break;
             end
