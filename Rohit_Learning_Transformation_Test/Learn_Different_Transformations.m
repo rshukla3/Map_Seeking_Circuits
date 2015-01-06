@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_ring.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_robot.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
@@ -155,18 +155,18 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-Scaling = 1;
-Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
-Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
+Scaling = 1.2;
+Test_Img_1 = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
+Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
 
-% Rotation = -30;
-% Test_Img_2 = single(imrotate(Test_Img_1, Rotation, 'nearest', 'crop'));
-% Learning_Test_Img_2 = single(imrotate(Learning_Test_Img_1, Rotation, 'nearest', 'crop'));
-%  
-% x_Translation = 100;
-% y_Translation = 100;
-% Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
-% Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
+Rotation = -30;
+Test_Img_2 = single(imrotate(Test_Img_1, Rotation, 'nearest', 'crop'));
+Learning_Test_Img_2 = single(imrotate(Learning_Test_Img_1, Rotation, 'nearest', 'crop'));
+ 
+x_Translation = -100;
+y_Translation = 100;
+Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
+Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
 
 
 figure(1);
@@ -431,6 +431,7 @@ for i = 1:iterationCount
             if(learnCount == 2)
 %                 break;
             end
+            return;
             learnCount = learnCount + 1;
             isNewLayerAssigned = false;
             appendedToLayer = 0;
