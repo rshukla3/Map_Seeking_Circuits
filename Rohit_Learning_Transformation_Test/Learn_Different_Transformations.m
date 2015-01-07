@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_robot.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_battleShip.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -420,7 +420,7 @@ for i = 1:iterationCount
     
     F_1 = memory_units*sum(sum(f(:,:,1)));
     B_1 = sum(sum(b(:,:,layerCount)));
-    Q = q_mem(1)*(B_1/F_1)*0.35;
+    Q = q_mem(1)*(B_1/F_1)*0.3;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
@@ -428,7 +428,7 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.35*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<0.3*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');           
             if(learnCount == 2)
