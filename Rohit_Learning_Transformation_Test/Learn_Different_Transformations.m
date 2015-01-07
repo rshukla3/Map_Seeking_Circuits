@@ -145,6 +145,9 @@ end
 
 [Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_robot.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
+
+Test_Img = Img_PointsOfInterest;
+Learning_Test_Img = Memory_PreProcessed_Img;
 %% Assign points of interest to the memory image.
 %[Img_PointsOfInterest, x , y] = AssignPointsOfInterest(Preprocessed_Img);
 
@@ -155,18 +158,18 @@ Img_PointsOfInterest = Preprocessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-Scaling = 1.2;
-Test_Img_1 = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
-Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
-
-Rotation = -30;
-Test_Img_2 = single(imrotate(Test_Img_1, Rotation, 'nearest', 'crop'));
-Learning_Test_Img_2 = single(imrotate(Learning_Test_Img_1, Rotation, 'nearest', 'crop'));
- 
-x_Translation = -100;
-y_Translation = 100;
-Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
-Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
+% Scaling = 1.2;
+% Test_Img_1 = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
+% Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
+% 
+% Rotation = -30;
+% Test_Img_2 = single(imrotate(Test_Img_1, Rotation, 'nearest', 'crop'));
+% Learning_Test_Img_2 = single(imrotate(Learning_Test_Img_1, Rotation, 'nearest', 'crop'));
+%  
+% x_Translation = -100;
+% y_Translation = 100;
+% Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
+% Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
 
 
 figure(1);
