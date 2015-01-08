@@ -26,13 +26,13 @@ seD = strel('diamond',1);
 Test_Img_Final = imerode(Test_Img_Fill,seD);
 Test_Img_Erode = imerode(Test_Img_Final,seD);
 
-Rotation = -30;
-Test_Img_Erode = single(imrotate(Test_Img_Erode, Rotation, 'nearest', 'crop'));
-Scaling = 0.8;
-Test_Img_Erode = scaleImg(Test_Img_Erode, Scaling, Scaling);
-x_Translation = 100;
-y_Translation = -120;
-Test_Img_Erode = translate_img(Test_Img_Erode, x_Translation, y_Translation);
+% Rotation = -30;
+% Test_Img_Erode = single(imrotate(Test_Img_Erode, Rotation, 'nearest', 'crop'));
+% Scaling = 0.8;
+% Test_Img_Erode = scaleImg(Test_Img_Erode, Scaling, Scaling);
+% x_Translation = 100;
+% y_Translation = -120;
+% Test_Img_Erode = translate_img(Test_Img_Erode, x_Translation, y_Translation);
 
 BWoutline = edge(Test_Img_Erode);
 Test_Img = logical(zeros(Im, In));
