@@ -6,13 +6,13 @@ Read_Test_Img = imread(filename);
 
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
-% Scaling = 1.2;
-% Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-% Rotation = -30;
-% Test_Img_gray = single(imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-% x_Translation = 100;
-% y_Translation = -120;
-% Test_Img_gray = translate_img(Test_Img_gray, x_Translation, y_Translation);
+Scaling = 1.2;
+Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
+Rotation = -30;
+Test_Img_gray = single(imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
+x_Translation = -100;
+y_Translation = 100;
+Test_Img_gray = translate_img(Test_Img_gray, x_Translation, y_Translation);
 
 [Im, In] = size(Test_Img_gray);
 
