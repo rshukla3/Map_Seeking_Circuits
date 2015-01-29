@@ -3,21 +3,33 @@ function [ Test_Img, Test_Img_Erode ] = imagePreProcessing(filename)
 %filtering on the image and later doing edge detection on it.
 
 Read_Test_Img = imread(filename);
-
+Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.3);
+figure(2);
+imshow(Read_Test_Img);
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
-Scaling = 1.2;
-Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation = -30;
-Test_Img_gray = single(imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-x_Translation = -100;
-y_Translation = 100;
-Test_Img_gray = translate_img(Test_Img_gray, x_Translation, y_Translation);
+% h = fspecial('gaussian', [3 3], 0.5);
+% Test_Img_gray = imfilter(Test_Img_gray,h);
+Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
+figure(3);
+imshow(Test_Img_gray);
+% M = 0;
+% V = 0.01;
+% Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
+% Scaling = 1.2;
+% Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
+% Rotation = -30;
+% Test_Img_gray = single(imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
+% x_Translation = -100;
+% y_Translation = 100;
+% Test_Img_gray = translate_img(Test_Img_gray, x_Translation, y_Translation);
 
 [Im, In] = size(Test_Img_gray);
 
 [~, Thresh] = edge(Test_Img_gray, 'prewitt');
 Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh*0.5);
+figure(4);
+imshow(Test_Img_BW);
 se90 = strel('line', 3, 90);
 se0 = strel('line', 3, 0);
 Test_Img_dilate = imdilate(Test_Img_BW, [se90 se0]);
