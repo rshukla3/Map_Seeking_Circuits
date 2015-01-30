@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_robot.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('monopoly_robot_transformed.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -158,7 +158,7 @@ Learning_Test_Img = Memory_PreProcessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-% Scaling = 1.2;
+% Scaling = 0.8;
 % Test_Img_1 = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
 % Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
 % 
@@ -434,13 +434,14 @@ for i = 1:iterationCount
             if(learnCount == 2)
 %                 break;
             end
-            return;
+            
             learnCount = learnCount + 1;
             isNewLayerAssigned = false;
             appendedToLayer = 0;
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img);
+            return;
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
