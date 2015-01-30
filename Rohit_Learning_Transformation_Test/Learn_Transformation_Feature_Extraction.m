@@ -2,8 +2,8 @@ clc;
 clear all;
 close all;
 
-[Preprocessed_Img] = image_rgb2gray('monopoly_battleShip.jpg');
-[Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
+[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('monopoly_battleShip.jpg');
+% [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
 % Test_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));
@@ -47,10 +47,12 @@ close all;
 % figure(3);
 % imshow(recovered);
 
+Test_Img_1 = (scaleImg(Noisy, 0.6, 0.6));
+Test_Img_2 = (imrotate(Test_Img_1, -30, 'bilinear', 'crop'));
+Test_Img = translate_img_grayScale(Test_Img_2, -100, 100);
 
-% Test_Img = translate_img(Preprocessed_Img, 170, 0);
-% Test_Img = (imrotate(Preprocessed_Img, -15, 'bilinear', 'crop'));
-% Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
+% Preprocessed_Img = Noisy;
+
 ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
 ptsDistorted = detectSURFFeatures(Test_Img);
 figure(10);

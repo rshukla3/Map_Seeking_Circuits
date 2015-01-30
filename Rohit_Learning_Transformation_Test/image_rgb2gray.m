@@ -3,7 +3,7 @@ function [ Test_Img ] = image_rgb2gray(filename)
 %filtering on the image and later doing edge detection on it.
 
 Read_Test_Img = imread(filename);
-
+Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.006);
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
 [Im, In] = size(Test_Img_gray);
