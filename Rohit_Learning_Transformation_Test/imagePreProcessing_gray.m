@@ -3,7 +3,7 @@ function [ Test_Img, Test_Img_Erode ] = imagePreProcessing_gray(filename)
 %filtering on the image and later doing edge detection on it.
 
 Read_Test_Img = imread(filename);
-Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.09);
+Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.13);
 % Read_Test_Img = imnoise(Read_Test_Img,'salt & pepper',0.01);
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
