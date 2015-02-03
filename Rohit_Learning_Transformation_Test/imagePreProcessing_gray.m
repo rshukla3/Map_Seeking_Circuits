@@ -3,7 +3,7 @@ function [ Test_Img, Test_Img_Erode ] = imagePreProcessing_gray(filename)
 %filtering on the image and later doing edge detection on it.
 
 Read_Test_Img = imread(filename);
-Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.13);
+Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.11);
 % Read_Test_Img = imnoise(Read_Test_Img,'salt & pepper',0.01);
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
@@ -34,7 +34,7 @@ Test_Img_Fill = imfill(Test_Img_dilate, 'holes');
 seD = strel('diamond',1);
 Test_Img_Final = imerode(Test_Img_Fill,seD);
 Test_Img_Erode = imerode(Test_Img_Final,seD);
-Test_Img_Erode = bwareaopen(Test_Img_Erode,100);
+Test_Img_Erode = bwareaopen(Test_Img_Erode,200);
 % Rotation = -30;
 % Test_Img_Erode = single(imrotate(Test_Img_Erode, Rotation, 'nearest', 'crop'));
 % Scaling = 0.8;
