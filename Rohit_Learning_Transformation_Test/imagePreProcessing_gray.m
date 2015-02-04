@@ -3,22 +3,32 @@ function [ Test_Img, Test_Img_Erode ] = imagePreProcessing_gray(filename)
 %filtering on the image and later doing edge detection on it.
 
 Read_Test_Img = imread(filename);
-Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.11);
+Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.0);
 % Read_Test_Img = imnoise(Read_Test_Img,'salt & pepper',0.01);
 Test_Img_gray = rgb2gray(Read_Test_Img);
 
 % M = 0;
 % V = 0.01;
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
-Scaling = 1.2;
+Scaling = 1.0;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation = -30;
+Rotation = -45;
 Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-x_Translation = -100;
-y_Translation = 100;
+x_Translation = 0;
+y_Translation = 0;
 Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
+[m,n] = size(Test_Img_gray);
+M = max(max(Test_Img_gray));
+for i= 1:m
+    for j = 1:n
+        if(Test_Img_gray(i,j) <= 10)
+            Test_Img_gray(i,j) = M;
+        end
+    end
+end
 
-Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
+
+% Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
 figure(20);
 imshow(Test_Img_gray);
 pause(0.1);
@@ -34,7 +44,7 @@ Test_Img_Fill = imfill(Test_Img_dilate, 'holes');
 seD = strel('diamond',1);
 Test_Img_Final = imerode(Test_Img_Fill,seD);
 Test_Img_Erode = imerode(Test_Img_Final,seD);
-Test_Img_Erode = bwareaopen(Test_Img_Erode,200);
+% Test_Img_Erode = bwareaopen(Test_Img_Erode,200);
 % Rotation = -30;
 % Test_Img_Erode = single(imrotate(Test_Img_Erode, Rotation, 'nearest', 'crop'));
 % Scaling = 0.8;

@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('monopoly_cartwheel.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('monopoly_robot.jpg');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -441,7 +441,7 @@ for i = 1:iterationCount
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img);
-            return;
+            
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
@@ -449,6 +449,7 @@ for i = 1:iterationCount
             if(objectFound == true)
                 [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount);
                 fprintf('appendedToLayer: %d\n', appendedToLayer);
+                return;
             else
                 memory_units = memory_units + 1;
                 g_mem = single(ones(1,memory_units));
