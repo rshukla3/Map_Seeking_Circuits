@@ -1,7 +1,7 @@
 function [ independent ] = rankOfMatrix(affine_transformation_matrix_forward, transformation_forward, layerCount)
 %rankOfMatrix: Caclualtes the rank of the matrix to check for independent
 %layers in MSC.
-%   Detailed explanation goes here
+%   Currently this module is using 9X1 vectors for rank calculation.
     independent = false;
     [m,n,p] = size(transformation_forward);
     Identity_Matrix = [1 0 0; 0 1 0; 0 0 1];
