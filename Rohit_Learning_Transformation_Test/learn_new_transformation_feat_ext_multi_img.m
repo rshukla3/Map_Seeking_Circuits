@@ -1,10 +1,13 @@
 function [ affine_transformation_matrix_forward, affine_transformation_matrix_backward, objectFound ] = learn_new_transformation_feat_ext_multi_img( Test_Img, Edge_Detected_Img )
-%learn_new_transformation: Given the set of memory corrdinates, learn the
-%new affine transformation
-%   Img_PointsOfInterest contain the set of coordinates from memory image.
-%   Based on these set of memory image coordinates and the new input image,
-%   learn the new affine trasformation.
-    
+%learn_new_transformation_feat_ext_multi_img: Given the set of memory
+%images, learn whether the input image is a new object or contains a new
+%set of transformations. 
+% Test_Img: Is the segmented input image, i.e., it does not contain just
+% the edges.
+% Edge_Detected_Img: It is the edge detected version of input image.
+
+% Contains the segmented images stored in the memory for feature extraction
+% and comparison with input image.
     fname = strcat('learn_mem_img', '.mat');
     if exist(fname, 'file') == 2
         load(fname, 'learn_mem_img');   
@@ -13,6 +16,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         fprintf('Specified file not found in forward path for layer_mem_img\n');
     end
     
+% Edge detected image from memory is required to compare whether the
+% learned set of transformations is able to match input image with the
+% memory image through dot product operation.
     fname = strcat('mem_img', '.mat');
     if exist(fname, 'file') == 2
         load(fname, 'mem_img');   
@@ -27,6 +33,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     affine_transformation_matrix_forward = [1 0 0; 0 1 0; 0 0 1];
     affine_transformation_matrix_backward = [1 0 0; 0 1 0; 0 0 1];
     mu = 0;
+    
+% Loop through all the images in the memory and compare it with the input
+% image.
     while (mu < memory_units && objectFound == false)
         mu = mu + 1;
         Preprocessed_Img(1:lm, 1:ln) = learn_mem_img(1:lm, 1:ln, mu);
@@ -57,9 +66,6 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
             sc = T1(1,1);
             T1_scale_recovered = round2(sqrt(ss*ss + sc*sc), 0.1);
             T1_theta_recovered = round2(atan2(ss,sc)*180/pi, 1);
-%             if((T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) > 5)||(T1_scale_recovered > 1.1 && T1_scale_recovered < 0.9 && abs(T1_theta_recovered) < 5) || (T1_scale_recovered <= 1.1 && T1_scale_recovered >= 0.9 && abs(T1_theta_recovered) >= 0 && abs(T1_theta_recovered <= 2)))
-    
-%                 objectFound = true;
                 
                 iDistorted_tmp = (inlierDistorted.Location - 256.*ones(iDm, iDn));
                 iOriginal_tmp = (inlierOriginal.Location - 256.*ones(iOm, iOn));
@@ -78,6 +84,11 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 iOriginal(1:iOm,3) = iOriginal_tmp(:,3);
 
                 affine_transformation_matrix_forward = round2(iDistorted\iOriginal, 0.01)
+                
+                %Learn the forward affine transformation matrix and apply
+                %it on input image. Later take the dot-product of this
+                %transformed input image with the corresponding memory
+                %image and see the degree of match.
                 if(~isnan(affine_transformation_matrix_forward))
 
                     [am, an] = size(affine_transformation_matrix_forward);
@@ -115,10 +126,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                             end
                         end
                     end
-    %                 A31 = affine_transformation_matrix_forward(3,1);
-    %                 A32 = affine_transformation_matrix_forward(3,2);
-    %                 affine_transformation_matrix_forward(3,1) = -A32;
-    %                 affine_transformation_matrix_forward(3,2) = -A31;
+    
                     if(abs(affine_transformation_matrix_forward(3,1)) < 5)
                         affine_transformation_matrix_forward(3,1) = 0;
                     end
@@ -133,22 +141,21 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                     % transformation and see whether it matches the image in
                     % the memory.
 
-                    % coordinates those positions in the image that have non-zero pixel values
+                    % Coordinates are those positions in the image that have non-zero pixel values
                     % and the intensity or the pixel value.
                     [m,n] = size(Test_Img);
                     [coordinates]= getPointsOfInterest(Edge_Detected_Img); 
                     T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
-
+                    
+                    % Need to change this. This basically tells how many
+                    % pixels match in the transformed input image with that
+                    % in the memory image.
                     D_1 = dotproduct(T,mem_img(:,:,mu))
 
                 else
                      D_1 = 0;
                 end
                 
-%                 [coordinates]= getPointsOfInterest(mem_img(:,:,mu)); 
-%                 T = (img_transform(coordinates, m, n, affine_transformation_matrix_forward));
-%                 
-%                 D_2 = dotproduct(Edge_Detected_Img,T)
                 
             if(D_1>20)
                 objectFound = true;
