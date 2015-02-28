@@ -2,7 +2,8 @@ clc;
 clear all;
 close all;
 
-[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('monopoly_battleShip.jpg');
+[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('monopoly_cat_change_perspective.jpg');
+[Preprocessed_Img, Noisy_1] = image_rgb2gray_noisy('monopoly_cat.jpg');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
@@ -46,10 +47,10 @@ close all;
 % plot(p2(:,1), p2(:,2), 'g*');
 % figure(3);
 % imshow(recovered);
-
-Test_Img_1 = (scaleImg(Noisy, 0.6, 0.6));
-Test_Img_2 = (imrotate(Test_Img_1, -30, 'bilinear', 'crop'));
-Test_Img = translate_img_grayScale(Test_Img_2, -100, 100);
+Test_Img = Noisy;
+%Test_Img_1 = (scaleImg(Noisy, 0.6, 0.6));
+%Test_Img_2 = (imrotate(Test_Img_1, -30, 'bilinear', 'crop'));
+%Test_Img = translate_img_grayScale(Test_Img_2, -100, 100);
 
 % Preprocessed_Img = Noisy;
 
