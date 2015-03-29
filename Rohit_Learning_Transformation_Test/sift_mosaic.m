@@ -1,4 +1,4 @@
-function mosaic = sift_mosaic(im1, im2)
+function [mosaic, TFORM] = sift_mosaic(im1, im2)
 % SIFT_MOSAIC Demonstrates matching two images using SIFT and RANSAC
 %
 %   SIFT_MOSAIC demonstrates matching two images based on SIFT
@@ -118,12 +118,29 @@ axis image off ;
 drawnow ;
 A = [f1(1,matches(1,ok));f1(2,matches(1,ok))];
 B = [f2(1,matches(2,ok)); f2(2,matches(2,ok))];
+movingPoints = A'
+fixedPoints = B'
 A(3,:) = 1;
 B(3,:) = 1;
 
 At = A';
 Bt = B';
-C = At\Bt
+C = At\Bt;
+TFORM.T = 1;
+TFORM = fitgeotrans(movingPoints,fixedPoints, 'projective');
+tform_2 = findProjectiveTransform_Rohit(movingPoints,fixedPoints);
+tform_2.T
+Jregistered = imwarp(im1,TFORM,'cubic','OutputView', imref2d(size(im2)));
+falsecolorOverlay = imfuse(im2,Jregistered);
+
+Translate = movingPoints - fixedPoints
+
+figure(4)
+imshow(im1);
+figure(5)
+imshow(Jregistered);
+figure(6)
+imshow(im2);
 % --------------------------------------------------------------------
 %                                                               Mosaic
 % --------------------------------------------------------------------
@@ -136,10 +153,7 @@ box2_(1,:) = box2_(1,:) ./ box2_(3,:) ;
 box2_(2,:) = box2_(2,:) ./ box2_(3,:) ;
 ur = min([1 box2_(1,:)]):max([size(im1,2) box2_(1,:)]) ;
 vr = min([1 box2_(2,:)]):max([size(im1,1) box2_(2,:)]) ;
-ur
-vr
-u
-v
+
 [u,v] = meshgrid(ur,vr) ;
 im1_ = vl_imwbackward(im2double(im1),u,v) ;
 

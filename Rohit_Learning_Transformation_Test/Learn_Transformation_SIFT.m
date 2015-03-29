@@ -1,14 +1,13 @@
 clc;
 clear all;
 close all;
-
-%[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('monopoly_cat_change_perspective.jpg');
-%[Preprocessed_Img, Noisy_1] = image_rgb2gray_noisy('monopoly_cat.jpg');
-%Test_Img = Noisy;
-[Preprocessed_Img] = image_rgb2gray('pepper_2.jpg');
-%Test_Img = translate_img(Preprocessed_Img, 170, 0);
-Test_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));
-
+% 
+[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('car_2__fixed_2.jpg');
+[Preprocessed_Img, Noisy_1] = image_rgb2gray_noisy('car_2__fixed_5.jpg');
+Test_Img = Noisy;
+%[Preprocessed_Img] = image_rgb2gray('sailboat_2.jpg');
+%est_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));
+%Test_Img = translate_img(Test_Img, 100, 0);
 
 % Test_Img = single(scaleImg(Preprocessed_Img, 0.6, 0.6));
 [fa, da] = vl_sift(single(Preprocessed_Img)) ;
@@ -18,7 +17,7 @@ Test_Img = (imrotate(Preprocessed_Img, 45, 'bilinear', 'crop'));
 figure(10);
 imshow(Preprocessed_Img); hold on;
 perm = randperm(size(fa,2)) ;
-sel = perm(1:10) ;
+sel = perm(1:8) ;
 h1 = vl_plotframe(fa(:,sel)) ;
 h2 = vl_plotframe(fa(:,sel)) ;
 set(h1,'color','k','linewidth',3) ;
@@ -28,7 +27,7 @@ hold off;
 figure(11);
 imshow(Test_Img); hold on;
 perm = randperm(size(fb,2)) ;
-sel = perm(1:10) ;
+sel = perm(1:8) ;
 h1 = vl_plotframe(fb(:,sel)) ;
 h2 = vl_plotframe(fb(:,sel)) ;
 set(h1,'color','k','linewidth',3) ;
@@ -37,11 +36,9 @@ hold off;
 
 
 
-sift_mosaic(Preprocessed_Img, Test_Img);
+[M,TFORM] = sift_mosaic(Preprocessed_Img, Test_Img);
 
-
-
-
+TFORM.T
 
 
 

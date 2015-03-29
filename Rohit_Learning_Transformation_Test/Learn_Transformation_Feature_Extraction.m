@@ -2,8 +2,8 @@ clc;
 clear all;
 close all;
 
-[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('monopoly_cat_change_perspective.jpg');
-[Preprocessed_Img, Noisy_1] = image_rgb2gray_noisy('monopoly_cat.jpg');
+[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('car_2__fixed_2.jpg');
+[Preprocessed_Img_1, Noisy] = image_rgb2gray_noisy('car_2__fixed_7.jpg');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
@@ -49,7 +49,7 @@ close all;
 % imshow(recovered);
 Test_Img = Noisy;
 %Test_Img_1 = (scaleImg(Noisy, 0.6, 0.6));
-%Test_Img_2 = (imrotate(Test_Img_1, -30, 'bilinear', 'crop'));
+%Test_Img = (imrotate(Test_Img, -30, 'bilinear', 'crop'));
 %Test_Img = translate_img_grayScale(Test_Img_2, -100, 100);
 
 % Preprocessed_Img = Noisy;
@@ -79,9 +79,9 @@ matchedDistorted = validPtsDistorted(indexPairs(:,2));
 % matchedOriginal.Location = matchedOriginal.Location - 256.*ones(iOm, iOn);
 
 [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
-
+% F = estimateFundamentalMatrix(matchedDistorted,matchedOriginal)
 % [tform_1, inlierOriginal_1, inlierDistorted_1] = estimateGeometricTransform(matchedOriginal, matchedDistorted.Location, 'similarity');
-res = isTranslation(tform)
+tform.invert.T
 [iDm, iDn] = size(inlierDistorted.Location);
 [iOm, iOn] = size(inlierOriginal.Location);
 
