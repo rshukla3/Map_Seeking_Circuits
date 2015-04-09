@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('monopoly_robot.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('90_r35.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;

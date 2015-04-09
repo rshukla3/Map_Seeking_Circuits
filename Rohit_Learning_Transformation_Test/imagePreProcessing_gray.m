@@ -5,27 +5,41 @@ function [ Test_Img, Test_Img_Erode ] = imagePreProcessing_gray(filename)
 Read_Test_Img = imread(filename);
 Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.0);
 % Read_Test_Img = imnoise(Read_Test_Img,'salt & pepper',0.01);
-Test_Img_gray = rgb2gray(Read_Test_Img);
-
+[m,n,l] = size(Read_Test_Img);
+if l == 3
+    Test_Img_gray = rgb2gray(Read_Test_Img);
+elseif l == 1
+    Test_Img_gray = Read_Test_Img;
+else
+    fprintf('imagePreProcessing: Image is neither RGB or grayscale\n');
+end
+[m,n] = size(Test_Img_gray)
+if m ~= 512 || n ~= 512
+    mc = m/2-255
+    nc = n/2-255
+    
+    Test_Img_gray = imresize(Test_Img_gray, 'nearest', 'Scale', [512 512]);
+end
+[m,n] = size(Test_Img_gray)
 % M = 0;
 % V = 0.01;
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
 Scaling = 1.0;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation = -45;
+Rotation = 0;
 Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
 x_Translation = 0;
 y_Translation = 0;
 Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
-[m,n] = size(Test_Img_gray);
-M = max(max(Test_Img_gray));
-for i= 1:m
-    for j = 1:n
-        if(Test_Img_gray(i,j) <= 10)
-            Test_Img_gray(i,j) = M;
-        end
-    end
-end
+% [m,n] = size(Test_Img_gray);
+% M = max(max(Test_Img_gray));
+% for i= 1:m
+%     for j = 1:n
+%         if(Test_Img_gray(i,j) <= 10)
+%             Test_Img_gray(i,j) = M;
+%         end
+%     end
+% end
 
 
 % Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
