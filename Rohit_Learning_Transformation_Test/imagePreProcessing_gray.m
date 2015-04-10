@@ -15,22 +15,19 @@ else
 end
 [m,n] = size(Test_Img_gray)
 if m ~= 512 || n ~= 512
-    mc = m/2-255
-    nc = n/2-255
-    
-    Test_Img_gray = imresize(Test_Img_gray, 'nearest', 'Scale', [512 512]);
+% Need to perform image padding.
 end
-[m,n] = size(Test_Img_gray)
+[m,n] = size(Test_Img_gray);
 % M = 0;
 % V = 0.01;
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
-Scaling = 1.0;
+Scaling = 1.2;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation = 0;
-Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-x_Translation = 0;
-y_Translation = 0;
-Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
+% Rotation = 30;
+% Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
+% x_Translation = 0;
+% y_Translation = 0;
+% Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
 % [m,n] = size(Test_Img_gray);
 % M = max(max(Test_Img_gray));
 % for i= 1:m
@@ -42,7 +39,7 @@ Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translat
 % end
 
 
-% Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
+%Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
 figure(20);
 imshow(Test_Img_gray);
 pause(0.1);

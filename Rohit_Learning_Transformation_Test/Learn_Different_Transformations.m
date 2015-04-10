@@ -119,7 +119,7 @@ end
 % Second memory location will store segmented images that will be later
 % used for learning transformations.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('sailboat_2.jpg');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing('90_r0.png');
 [m,n] = size(Preprocessed_Img);
 mem_img(1:m, 1:n, 1) = Preprocessed_Img;
 learn_mem_img(1:m,1:n,1) = Memory_PreProcessed_Img;
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('90_r35.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('90_r0.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -158,18 +158,18 @@ Learning_Test_Img = Memory_PreProcessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-% Scaling = 0.8;
-% Test_Img_1 = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
-% Learning_Test_Img_1 = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
+%Scaling = 1.0;
+%Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
+%Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
 % 
 % Rotation = -30;
-% Test_Img_2 = single(imrotate(Test_Img_1, Rotation, 'nearest', 'crop'));
-% Learning_Test_Img_2 = single(imrotate(Learning_Test_Img_1, Rotation, 'nearest', 'crop'));
+% Test_Img = single(imrotate(Test_Img, Rotation, 'nearest', 'crop'));
+% Learning_Test_Img = single(imrotate(Learning_Test_Img, Rotation, 'nearest', 'crop'));
 %  
 % x_Translation = -100;
 % y_Translation = 100;
-% Test_Img = translate_img(Test_Img_2, x_Translation, y_Translation);
-% Learning_Test_Img = translate_img(Learning_Test_Img_2, x_Translation, y_Translation);
+% Test_Img = translate_img(Test_Img, x_Translation, y_Translation);
+% Learning_Test_Img = translate_img(Learning_Test_Img, x_Translation, y_Translation);
 
 
 figure(1);
@@ -420,7 +420,7 @@ for i = 1:iterationCount
     
     F_1 = memory_units*sum(sum(f(:,:,1)));
     B_1 = sum(sum(b(:,:,layerCount)));
-    Q = q_mem(1)*(B_1/F_1)*0.3;
+    Q = q_mem(1)*(B_1/F_1)*0.1;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
@@ -428,20 +428,20 @@ for i = 1:iterationCount
         q_units = 1;
         dlmwrite('q_mem.txt', q_mem, '\t');
     else
-        if(q_Top_Layer<0.3*q_mem(1)*(B_1/F_1) && learning == true && learnCount == 1)
+        if(q_Top_Layer<Q && learning == true && learnCount > 0)
         %if(q_Top_Layer==0)
             fprintf('Below Threshold. Learn new transformation!\n');           
-            if(learnCount == 2)
+%             if(learnCount == 2)
 %                 break;
-            end
+%             end
             
             learnCount = learnCount + 1;
             isNewLayerAssigned = false;
             appendedToLayer = 0;
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
-            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img);
-            
+            [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img, Q);
+            return;
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
@@ -449,7 +449,7 @@ for i = 1:iterationCount
             if(objectFound == true)
                 [isNewLayerAssigned, appendedToLayer] = checkCombinationOfFunctions(Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, layerCount);
                 fprintf('appendedToLayer: %d\n', appendedToLayer);
-                return;
+                
             else
                 memory_units = memory_units + 1;
                 g_mem = single(ones(1,memory_units));

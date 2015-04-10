@@ -1,4 +1,4 @@
-function [ affine_transformation_matrix_forward, affine_transformation_matrix_backward, objectFound ] = learn_new_transformation_feat_ext_multi_img( Test_Img, Edge_Detected_Img )
+function [ affine_transformation_matrix_forward, affine_transformation_matrix_backward, objectFound ] = learn_new_transformation_feat_ext_multi_img( Test_Img, Edge_Detected_Img, Threshold_Q )
 %learn_new_transformation_feat_ext_multi_img: Given the set of memory
 %images, learn whether the input image is a new object or contains a new
 %set of transformations. 
@@ -151,13 +151,13 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                     % pixels match in the transformed input image with that
                     % in the memory image.
                     D_1 = dotproduct(T,mem_img(:,:,mu))
-
+                    
                 else
                      D_1 = 0;
                 end
                 
                 
-            if(D_1>20)
+            if(D_1>= 20)
                 objectFound = true;
                 ss = affine_transformation_matrix_forward(2,1);
                 sc = affine_transformation_matrix_forward(1,1);
@@ -213,6 +213,17 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 end
 
                 affine_transformation_matrix_backward
+                
+                [m,n] = size(Test_Img);
+                [coordinates]= getPointsOfInterest(mem_img(:,:,mu)); 
+                    T = (img_transform(coordinates, m, n, affine_transformation_matrix_backward));
+                    figure(3);
+                    imshow(T);
+                    % Need to change this. This basically tells how many
+                    % pixels match in the transformed input image with that
+                    % in the memory image.
+                    D_2 = dotproduct(T,Edge_Detected_Img)
+                    Threshold_Q
                 break;
 %                 if(D_2 > 20 && D_1 < 20)
 %                     F = affine_transformation_matrix_forward;
@@ -225,7 +236,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    
+    return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.

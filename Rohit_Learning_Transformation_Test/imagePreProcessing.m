@@ -4,13 +4,20 @@ function [ Test_Img, Test_Img_Erode ] = imagePreProcessing(filename)
 
 Read_Test_Img = imread(filename);
 % Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.004);
-Test_Img_gray = rgb2gray(Read_Test_Img);
+[m,n,d] = size(Read_Test_Img);
+if(d == 3)
+    Test_Img_gray = rgb2gray(Read_Test_Img);
+elseif(d == 1)
+    Test_Img_gray = Read_Test_Img;
+else
+    fprintf('ImagePreProcessing: Image dimensions not correct\n');
+end
 % Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
 % M = 0;
 % V = 0.01;
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
-% Scaling = 1.2;
-% Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
+Scaling = 1.0;
+Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
 % Rotation = -30;
 % Test_Img_gray = single(imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
 % x_Translation = -100;
