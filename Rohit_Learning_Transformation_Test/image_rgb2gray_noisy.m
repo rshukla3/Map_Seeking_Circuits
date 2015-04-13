@@ -3,8 +3,9 @@ function [ Test_Img, Noisy_Img ] = image_rgb2gray_noisy(filename)
 %filtering on the image and later doing edge detection on it.
 
 Read_Test_Img = imread(filename);
-Noisy_Image = imnoise(Read_Test_Img,'gaussian',0,0.0);
-Test_Img = rgb2gray(Read_Test_Img);
+Noisy_Img = imnoise(Read_Test_Img,'gaussian',0,0.0);
+Test_Img = Read_Test_Img;
+% Test_Img = rgb2gray(Read_Test_Img);
 
 % [Im, In] = size(Test_Img);
 % 
@@ -18,7 +19,7 @@ Test_Img = rgb2gray(Read_Test_Img);
 % Test_Img_Final = imerode(Test_Img_Fill,seD);
 % Test_Img = imerode(Test_Img_Final,seD);
 
-Noisy_Img = rgb2gray(Noisy_Image);
+% Noisy_Img = rgb2gray(Noisy_Image);
 Noisy_Img = wiener2(Noisy_Img,[3 3]);
 [Im, In] = size(Noisy_Img);
 

@@ -15,19 +15,22 @@ else
 end
 [m,n] = size(Test_Img_gray)
 if m ~= 512 || n ~= 512
-% Need to perform image padding.
+    % Need to perform image padding.
+    pm = (512-m)/2;
+    pn = (512-n)/2;
+    Test_Img_gray = padarray(Test_Img_gray, [pm, pn], 'both');
 end
-[m,n] = size(Test_Img_gray);
+[m,n] = size(Test_Img_gray)
 % M = 0;
 % V = 0.01;
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
-Scaling = 1.2;
+Scaling = 1.0;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-% Rotation = 30;
-% Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-% x_Translation = 0;
-% y_Translation = 0;
-% Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
+Rotation = 0;
+Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
+x_Translation = 0;
+y_Translation = 0;
+Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
 % [m,n] = size(Test_Img_gray);
 % M = max(max(Test_Img_gray));
 % for i= 1:m
@@ -40,13 +43,15 @@ Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
 
 
 %Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
-figure(20);
-imshow(Test_Img_gray);
-pause(0.1);
 [Im, In] = size(Test_Img_gray);
 
-[~, Thresh] = edge(Test_Img_gray, 'prewitt');
+[Test_Img_BW, Thresh] = edge(Test_Img_gray, 'prewitt',0.03);
+Thresh*0.5
+figure(20);
+imshow(Test_Img_BW);
+pause(1);
 Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh*0.5);
+
 
 se90 = strel('line', 3, 90);
 se0 = strel('line', 3, 0);
@@ -72,8 +77,8 @@ Test_Img = single(Test_Img);
 %Test_Img = translate_img(Test_Img, 100, -150);
 %Test_Img = Test_Img.*255;
 
-%figure(2);
-%imshow(Test_Img);
-
+figure(20);
+imshow(Test_Img);
+pause(1);
 end
 

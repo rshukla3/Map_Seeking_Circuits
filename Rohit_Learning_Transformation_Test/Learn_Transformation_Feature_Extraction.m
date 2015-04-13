@@ -2,8 +2,8 @@ clc;
 clear all;
 close all;
 
-[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('car_2__fixed_2.jpg');
-[Preprocessed_Img_1, Noisy] = image_rgb2gray_noisy('car_2__fixed_7.jpg');
+[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('135_r0.png');
+[Preprocessed_Img_1, Noisy] = image_rgb2gray_noisy('234_r180.png');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
