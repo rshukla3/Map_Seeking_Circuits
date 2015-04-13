@@ -46,11 +46,16 @@ Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translat
 [Im, In] = size(Test_Img_gray);
 
 [Test_Img_BW, Thresh] = edge(Test_Img_gray, 'prewitt');
-Thresh*0.2
+Thresh*0.24
 figure(20);
 imshow(Test_Img_BW);
 pause(1);
-Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh*0.2);
+if(Thresh*0.24 < 0.012)
+    Thresh = 0.012;
+else 
+    Thresh = Thresh*0.24;
+end
+Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh);
 
 
 se90 = strel('line', 3, 90);

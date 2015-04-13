@@ -158,7 +158,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 
                 
             if(D_1>= 20)
-                objectFound = true;
+                % objectFound = true;
                 ss = affine_transformation_matrix_forward(2,1);
                 sc = affine_transformation_matrix_forward(1,1);
                 scale_recovered = sqrt(ss*ss + sc*sc);
@@ -224,6 +224,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                     % in the memory image.
                     D_2 = dotproduct(T,Edge_Detected_Img)
                     Threshold_Q
+                    if(D_2 >= Threshold_Q)
+                        objectFound = true;
+                    end
                 break;
 %                 if(D_2 > 20 && D_1 < 20)
 %                     F = affine_transformation_matrix_forward;
@@ -236,7 +239,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    return;
+    % return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.
