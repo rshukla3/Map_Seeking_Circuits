@@ -45,12 +45,12 @@ Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translat
 %Test_Img_gray = wiener2(Test_Img_gray,[5 5]);
 [Im, In] = size(Test_Img_gray);
 
-[Test_Img_BW, Thresh] = edge(Test_Img_gray, 'prewitt',0.03);
-Thresh*0.5
+[Test_Img_BW, Thresh] = edge(Test_Img_gray, 'prewitt');
+Thresh*0.2
 figure(20);
 imshow(Test_Img_BW);
 pause(1);
-Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh*0.5);
+Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh*0.2);
 
 
 se90 = strel('line', 3, 90);
