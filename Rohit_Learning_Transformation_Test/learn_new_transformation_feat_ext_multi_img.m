@@ -239,7 +239,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    % return;
+    return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.
