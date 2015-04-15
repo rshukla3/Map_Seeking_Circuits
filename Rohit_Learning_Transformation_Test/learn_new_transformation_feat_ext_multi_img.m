@@ -41,8 +41,8 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         Preprocessed_Img(1:lm, 1:ln) = learn_mem_img(1:lm, 1:ln, mu);
         clear ptsOriginal;
         clear ptsDistorted;
-        ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
-        ptsDistorted = detectSURFFeatures(Test_Img);
+        ptsOriginal  = detectHarrisFeatures(Preprocessed_Img);
+        ptsDistorted = detectHarrisFeatures(Test_Img);
 
         [featuresOriginal,   validPtsOriginal]  = extractFeatures(Preprocessed_Img,  ptsOriginal);
         [featuresDistorted, validPtsDistorted]  = extractFeatures(Test_Img, ptsDistorted);
@@ -226,8 +226,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                     Threshold_Q
                     if(D_2 >= Threshold_Q)
                         objectFound = true;
+                        break;
                     end
-                break;
+                % break;
 %                 if(D_2 > 20 && D_1 < 20)
 %                     F = affine_transformation_matrix_forward;
 %                     B = affine_transformation_matrix_backward;

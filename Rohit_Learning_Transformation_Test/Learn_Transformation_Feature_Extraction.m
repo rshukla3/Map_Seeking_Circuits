@@ -2,8 +2,8 @@ clc;
 clear all;
 close all;
 
-[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('135_r0.png');
-[Preprocessed_Img_1, Noisy] = image_rgb2gray_noisy('234_r180.png');
+[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('354_r0.png');
+[Preprocessed_Img_1, Noisy] = image_rgb2gray_noisy('354_r20.png');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
@@ -49,7 +49,7 @@ close all;
 % imshow(recovered);
 Test_Img = Noisy;
 %Test_Img_1 = (scaleImg(Noisy, 0.6, 0.6));
-%Test_Img = (imrotate(Test_Img, -30, 'bilinear', 'crop'));
+Test_Img = (imrotate(Test_Img, -30, 'bilinear', 'crop'));
 %Test_Img = translate_img_grayScale(Test_Img_2, -100, 100);
 
 % Preprocessed_Img = Noisy;
@@ -106,7 +106,7 @@ figure(2);
 imshow(Preprocessed_Img); hold on;
 plot(inlierOriginal.selectStrongest(10));
 
-Tinv  = tform.invert.T;
+Tinv  = tform.invert.T
 % Tinv_1  = tform_1.invert.T;
 
 ss = T1(2,1);
