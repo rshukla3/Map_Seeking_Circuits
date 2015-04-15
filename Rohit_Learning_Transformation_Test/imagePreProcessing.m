@@ -1,4 +1,4 @@
-function [ Test_Img, Test_Img_Erode ] = imagePreProcessing(filename)
+function [ Test_Img, Test_Img_gray ] = imagePreProcessing(filename)
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 

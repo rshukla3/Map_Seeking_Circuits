@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('354_r0.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('90_r0.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -420,7 +420,7 @@ for i = 1:iterationCount
     
     F_1 = memory_units*sum(sum(f(:,:,1)));
     B_1 = sum(sum(b(:,:,layerCount)));
-    Q = q_mem(1)*(B_1/F_1)*0.3;
+    Q = q_mem(1)*(B_1/F_1)*0.23;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
@@ -441,7 +441,7 @@ for i = 1:iterationCount
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img, Q);
-            return;
+            % return;
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
