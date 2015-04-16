@@ -163,7 +163,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 sc = affine_transformation_matrix_forward(1,1);
                 scale_recovered = sqrt(ss*ss + sc*sc);
                 theta_recovered = atan2(ss,sc)*180/pi;
-                affine_transformation_matrix_backward = round2(iOriginal\iDistorted, 0.01);
+                affine_transformation_matrix_backward = round2(iOriginal\iDistorted, 0.001);
 
                 [am, an] = size(affine_transformation_matrix_backward);
 
@@ -188,10 +188,11 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 A21 = affine_transformation_matrix_backward(2,1);
                 A22 = affine_transformation_matrix_backward(2,2)
 
-                affine_transformation_matrix_backward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
-                affine_transformation_matrix_backward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2, 0.01);
-                affine_transformation_matrix_backward(1,2) = sign(A12)*round2((abs(A12)+abs(A21))/2,0.01);
-                affine_transformation_matrix_backward(2,1) = sign(A21)*round2((abs(A12)+abs(A21))/2,0.01);
+                affine_transformation_matrix_backward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.001);
+                affine_transformation_matrix_backward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2, 0.001);
+                affine_transformation_matrix_backward(1,2) = sign(A12)*round2((abs(A12)+abs(A21))/2,0.001);
+                affine_transformation_matrix_backward(2,1) = sign(A21)*round2((abs(A12)+abs(A21))/2,0.001);
+                
 
                 for i = 1:am
                     for j = 1:an
@@ -240,7 +241,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    % return;
+    return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.
