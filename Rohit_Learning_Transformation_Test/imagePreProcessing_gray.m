@@ -26,7 +26,7 @@ end
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
 Scaling = 1.0;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation =  -30;
+Rotation =  0;
 Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
 x_Translation = 0;
 y_Translation = 0;

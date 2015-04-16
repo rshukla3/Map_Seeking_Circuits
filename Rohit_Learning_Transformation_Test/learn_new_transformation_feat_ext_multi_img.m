@@ -188,10 +188,10 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 A21 = affine_transformation_matrix_backward(2,1);
                 A22 = affine_transformation_matrix_backward(2,2)
 
-                affine_transformation_matrix_backward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.001);
-                affine_transformation_matrix_backward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2, 0.001);
-                affine_transformation_matrix_backward(1,2) = sign(A12)*round2((abs(A12)+abs(A21))/2,0.001);
-                affine_transformation_matrix_backward(2,1) = sign(A21)*round2((abs(A12)+abs(A21))/2,0.001);
+                affine_transformation_matrix_backward(1,1) = sign(A11)*round2((abs(A11)+abs(A22))/2,0.01);
+                affine_transformation_matrix_backward(2,2) = sign(A22)*round2((abs(A11)+abs(A22))/2, 0.01);
+                affine_transformation_matrix_backward(1,2) = sign(A12)*round2((abs(A12)+abs(A21))/2,0.01);
+                affine_transformation_matrix_backward(2,1) = sign(A21)*round2((abs(A12)+abs(A21))/2,0.01);
                 
 
                 for i = 1:am
@@ -241,7 +241,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    return;
+    % return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.
