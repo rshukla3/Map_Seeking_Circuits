@@ -41,8 +41,8 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         Preprocessed_Img(1:lm, 1:ln) = learn_mem_img(1:lm, 1:ln, mu);
         clear ptsOriginal;
         clear ptsDistorted;
-        ptsOriginal  = detectHarrisFeatures(Preprocessed_Img);
-        ptsDistorted = detectHarrisFeatures(Test_Img);
+        ptsOriginal  = detectSURFFeatures(Preprocessed_Img);
+        ptsDistorted = detectSURFFeatures(Test_Img);
 
         [featuresOriginal,   validPtsOriginal]  = extractFeatures(Preprocessed_Img,  ptsOriginal);
         [featuresDistorted, validPtsDistorted]  = extractFeatures(Test_Img, ptsDistorted);

@@ -46,14 +46,14 @@ Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translat
 [Im, In] = size(Test_Img_gray);
 
 [Test_Img_BW, Thresh] = edge(Test_Img_gray, 'prewitt');
-Thresh*0.24
+Thresh*0.205
 figure(20);
 imshow(Test_Img_BW);
 pause(1);
-if(Thresh*0.24 < 0.012)
+if(Thresh*0.205 < 0.012)
     Thresh = 0.012;
 else 
-    Thresh = Thresh*0.24;
+    Thresh = Thresh*0.205;
 end
 Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh);
 
