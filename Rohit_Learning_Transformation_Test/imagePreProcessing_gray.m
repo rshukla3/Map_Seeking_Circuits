@@ -56,7 +56,9 @@ else
     Thresh = Thresh*0.205;
 end
 Test_Img_BW = edge(Test_Img_gray, 'prewitt', Thresh);
-
+figure(21);
+imshow(Test_Img_BW);
+pause(1);
 
 se90 = strel('line', 3, 90);
 se0 = strel('line', 3, 0);

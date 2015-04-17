@@ -55,7 +55,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         [mOm, mOn] = size(matchedOriginal)
         [mDm, mDn] = size(matchedDistorted)
         
-        if(mOm >=3 && mDm >= 3)
+        if(mOm >3 && mDm > 3)
             [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
             figure(4);
             showMatchedFeatures(Preprocessed_Img,Test_Img, inlierOriginal, inlierDistorted);
@@ -93,11 +93,11 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 
                     [am, an] = size(affine_transformation_matrix_forward);
 
-                    if(abs(1-abs(affine_transformation_matrix_forward(1,1))) < 0.01)
+                    if(abs(1-abs(affine_transformation_matrix_forward(1,1))) < 0.05)
                         affine_transformation_matrix_forward(1,1) = 1;
                     end
 
-                    if(abs(1-abs(affine_transformation_matrix_forward(2,2))) < 0.01)
+                    if(abs(1-abs(affine_transformation_matrix_forward(2,2))) < 0.05)
                         affine_transformation_matrix_forward(2,2) = 1;
                     end
 
@@ -129,10 +129,14 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
     
                     if(abs(affine_transformation_matrix_forward(3,1)) < 5)
                         affine_transformation_matrix_forward(3,1) = 0;
+                    else
+                        affine_transformation_matrix_forward(3,1) = round2(affine_transformation_matrix_forward(3,1), 1);
                     end
 
                     if(abs(affine_transformation_matrix_forward(3,2)) < 5)
                         affine_transformation_matrix_forward(3,2) = 0;
+                    else
+                        affine_transformation_matrix_forward(3,2) = round2(affine_transformation_matrix_forward(3,2), 1);
                     end
 
                     affine_transformation_matrix_forward
@@ -167,11 +171,11 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 
                 [am, an] = size(affine_transformation_matrix_backward);
 
-                if(abs(1-abs(affine_transformation_matrix_backward(1,1))) < 0.01)
+                if(abs(1-abs(affine_transformation_matrix_backward(1,1))) < 0.05)
                     affine_transformation_matrix_backward(1,1) = 1;
                 end
 
-                if(abs(1-abs(affine_transformation_matrix_backward(2,2))) < 0.01)
+                if(abs(1-abs(affine_transformation_matrix_backward(2,2))) < 0.05)
                     affine_transformation_matrix_backward(2,2) = 1;
                 end
                 
@@ -207,10 +211,14 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 %                 affine_transformation_matrix_backward(3,2) = -A31;
                 if(abs(affine_transformation_matrix_backward(3,1)) < 5)
                     affine_transformation_matrix_backward(3,1) = 0;
+                else
+                    affine_transformation_matrix_backward(3,1) = round2(affine_transformation_matrix_backward(3,1), 1);
                 end
 
                 if(abs(affine_transformation_matrix_backward(3,2)) < 5)
                     affine_transformation_matrix_backward(3,2) = 0;
+                else
+                    affine_transformation_matrix_backward(3,2) = round2(affine_transformation_matrix_backward(3,2), 1);
                 end
 
                 affine_transformation_matrix_backward
@@ -241,7 +249,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    % return;
+    return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.

@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('64_r0.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('8_r90.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -300,7 +300,7 @@ q_mem(1) = q_Top_Layer;
 %shown. This should not be more than once.
 
 learnCount = 1;
-
+setCount = 1;
 for i = 1:iterationCount
     
 % Set the value of backward path 
@@ -418,9 +418,12 @@ for i = 1:iterationCount
     
     fprintf('The value of iterationCount is: %d i is: %d\n', iterationCount, i); 
     
-    F_1 = memory_units*sum(sum(f(:,:,1)));
-    B_1 = sum(sum(b(:,:,layerCount)));
-    Q = q_mem(1)*(B_1/F_1)*0.25;
+    if(setCount == 1)
+        setCount = 2;
+        F_1 = memory_units*sum(sum(f(:,:,1)));
+        B_1 = sum(sum(b(:,:,layerCount)));
+    end
+    Q = q_mem(1)*(B_1/F_1)*0.2;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
@@ -441,7 +444,7 @@ for i = 1:iterationCount
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img, Q);
-            % return;
+            return;
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
