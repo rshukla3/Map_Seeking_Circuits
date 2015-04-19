@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 25;
+iterationCount = 30;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('8_r90.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('615_r90.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -423,7 +423,7 @@ for i = 1:iterationCount
         F_1 = memory_units*sum(sum(f(:,:,1)));
         B_1 = sum(sum(b(:,:,layerCount)));
     end
-    Q = q_mem(1)*(B_1/F_1)*0.2;
+    Q = q_mem(1)*(B_1/F_1)*0.1;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);

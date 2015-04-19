@@ -1,9 +1,9 @@
 clc;
 clear all;
-close all;
 
-[Preprocessed_Img, Noisy] = image_rgb2gray_noisy('139_r0.png');
-[Preprocessed_Img_1, Noisy] = image_rgb2gray_noisy('145_r0.png');
+
+[Preprocessed_Img_2, Preprocessed_Img] = imagePreProcessing_gray('615_r0.png');
+[Preprocessed_Img_1, Noisy] = imagePreProcessing_gray('615_r90.png');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
@@ -48,9 +48,9 @@ close all;
 % figure(3);
 % imshow(recovered);
 Test_Img = Noisy;
-%Test_Img_1 = (scaleImg(Noisy, 0.6, 0.6));
-%Test_Img = (imrotate(Test_Img, -30, 'bilinear', 'crop'));
-%Test_Img = translate_img_grayScale(Test_Img_2, -100, 100);
+%Test_Img = (scaleImg(Noisy, 1.2, 1.2));
+Test_Img = (imrotate(Test_Img, 30, 'bilinear', 'crop'));
+%Test_Img = translate_img_grayScale(Test_Img, 20, 0);
 
 % Preprocessed_Img = Noisy;
 
@@ -113,3 +113,18 @@ ss = T1(2,1);
 sc = T1(1,1);
 scale_recovered = sqrt(ss*ss + sc*sc)
 theta_recovered = atan2(ss,sc)*180/pi
+H = [cosd(30) -sind(30) 0; sind(30) cosd(30) 0; 0 0 1]
+H_1 = [1.2 0 0; 0 1.2 0; 0 0 1]
+tt = affine2d(H);
+I = Preprocessed_Img_1;
+Org = Preprocessed_Img_1;
+[m,n] = size(Preprocessed_Img_1);
+B = imwarp(I, tt, 'bilinear');
+[Bm, Bn] = size(B);
+B = imcrop(B,[Bm/2-m/2 Bn/2-n/2 m-1 n-1]);
+Org = (imrotate(Org, 30, 'bilinear', 'crop'));
+%Org = (scaleImg(Org, 1.2, 1.2));
+D_2 = dotproduct(B,Org)
+C = imfuse(B,Org,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
+figure(31);
+imshow(C);

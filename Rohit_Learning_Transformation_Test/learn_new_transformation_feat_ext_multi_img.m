@@ -93,11 +93,11 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
 
                     [am, an] = size(affine_transformation_matrix_forward);
 
-                    if(abs(1-abs(affine_transformation_matrix_forward(1,1))) < 0.05)
+                    if(abs(1-abs(affine_transformation_matrix_forward(1,1))) <= 0.05)
                         affine_transformation_matrix_forward(1,1) = 1;
                     end
 
-                    if(abs(1-abs(affine_transformation_matrix_forward(2,2))) < 0.05)
+                    if(abs(1-abs(affine_transformation_matrix_forward(2,2))) <= 0.05)
                         affine_transformation_matrix_forward(2,2) = 1;
                     end
 
@@ -167,15 +167,15 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                 sc = affine_transformation_matrix_forward(1,1);
                 scale_recovered = sqrt(ss*ss + sc*sc);
                 theta_recovered = atan2(ss,sc)*180/pi;
-                affine_transformation_matrix_backward = round2(iOriginal\iDistorted, 0.001);
+                affine_transformation_matrix_backward = round2(iOriginal\iDistorted, 0.01);
 
                 [am, an] = size(affine_transformation_matrix_backward);
 
-                if(abs(1-abs(affine_transformation_matrix_backward(1,1))) < 0.05)
+                if(abs(1-abs(affine_transformation_matrix_backward(1,1))) <= 0.05)
                     affine_transformation_matrix_backward(1,1) = 1;
                 end
 
-                if(abs(1-abs(affine_transformation_matrix_backward(2,2))) < 0.05)
+                if(abs(1-abs(affine_transformation_matrix_backward(2,2))) <= 0.05)
                     affine_transformation_matrix_backward(2,2) = 1;
                 end
                 
@@ -232,6 +232,9 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
                     % pixels match in the transformed input image with that
                     % in the memory image.
                     D_2 = dotproduct(T,Edge_Detected_Img)
+                    C = imfuse(T,Edge_Detected_Img,'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
+                    figure(31);
+                    imshow(C);
                     Threshold_Q
                     if(D_2 >= Threshold_Q)
                         objectFound = true;
