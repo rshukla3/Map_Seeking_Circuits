@@ -2,8 +2,8 @@ clc;
 clear all;
 
 
-[Preprocessed_Img_2, Preprocessed_Img] = imagePreProcessing_gray('32_r0.png');
-[Preprocessed_Img_1, Noisy] = imagePreProcessing_gray('32_l6c3.png');
+[Preprocessed_Img_2, Preprocessed_Img] = imagePreProcessing_gray('8_r0.png');
+[Preprocessed_Img_1, Noisy] = imagePreProcessing_gray('8_l4c3.png');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);

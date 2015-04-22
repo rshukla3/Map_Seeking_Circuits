@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('139_r0.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('64_l6c3.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -363,9 +363,9 @@ for i = 1:iterationCount
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), g_scale, 'forward');    
     
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
-    C = imfuse(f(:,:,1),b(:,:,1),'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
-    figure(31);
-    imshow(C);
+    %C = imfuse(f(:,:,1),b(:,:,1),'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
+    %figure(31);
+    %imshow(C);
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
     q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
     
