@@ -1,7 +1,7 @@
 function [ Test_Img, Test_Img_gray] = imagePreProcessing_gray(filename)
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
-
+0
 Read_Test_Img = imread(filename);
 Read_Test_Img = imnoise(Read_Test_Img,'gaussian',0,0.0);
 % Read_Test_Img = imnoise(Read_Test_Img,'salt & pepper',0.01);
@@ -26,10 +26,10 @@ end
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
 Scaling = 1.2;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation =  0;
+Rotation =  -15;
 Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-x_Translation = 10;
-y_Translation = 10;
+x_Translation = 0;
+y_Translation = 0;
 Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
 % [m,n] = size(Test_Img_gray);
 % M = max(max(Test_Img_gray));
@@ -46,11 +46,11 @@ Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translat
 [Im, In] = size(Test_Img_gray);
 
 [Test_Img_BW, Thresh] = edge(Test_Img_gray, 'prewitt');
-Thresh*0.205
+Thresh*0.25
 figure(20);
 imshow(Test_Img_BW);
 pause(1);
-if(Thresh*0.205 < 0.012)
+if(Thresh*0.25 < 0.012)
     Thresh = 0.012;
 else 
     Thresh = Thresh*0.205;

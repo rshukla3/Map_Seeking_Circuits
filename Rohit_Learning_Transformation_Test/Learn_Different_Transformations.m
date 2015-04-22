@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('615_r90.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('139_r0.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -363,7 +363,9 @@ for i = 1:iterationCount
     [f(:,:,layerCount), Tf_scaling] = layer_scaling(f(:,:,layerCount-1), g_scale, 'forward');    
     
     q_Top_Layer = dotproduct(f(:,:,1), b(:,:,1));
-    
+    C = imfuse(f(:,:,1),b(:,:,1),'falsecolor','Scaling','joint','ColorChannels',[1 2 0]);
+    figure(31);
+    imshow(C);
     q_layer_mem(1:memory_units) = single(zeros(1,memory_units));
     q_scaling(1:scaleCount) = single(zeros(1,scaleCount));
     
@@ -422,8 +424,9 @@ for i = 1:iterationCount
         setCount = 2;
         F_1 = memory_units*sum(sum(f(:,:,1)));
         B_1 = sum(sum(b(:,:,layerCount)));
+        Q = q_mem(1)*(B_1/F_1)*0.1
     end
-    Q = q_mem(1)*(B_1/F_1)*0.1;
+    Q = q_mem(1)*(B_1/F_1)*0.0;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);

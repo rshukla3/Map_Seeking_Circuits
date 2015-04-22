@@ -2,8 +2,8 @@ clc;
 clear all;
 
 
-[Preprocessed_Img_2, Preprocessed_Img] = imagePreProcessing_gray('615_r0.png');
-[Preprocessed_Img_1, Noisy] = imagePreProcessing_gray('615_r90.png');
+[Preprocessed_Img_2, Preprocessed_Img] = imagePreProcessing_gray('32_r0.png');
+[Preprocessed_Img_1, Noisy] = imagePreProcessing_gray('32_l6c3.png');
 % [Test_Img] = image_rgb2gray('monopoly_battleShip.jpg');
 
 % % Test_Img = translate_img(Preprocessed_Img, 160, 0);
@@ -49,7 +49,7 @@ clear all;
 % imshow(recovered);
 Test_Img = Noisy;
 %Test_Img = (scaleImg(Noisy, 1.2, 1.2));
-Test_Img = (imrotate(Test_Img, 30, 'bilinear', 'crop'));
+%Test_Img = (imrotate(Test_Img, 30, 'bilinear', 'crop'));
 %Test_Img = translate_img_grayScale(Test_Img, 20, 0);
 
 % Preprocessed_Img = Noisy;
