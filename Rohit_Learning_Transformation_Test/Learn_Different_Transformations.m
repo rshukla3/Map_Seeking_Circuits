@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 30;
+iterationCount = 12;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -25,14 +25,14 @@ layerCount = 1+layersSaved;
 
 % 4. Set the value of constants k, for multiplication with g.
 
-k_mem = 0.15;
-k_layer_1 = 0.3;
-k_layer_2 = 0.3;
-k_layer_3 = 0.3;
-k_layer_4 = 0.3;
-k_layer_5 = 0.3;
-k_layer_6 = 0.3;
-k_scaling = 0.3;
+k_mem = 0.3;
+k_layer_1 = 0.5;
+k_layer_2 = 0.5;
+k_layer_3 = 0.5;
+k_layer_4 = 0.5;
+k_layer_5 = 0.5;
+k_layer_6 = 0.5;
+k_scaling = 0.5;
 
 % 5. Read the matching values of q already stored in the file.
 
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('64_l6c3.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('32_l1c3.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -424,9 +424,9 @@ for i = 1:iterationCount
         setCount = 2;
         F_1 = memory_units*sum(sum(f(:,:,1)));
         B_1 = sum(sum(b(:,:,layerCount)));
-        Q = q_mem(1)*(B_1/F_1)*0.1
+        Q = q_mem(1)*(B_1/F_1)*0.1;
     end
-    Q = q_mem(1)*(B_1/F_1)*0.0;
+    Q = q_mem(1)*(B_1/F_1)*0;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
