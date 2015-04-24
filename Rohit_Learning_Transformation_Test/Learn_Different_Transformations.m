@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 12;
+iterationCount = 30;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -25,14 +25,14 @@ layerCount = 1+layersSaved;
 
 % 4. Set the value of constants k, for multiplication with g.
 
-k_mem = 0.3;
-k_layer_1 = 0.5;
-k_layer_2 = 0.5;
-k_layer_3 = 0.5;
-k_layer_4 = 0.5;
-k_layer_5 = 0.5;
-k_layer_6 = 0.5;
-k_scaling = 0.5;
+k_mem = 0.15;
+k_layer_1 = 0.3;
+k_layer_2 = 0.3;
+k_layer_3 = 0.3;
+k_layer_4 = 0.3;
+k_layer_5 = 0.3;
+k_layer_6 = 0.3;
+k_scaling = 0.3;
 
 % 5. Read the matching values of q already stored in the file.
 
@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('32_l1c3.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('234_r0.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
@@ -158,16 +158,16 @@ Learning_Test_Img = Memory_PreProcessed_Img;
 % generated affine transformations.
 % Test_Img = Img_PointsOfInterest;
 
-%Scaling = 1.0;
-%Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
-%Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
-% 
-% Rotation = -30;
+% Scaling = 0.8;
+% Test_Img = scaleImg(Img_PointsOfInterest, Scaling, Scaling);
+% Learning_Test_Img = scaleImg(Memory_PreProcessed_Img, Scaling, Scaling);
+% % 
+%  Rotation = -15;
 % Test_Img = single(imrotate(Test_Img, Rotation, 'nearest', 'crop'));
 % Learning_Test_Img = single(imrotate(Learning_Test_Img, Rotation, 'nearest', 'crop'));
-%  
+% %  
 % x_Translation = -100;
-% y_Translation = 100;
+% y_Translation = 10;
 % Test_Img = translate_img(Test_Img, x_Translation, y_Translation);
 % Learning_Test_Img = translate_img(Learning_Test_Img, x_Translation, y_Translation);
 
@@ -424,9 +424,9 @@ for i = 1:iterationCount
         setCount = 2;
         F_1 = memory_units*sum(sum(f(:,:,1)));
         B_1 = sum(sum(b(:,:,layerCount)));
-        Q = q_mem(1)*(B_1/F_1)*0.1;
+        Q = q_mem(1)*(B_1/F_1)*0.1
     end
-    Q = q_mem(1)*(B_1/F_1)*0;
+    Q = q_mem(1)*(B_1/F_1)*0.0;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);

@@ -1,4 +1,4 @@
-function [ Test_Img, Test_Img_Erode] = imagePreProcessing_gray(filename)
+function [ Test_Img, Test_Img_gray] = imagePreProcessing_gray(filename)
 %Does the preprocessing on input images. PreProcessing involves performing
 %filtering on the image and later doing edge detection on it.
 0
@@ -24,12 +24,12 @@ end
 % M = 0;
 % V = 0.01;
 % Test_Img_gray = imnoise(Test_Img_gray,'gaussian',M,V);
-Scaling = 1.0;
+Scaling = 1.2;
 Test_Img_gray = scaleImg(Test_Img_gray, Scaling, Scaling);
-Rotation =  0;
+Rotation =  15;
 Test_Img_gray = (imrotate(Test_Img_gray, Rotation, 'nearest', 'crop'));
-x_Translation = 0;
-y_Translation = 0;
+x_Translation = -10;
+y_Translation = 10;
 Test_Img_gray = translate_img_grayScale(Test_Img_gray, x_Translation, y_Translation);
 % [m,n] = size(Test_Img_gray);
 % M = max(max(Test_Img_gray));
