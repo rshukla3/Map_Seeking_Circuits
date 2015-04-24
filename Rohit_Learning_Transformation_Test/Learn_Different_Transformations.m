@@ -143,7 +143,7 @@ end
 
 % Read the test image.
 
-[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('234_r0.png');
+[Preprocessed_Img, Memory_PreProcessed_Img] = imagePreProcessing_gray('160_r0.png');
 Img_PointsOfInterest = Preprocessed_Img;
 
 Test_Img = Img_PointsOfInterest;
