@@ -55,7 +55,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         [mOm, mOn] = size(matchedOriginal)
         [mDm, mDn] = size(matchedDistorted)
         
-        if(mOm >3 && mDm > 3)
+        if(mOm >13 && mDm > 13)
             [tform, inlierDistorted, inlierOriginal] = estimateGeometricTransform(matchedDistorted, matchedOriginal, 'similarity');
             figure(4);
             showMatchedFeatures(Preprocessed_Img,Test_Img, inlierOriginal, inlierDistorted);
@@ -252,7 +252,7 @@ function [ affine_transformation_matrix_forward, affine_transformation_matrix_ba
         end
     end
     objectFound
-    return;
+    % return;
     if(objectFound == false)
         % If the input object was not found, then,
         % store the new object in the memory.

@@ -5,7 +5,7 @@ clc;
 %% Setting up the parameters.
 
 % 1. This sets the number of times MSC architecture will iterate.
-iterationCount = 30;
+iterationCount = 15;
 
 % 2. Read the already stored images from tif image file.
 memory_units = 1;
@@ -25,14 +25,14 @@ layerCount = 1+layersSaved;
 
 % 4. Set the value of constants k, for multiplication with g.
 
-k_mem = 0.15;
-k_layer_1 = 0.3;
-k_layer_2 = 0.3;
-k_layer_3 = 0.3;
-k_layer_4 = 0.3;
-k_layer_5 = 0.3;
-k_layer_6 = 0.3;
-k_scaling = 0.3;
+k_mem = 0.3;
+k_layer_1 = 0.5;
+k_layer_2 = 0.5;
+k_layer_3 = 0.5;
+k_layer_4 = 0.5;
+k_layer_5 = 0.5;
+k_layer_6 = 0.5;
+k_scaling = 0.5;
 
 % 5. Read the matching values of q already stored in the file.
 
@@ -426,7 +426,7 @@ for i = 1:iterationCount
         B_1 = sum(sum(b(:,:,layerCount)));
         Q = q_mem(1)*(B_1/F_1)*0.1
     end
-    Q = q_mem(1)*(B_1/F_1)*0.0;
+    % Q = q_mem(1)*(B_1/F_1)*0.0;
 % Set the value of q to all zeros for the three layers.    
     if(isempty(q_mem))
         q_Top_Layer = dotproduct(Img_PointsOfInterest, Img_PointsOfInterest);
@@ -447,7 +447,7 @@ for i = 1:iterationCount
 %             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation(Img_PointsOfInterest, Test_Img);
 %              [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward] = learn_new_transformation_feat_ext(Memory_PreProcessed_Img, Learning_Test_Img);
             [Learned_Transformation_Matrix_Forward, Learned_Transformation_Matrix_Backward, objectFound] = learn_new_transformation_feat_ext_multi_img(Learning_Test_Img, Test_Img, Q);
-            return;
+            % return;
             % This function needs to be changed in case we have multiple
             % transformations going on. Instead of checking for just one
             % column or one transformation at a time, check for multiple of
